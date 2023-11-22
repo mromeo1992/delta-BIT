@@ -5,7 +5,7 @@ import argparse
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../"))
 
-from utils.json_maniging import reading_json, get_initialised_project
+from utils.json_managing import reading_json, get_initialised_project
 from test_pipeline.preprocessing.write_json import write_json
 
 
