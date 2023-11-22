@@ -102,7 +102,7 @@ def preprocessing_dwi(dataset_file,tmp):
         dataset_file['inputs']['steps'].append("Preprocessing DWI e DTI fit")
     dataset_ditc={}
     for sb, T1, dwi_fold in output_dataset:
-        dataset_ditc[sb]={'T1 image': os.path.abspath(T1), 'DWI fold':os.path.abspath(dwi_fold)}
+        dataset_ditc[sb]={'T1 image': os.path.abspath(T1), 'DTI fold':os.path.abspath(dwi_fold)}
     dataset_file['processed files']={'dataset':dataset_ditc}
 
     jsonfile=os.path.join(dataset_file['inputs']['output_dir'],'dataset.json')
