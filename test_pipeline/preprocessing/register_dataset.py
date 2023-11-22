@@ -4,7 +4,7 @@ import json
 import argparse
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../"))
 
-from utils.json_managing import reading_json, get_initialised_project
+from utils.json_menaging import reading_json, get_initialised_project
 
 
 def reg_T1(T1, template, out_dir, dof=6):
