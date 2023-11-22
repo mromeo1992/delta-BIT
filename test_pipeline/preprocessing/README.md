@@ -1,0 +1,108 @@
+# Preprocessing pipeline
+
+This pipeline needs to prepare your own dataset for testing.
+
+## Dataset structure
+
+Before running the pipeline you should prepare your raw data. The best should be have a data structure like below:
+
+Dataset main folder \
+├── Subject_1 \
+|   ├── path_to_T1 \
+|   └── path_to_DWI \
+|   └── path_to_bvecs \
+|   └── path_to_bvals \
+├── Subject_2 \
+|   ├── path_to_T1 \
+|   └── path_to_DWI \
+|   └── path_to_bvecs \
+|   └── path_to_bvals \
+| \
+| \
+| \
+├── Subject_N \
+|   ├── path_to_T1 \
+|   └── path_to_DWI \
+|   └── path_to_bvecs \
+|   └── path_to_bvals
+
+In this way it is possible to map your data in a JSON file.
+
+## Map your dataset
+
+The first step un this pipeline is mapping your dataset and its features in a JSON, which can be easyly read. Once your data are ready in accordance with the [dataset structure](#dataset-structure), you can read your data and make a json file with [write_json.py](write_json.py) script. You can create a dataset json by yourself skipping this step, however a file is needed to predict data and we suggest to use this script.
+### Usage
+The command 
+
+```
+python write_json.py -h
+
+```
+will output
+
+```
+usage: write_json.py [-h] -n NAME [-m {}] [--data_type DATA_TYPE] -dir
+                     DATASET_DIRECTORY --T1_path T1_PATH --dwi_path DWI_PATH
+                     --bvecs BVECS --bvals BVALS [--registration]
+                     [-o OUTPUT_DIR]
+
+With this script you can create the dataset json file for your own dataset.The
+minimum requirements are T1 images and DWI data placed in the standard Dataset
+Structure (view Preporcessing user manual).
+
+options:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Project's name (default: None)
+  -m {}, --models {}    Insert here the name of the models you want to use
+                        (default: pretrained)
+  --data_type DATA_TYPE
+                        Insert here the extention of the disired output data:
+                        possibility nii, nii.gz, mgz (default: nii.gz)
+  -dir DATASET_DIRECTORY, --dataset_directory DATASET_DIRECTORY
+                        indicate here your main folder which cointains your
+                        dataset (default: None)
+  --T1_path T1_PATH     indicate here the T1 image's relative pathname
+                        (default: None)
+  --dwi_path DWI_PATH   indicate here the DWI image's relative pathname
+                        (default: None)
+  --bvecs BVECS         indicate here the bvecs's relative pathname (default:
+                        None)
+  --bvals BVALS         indicate here the bvals's relative pathname (default:
+                        None)
+  --registration        Inser if you data have already been registered on a
+                        standard template (default: False)
+  -o OUTPUT_DIR, --output_dir OUTPUT_DIR
+                        output_directory (default: $HOME/project_name)
+```
+Flags' explaination:
+* -n, --name, require to insert a project name, in this way all successive pipelines can be called throught this name.
+* -m, --models, here you insert the models you want to use for predictions. Models have been saved in the [trained models directory](../../trained_models) to be read. You can download pretrained models and saving in the correct folder throught the commands:
+
+  >cd $DELTA-BIT (DELTA-BIT directory)
+
+  >mkdir trained_models && cd trained_models
+
+  >wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/ET3xdngqj6VEt8LEvOud-mUBfe-pIHIO6dpGevT-ZE349A?download=1
+
+  >unzip trained_models.zip -d pretrained
+
+  >rm trained_models.zip
+* --data_type, here you can insert the output format you want to use. Available format are: nii, nii.gz, mgz. Default is nii.gz.
+* -dir, --dataset_directory, here you insert the main fold of your dataset (look at [dataset structure](#dataset-structure)).
+* --T1_path insert here T1 images' relative paths in accordance with the [dataset structure](#dataset-structure).
+* --dwi_path insert here DWI images' relative paths in accordance with the [dataset structure](#dataset-structure).
+* --bvecs, insert here relative path to bvecs file.
+* --bvals, insert here relative path to bvecs file.
+* --registration, in general T1 and DWI images stay in different space, in order to make predictions DWI images must be registered on T1 space (look at the [below section](#register-dataset-on-mni152-1mm)). In some case it can happen that images have already been registered, if it is your case insert this flag to skip registration step.
+* -o, --output_dir, insewr here the output folder where all outputs will be saved on. Default: $HOME/project_name.
+
+### example
+```
+python $DELTA-BIT/test_pipeline/write_json.py -n test1 -m pretrained -dir path/to/my/dataet --T1_path relative/path/to/T1.nii.gz --dwi_path relative/path/to/DATA.nii.gz --bvecs relative/path/to/bvecs --bvals relative/path/to/bvals
+```
+
+
+
+## Register dataset on MNI152 1mm
+
+The networks has been trained to work on a small portion of the image whichs is called bounding box. This box was evaluated through statistical analysis performed on the [MNI152 1mm](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Atlases) space, where all images have same reference system. So, in order to cut the correct box it is necessary first register your native T1 on the standard, and then apply a 2 step registration for your DWI images.
