@@ -5,11 +5,26 @@ import numpy as np
 import sys
 
 
+def write_json(dictionary, out_path):
+    """
+    This function needs to write json file containing the information of your dataset.
+
+    dictionary: dir
+            the ditconary you want to write (in accordance to the standard)
+    out_path: str
+            path of your output json file
+    """
+
+    json_object = json.dumps(dictionary, indent=len(dictionary))
+    # Writing json
+    with open(out_path, "w") as outfile:
+        outfile.write(json_object)
 
 
 
+def write_file(config, dataset=None):
 
-def write_json(config, dataset=None):
+
 
     #Input variables
     dataset_dir=os.path.abspath(config['dataset_directory'])
@@ -30,13 +45,15 @@ def write_json(config, dataset=None):
     for sb, T1, dwi, bvecs, bvals in dataset:
         dataset_ditc[sb]={'T1 image': os.path.abspath(T1), 'DWI image':os.path.abspath(dwi), 'bvecs file':os.path.abspath(bvecs), 'bvals file':os.path.abspath(bvals)}
     json_ditc['input files']={'dataset':dataset_ditc}
-        
 
-    json_object = json.dumps(json_ditc, indent=len(config))
-    # Writing json
     jsonfile=os.path.join(output_dir,'dataset.json')
+    write_json(json_ditc,jsonfile)    
+
+    '''json_object = json.dumps(json_ditc, indent=len(config))
+    # Writing json
+    
     with open(jsonfile, "w") as outfile:
-        outfile.write(json_object)
+        outfile.write(json_object)'''
 
     cmd='cp '+jsonfile+' '+config['project_file']
     print('\nCoping report json in '+config['project_file'])
@@ -159,5 +176,7 @@ if __name__=='__main__':
     data_type='.'+config['data_type']
     
     dataset=get_file_path(dataset_dir=dataset_dir,T1_path=T1_path,dwi_path=dwi_path, bvecs=bvecs, bvals=bvals)
-    write_json(config=config,dataset=dataset)
+
+    config['steps']=["Initialising"]
+    write_file(config=config,dataset=dataset)
 

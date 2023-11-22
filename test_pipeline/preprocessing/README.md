@@ -5,28 +5,33 @@ This pipeline needs to prepare your own dataset for testing.
 ## Dataset structure
 
 Before running the pipeline you should prepare your raw data. The best should be have a data structure like below:
-
-Dataset main folder \
-├── Subject_1 \
-|   ├── path_to_T1 \
-|   └── path_to_DWI \
-|   └── path_to_bvecs \
-|   └── path_to_bvals \
-├── Subject_2 \
-|   ├── path_to_T1 \
-|   └── path_to_DWI \
-|   └── path_to_bvecs \
-|   └── path_to_bvals \
-| \
-| \
-| \
-├── Subject_N \
-|   ├── path_to_T1 \
-|   └── path_to_DWI \
-|   └── path_to_bvecs \
+```
+Dataset main folder
+├── Subject_1
+|   ├── path_to_T1
+|   └── path_to_DWI
+|   └── path_to_bvecs
 |   └── path_to_bvals
+├── Subject_2
+|   ├── path_to_T1
+|   └── path_to_DWI
+|   └── path_to_bvecs
+|   └── path_to_bvals 
+|
+|
+|
+├── Subject_N
+|   ├── path_to_T1
+|   └── path_to_DWI
+|   └── path_to_bvecs
+|   └── path_to_bvals
+```
 
 In this way it is possible to map your data in a JSON file.
+
+### Note
+**Do not repeat subject name in your data structure!** \
+**Inside the Subject folder use only paths equal for all subjects!**
 
 ## Map your dataset
 
@@ -100,6 +105,65 @@ Flags' explaination:
 ```
 python $DELTA-BIT/test_pipeline/write_json.py -n test1 -m pretrained -dir path/to/my/dataet --T1_path relative/path/to/T1.nii.gz --dwi_path relative/path/to/DATA.nii.gz --bvecs relative/path/to/bvecs --bvals relative/path/to/bvals
 ```
+
+## Preprocess DWI images
+DWI images are affectded by strong noise due to eddy current and movement artifacts. Even though you are going to use Convolutional Neural Network (CNN) for probabilistic tractography you need to apply some correction to DWI images. The dataset we use for pretrained models, the Human Connectome Project ([HCP](https://www.humanconnectome.org/)) dataset, has already DWI preprocessed data. In HCP dataset DWI images have been processed using the commands of FSL [topup](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/topup) and [eddy](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/eddy). However this processing requires *b_lip_up* and *b_lip_down* acquisitions which normaly are not performed, for this reason we chose to implement an old version of the command eddy called *eddy_correct*. If you want to use your own DWI preprocessing you can modify by your self the [preprocessing file](./preprocessing_dwi.py) keeping the output structure exactly the same:
+
+```
+Project output folder
+├── dataset.json
+└── preprocessing
+|    └── dwi_preprocessing
+|        └── Subject1 
+|        |    ├── FA.nii.gz fractionary anisotropy image
+|        |    ├── L1.nii.gz first eigeinvalue image
+|        |    ├── L2.nii.gz
+|        |    ├── L3.nii.gz
+|        |    ├── V1.nii.gz first eigeinvector image
+|        |    ├── V2.nii.gz
+|        |    └── V3.nii.gz
+|        └── Subject2 
+|        |    ├── FA.nii.gz 
+|        |    ├── L1.nii.gz 
+|        |    ├── L2.nii.gz 
+|        |    ├── L3.nii.gz 
+|        |    ├── V1.nii.gz 
+|        |    ├── V2.nii.gz 
+|        |    └── V3.nii.gz         
+|        |
+|        |
+|        |
+|        |
+|        └── SubjectN
+|        |    ├── FA.nii.gz 
+|        |    ├── L1.nii.gz 
+|        |    ├── L2.nii.gz 
+|        |    ├── L3.nii.gz 
+|        |    ├── V1.nii.gz 
+|        |    ├── V2.nii.gz 
+|        |    └── V3.nii.gz  
+```
+In addiction you need to map your processed data in the json file. We suggest to try a normal preprocessing and then try to modify the preprocessing step.
+
+### Usage
+Typing the command on the terminal
+```
+python preprocessing_dwi.py -h
+```
+it will output
+```
+usage: preprocessing_dwi.py [-h] -n NAME [--tmp]
+
+With this script you can preproces your dwi files.The minimum requirements
+dataset json file produced by write_json.py.
+
+options:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Project's name (default: None)
+  --tmp                 Insert if you want to keep temporary files (default:
+                        False)
+```
+This means that after you map your dataset the preprocessing can be done giving just the project name. If you inser the flag *--tmp* you can keep in memory temporary file needed for processing purpose.
 
 
 
