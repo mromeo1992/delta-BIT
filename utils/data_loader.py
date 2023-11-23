@@ -80,7 +80,7 @@ class Talamo_test(keras.utils.Sequence):
         self.box=box
     
     def __len__(self):
-        return len(self.target_img_paths)//self.batch_size
+        return len(self.input_img_paths)//self.batch_size
     
 
     def __getitem__(self, idx):
