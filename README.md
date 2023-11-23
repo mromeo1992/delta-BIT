@@ -5,3 +5,6 @@ copy DELTA-BIT in your computer and insert its path in the .bashrc file. Suppose
 >printf "\n%s\n" "export DELTA_BIT=path/to/DELTA-BIT" >> ~/.bashrc
 
 >source ~/.bashrc
+
+## Preprocessing Pipeline
+To see the usar manual of the preprocessing pipeline for testing click [here](test_pipeline/preprocessing/README.md).
