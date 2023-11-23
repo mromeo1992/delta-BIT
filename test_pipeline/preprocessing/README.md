@@ -83,7 +83,7 @@ Flags' explaination:
 * -n, --name, require to insert a project name, in this way all successive pipelines can be called throught this name.
 * -m, --models, here you insert the models you want to use for predictions. Models have been saved in the [trained models directory](../../trained_models) to be read. You can download pretrained models and saving in the correct folder throught the commands:
 
-  >cd $DELTA-BIT (DELTA-BIT directory)
+  >cd $DELTA-BIT
 
   >mkdir trained_models && cd trained_models
 
