@@ -71,10 +71,11 @@ class Talamo_train(keras.utils.Sequence):
         return x, y
     
 class Talamo_test(keras.utils.Sequence):
-    def __init__(self, batch_size,img_size,input_img_pahts,num_input, box):
+    def __init__(self, batch_size,img_size,input_img_pahts, subjects,num_input, box):
         self.batch_size=batch_size
         self.img_size=img_size
         self.input_img_paths=input_img_pahts
+        self.subjects=subjects
         self.num_input=num_input
         self.box=box
     
@@ -132,13 +133,20 @@ def data_generator_train(input_train_dir,target_train_dir,img_size,batch_size, n
     return train_gen, val_gen
 
 
-def data_generator_test(json_object,num_input,batch_size=1,box_path='./cropping_border_default.npz'):
+def data_generator_test_T1(json_object,num_input,batch_size=1,box_path='./cropping_border_default.npz'):
 
     box=get_box(box_path)
     img_size=(box['x_max']-box['x_min'],box['y_max']-box['y_min'],box['z_max']-box['z_min'])
 
-    print('Number of samples:', len(input_img_pahts))
+    dataset=json_object['processed files']['dataset']
+    input_img_paths=[]
+    subjects=dataset.keys()
+    for sub in subjects:
+        input_img_paths.append(dataset[sub]['T1 image'])
+
+
+    print('Number of samples:', len(input_img_paths))
         
-    test_gen=Talamo_test(batch_size,img_size,input_img_pahts,num_input,box)
+    test_gen=Talamo_test(batch_size,img_size,input_img_paths, subjects,num_input,box)
     
     return test_gen
