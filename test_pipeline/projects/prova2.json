@@ -1,0 +1,251 @@
+{
+   "inputs": {
+      "name": "prova2",
+      "models": "pretrained",
+      "data_type": "nii.gz",
+      "dataset_directory": "/home/pcuser1/Desktop/script_mattia/dataset_nativo",
+      "T1_path": "T1.nii.gz",
+      "dwi_path": "DATA.nii.gz",
+      "bvecs": "DATA.bvec",
+      "bvals": "DATA.bval",
+      "registration": true,
+      "output_dir": "/home/pcuser1/Desktop/DELTA-BIT/prova2",
+      "project_file": "/home/pcuser1/Desktop/DELTA-BIT/test_pipeline/projects/prova2.json",
+      "preprocessing_dir": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing",
+      "steps": [
+         "Initialising",
+         "Preprocessing DWI e DTI fit",
+         "Registration"
+      ],
+      "Number of subject": 22,
+      "reg_dir": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered"
+   },
+   "input files": {
+      "dataset": {
+         "Subject073": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject073/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject073/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject073/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject073/DATA.bval"
+         },
+         "Subject074": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject074/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject074/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject074/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject074/DATA.bval"
+         },
+         "Subject075": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject075/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject075/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject075/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject075/DATA.bval"
+         },
+         "Subject077": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject077/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject077/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject077/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject077/DATA.bval"
+         },
+         "Subject078": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject078/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject078/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject078/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject078/DATA.bval"
+         },
+         "Subject081": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject081/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject081/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject081/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject081/DATA.bval"
+         },
+         "Subject082": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject082/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject082/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject082/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject082/DATA.bval"
+         },
+         "Subject083": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject083/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject083/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject083/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject083/DATA.bval"
+         },
+         "Subject084": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject084/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject084/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject084/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject084/DATA.bval"
+         },
+         "Subject087": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject087/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject087/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject087/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject087/DATA.bval"
+         },
+         "Subject089": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject089/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject089/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject089/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject089/DATA.bval"
+         },
+         "Subject090": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject090/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject090/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject090/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject090/DATA.bval"
+         },
+         "Subject091": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject091/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject091/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject091/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject091/DATA.bval"
+         },
+         "Subject092": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject092/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject092/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject092/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject092/DATA.bval"
+         },
+         "Subject093": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject093/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject093/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject093/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject093/DATA.bval"
+         },
+         "Subject100": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject100/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject100/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject100/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject100/DATA.bval"
+         },
+         "Subject102": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject102/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject102/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject102/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject102/DATA.bval"
+         },
+         "Subject103": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject103/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject103/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject103/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject103/DATA.bval"
+         },
+         "Subject105": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject105/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject105/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject105/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject105/DATA.bval"
+         },
+         "Subject106": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject106/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject106/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject106/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject106/DATA.bval"
+         },
+         "Subject108": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject108/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject108/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject108/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject108/DATA.bval"
+         },
+         "Subject109": {
+            "T1 image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject109/T1.nii.gz",
+            "DWI image": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject109/DATA.nii.gz",
+            "bvecs file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject109/DATA.bvec",
+            "bvals file": "/home/pcuser1/Desktop/script_mattia/dataset_nativo/Subject109/DATA.bval"
+         }
+      }
+   },
+   "processed files": {
+      "dataset": {
+         "Subject073": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject073/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject073"
+         },
+         "Subject074": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject074/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject074"
+         },
+         "Subject075": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject075/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject075"
+         },
+         "Subject077": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject077/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject077"
+         },
+         "Subject078": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject078/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject078"
+         },
+         "Subject081": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject081/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject081"
+         },
+         "Subject082": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject082/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject082"
+         },
+         "Subject083": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject083/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject083"
+         },
+         "Subject084": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject084/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject084"
+         },
+         "Subject087": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject087/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject087"
+         },
+         "Subject089": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject089/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject089"
+         },
+         "Subject090": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject090/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject090"
+         },
+         "Subject091": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject091/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject091"
+         },
+         "Subject092": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject092/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject092"
+         },
+         "Subject093": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject093/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject093"
+         },
+         "Subject100": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject100/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject100"
+         },
+         "Subject102": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject102/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject102"
+         },
+         "Subject103": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject103/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject103"
+         },
+         "Subject105": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject105/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject105"
+         },
+         "Subject106": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject106/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject106"
+         },
+         "Subject108": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject108/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject108"
+         },
+         "Subject109": {
+            "T1 image": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject109/T1.nii.gz",
+            "DTI fold": "/home/pcuser1/Desktop/DELTA-BIT/prova2/preprocessing/registered/Subject109"
+         }
+      }
+   }
+}
