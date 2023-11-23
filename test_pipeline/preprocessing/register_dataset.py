@@ -16,7 +16,7 @@ def reg_T1_to_mni(T1, template,script, out_dir):
     os.system(cmd)
     print('\n\nT1 registration done\n\n')
 
-def reg_dwi(dti_fold, T1, T1_reg, out_dir):
+def reg_dti(dti_fold, T1, T1_reg, out_dir):
     print('\n\nStart DTI registration\n\n')
     tmp_fold=os.path.join(out_dir,'tmp')
     dti_images=sorted([fil for fil in os.listdir(dti_fold)])
@@ -43,7 +43,6 @@ def reg_dwi(dti_fold, T1, T1_reg, out_dir):
         cmd='flirt -init '+tmp_fold+'/dwi2mni.mat -in '+in_im+' -ref '+T1_reg+' -out '+out_im+' -applyxfm -v'
         print(cmd)
         os.system(cmd)
-    
     print('\n\nDTI registration done\n\n')
 
 def loop(dataset_file,template, tmp):
@@ -72,7 +71,7 @@ def loop(dataset_file,template, tmp):
         os.mkdir(out_dir)
         reg_T1_to_mni(T1, template,script,out_dir)
         T1_reg=os.path.join(out_dir, 'T1.nii.gz')
-        reg_dwi(dti,T1,T1_reg,out_dir)
+        reg_dti(dti,T1,T1_reg,out_dir)
         dti_reg_fold=out_dir
         output_dataset.append([subject,T1_reg, dti_reg_fold])
         if tmp==False:
