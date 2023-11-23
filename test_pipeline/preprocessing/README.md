@@ -98,7 +98,7 @@ Flags' explaination:
 * --dwi_path insert here DWI images' relative paths in accordance with the [dataset structure](#dataset-structure).
 * --bvecs, insert here relative path to bvecs file.
 * --bvals, insert here relative path to bvecs file.
-* --registration, in general T1 and DWI images stay in different space, in order to make predictions DWI images must be registered on T1 space (look at the [below section](#register-dataset-on-mni152-1mm)). In some case it can happen that images have already been registered, if it is your case insert this flag to skip registration step.
+* --registration, in general T1 and DWI images stay in different space, in order to make predictions DWI images must be registered on T1 space (look at the [below section](#register-dataset-on-mni152)). In some case it can happen that images have already been registered, if it is your case insert this flag to skip registration step.
 * -o, --output_dir, insewr here the output folder where all outputs will be saved on. Default: $HOME/project_name.
 
 ### example
