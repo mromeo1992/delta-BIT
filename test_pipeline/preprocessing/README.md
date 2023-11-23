@@ -146,7 +146,7 @@ Project output folder
 In addiction you need to map your processed data in the json file. We suggest to try a normal preprocessing and then try to modify the preprocessing step.
 
 ### Usage
-Typing the command on the terminal
+Typing on the terminal the command
 ```
 python preprocessing_dwi.py -h
 ```
@@ -167,6 +167,49 @@ This means that after you map your dataset the preprocessing can be done giving 
 
 
 
-## Register dataset on MNI152 1mm
+## Register dataset on MNI152
 
-The networks has been trained to work on a small portion of the image whichs is called bounding box. This box was evaluated through statistical analysis performed on the [MNI152 1mm](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Atlases) space, where all images have same reference system. So, in order to cut the correct box it is necessary first register your native T1 on the standard, and then apply a 2 step registration for your DWI images.
+The networks has been trained to work on a small portion of the image which is called bounding box. This box was evaluated through statistical analysis performed on the [MNI152 1mm space](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Atlases), where all images have same reference system. So, in order to cut the correct box it is necessary first register your native T1 on the standard, and then apply a 2 step registration for your DTI images. In addiction, since neurologists prefer having image in ACPC alignment [[1](#1)-[2](#2)], an extra spatial trasformation is applied during T1 registration. \
+T1 registration is performed using the [ACPC Alignment script](https://github.com/Washington-University/HCPpipelines/blob/master/PreFreeSurfer/scripts/ACPCAlignment.sh) taken by the [HCP pipeline](https://github.com/Washington-University/HCPpipelines) of the University of Washington. At the end of this registration a trasformation matrix is saved for DTI image registration. \
+DTI registration is more coplicated than that performed on T1 images.In general, this is because DWI (and therefore DTI) images usually have a lower resolution. Furthermore, the T1 image is not preprocessed, it does not have a normalized gray level distribution, so normal registration pipelines as [flirt](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FLIRT) cannot find the correct transformation in one step. Our registration pipeline works following the below steps:
+* 2D registration of the FA image on the T1 native image (slice by slice);
+* 3D registration above result on the T1 native image;
+* concatenation of the above transformations and the T1 to standard registration;
+* application of the resulting trasformation matrix to FA and other DTI images.
+
+This pipeline has been developed taking inspiration from [FSL/FLIR/FAQ](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FLIRT/FAQ), in particular looking at [How do I do 2D (or limited DOF) registration with FLIRT?](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FLIRT/FAQ#How_do_I_do_2D_.28or_limited_DOF.29_registration_with_FLIRT.3F) and [How do I do a two-stage registration using the command line?](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FLIRT/FAQ#How_do_I_do_a_two-stage_registration_using_the_command_line.3F).
+
+
+### Usage
+
+Typing on the terminal the command:
+```
+python register_dataset.py -h
+```
+it will output
+
+```
+usage: register_dataset.py [-h] -n NAME
+                           [-t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}]
+                           [--tmp]
+
+With this script you can register your dataset.The minimum requirements
+dataset json file produced by write_json.py and DWI preprocessing.
+
+options:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Project's name (default: None)
+  -t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}, --template {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}
+                        choose a template for registration (for testing
+                        pretrained models only MNI152_T1_1mm.nii.gz) (default:
+                        MNI152_T1_1mm.nii.gz)
+  --tmp                 Insert this flag if you want to keep temporary files
+                        (default: False)
+```
+In the same way as [preprocessing DWI images](#preprocess-dwi-images) you just need to specify the name of the initialised project.
+
+
+
+## References
+<a id="1">[1]</a> J. Talairach and P. Tournoux, "Co-planar Stereotaxic Atlas of the Human Brain: 3-Dimensional Proportional System - an Approach to Cerebral Imaging", Thieme Medical Publishers, New York, NY, 1988. \
+<a id="2">[2]</a> H.M. Duvernoy, "The Human Brain: Surface, Blood Supply, and Three Dimensional Sectional Anatomy", second edition, Springer, Vienna, 1999.

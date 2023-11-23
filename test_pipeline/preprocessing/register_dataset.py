@@ -46,7 +46,7 @@ def reg_dwi(dti_fold, T1, T1_reg, out_dir):
     
     print('\n\nDTI registration done\n\n')
 
-def loop(dataset_file,template):
+def loop(dataset_file,template, tmp):
     "Loop for image registration"
 
     print('\n\nBegin loop for image registration\n\n')
@@ -75,6 +75,11 @@ def loop(dataset_file,template):
         reg_dwi(dti,T1,T1_reg,out_dir)
         dti_reg_fold=out_dir
         output_dataset.append([subject,T1_reg, dti_reg_fold])
+        if tmp==False:
+            tmp_fold=os.path.join(out_dir, 'tmp')
+            cmd='rm -r '+tmp_fold
+            print(cmd)
+            os.system(cmd)
 
         print('\n\nSubject: '+subject+' completed\n\n')
     
@@ -105,11 +110,12 @@ acpc_script=os.path.abspath(os.path.expandvars('$DELTA_BIT/utils/ACPCalignment.s
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description="With this script you can register your dataset."+
-                                    "The minimum requirements dataset json file produced by write_json.py.",
+                                    "The minimum requirements dataset json file produced by write_json.py and DWI preprocessing.",
 
                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-n", "--name", help="Project's name", required=True)
     parser.add_argument("-t", "--template", choices=templates, help="choose a template for registration (for testing pretrained models only MNI152_T1_1mm.nii.gz)", default="MNI152_T1_1mm.nii.gz")
+    parser.add_argument("--tmp", action='store_true', help="Insert this flag if you want to keep temporary files")
     
 
 
@@ -118,11 +124,13 @@ if __name__=='__main__':
 
     config = vars(args)
 
+    #getting the project
     name=config['name']
     json_path=get_initialised_project(name)
     print('Json file found in: '+json_path)
     json_object=reading_json(json_path)
     
+    #getting template
     template=os.path.join(os.environ['DELTA_BIT'],'utils/templates',config['template'])
 
     #out directory
@@ -131,9 +139,14 @@ if __name__=='__main__':
     if os.path.exists(out_dir):
         os.system('rm -r '+out_dir)
     os.mkdir(out_dir)
+
+    #temporary files
+    tmp=config['tmp']
+    if tmp==None:
+        tmp=False
    
     #loop for registration
-    loop(json_object,template)
+    loop(json_object,template,tmp)
 
 
     jsonfile=os.path.join(json_object['inputs']['output_dir'],'dataset.json')
