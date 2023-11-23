@@ -1,4 +1,5 @@
 #ingore everythings here
-*.
+*
+pretrained/
 #except
 !.gitignore
