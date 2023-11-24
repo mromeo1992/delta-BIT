@@ -58,7 +58,7 @@ class Talamo_train(keras.utils.Sequence):
                 x[j]=np.expand_dims(img,3)
         else:
             for j, path in enumerate(batch_input_img_paths):
-                img=process_scann(path, self.box) 
+                img=process_scann(path, self.box)
                 x[j,:,:,:,:]=img
         y=np.zeros((self.batch_size,)+self.img_size+(1,))
         for j, path in enumerate(batch_taeget_img_paths):
@@ -95,8 +95,26 @@ class Talamo_test(keras.utils.Sequence):
             for j, path in enumerate(batch_input_img_paths):
                 img=process_scann(path, self.box)
                 x[j,:,:,:,:]=img
+        
         return x
+    
+    def get_header(self, idx):
+        i=idx*self.batch_size
+        batch_input_img_paths=self.input_img_paths[i:i+self.batch_size]
+        head=[]
+        for path in batch_input_img_paths:
+            head.append(nib.load(path).header)
+        
+        return head
 
+    def get_affine(self, idx):
+        i=idx*self.batch_size
+        batch_input_img_paths=self.input_img_paths[i:i+self.batch_size]
+        affine=[]
+        for  path in batch_input_img_paths:
+            affine.append(nib.load(path).affine)
+        
+        return affine
     
 def data_generator_train(input_train_dir,target_train_dir,img_size,batch_size, num_input, val_size, box_path='./cropping_border_default.npz'):
     box=get_box(box_path)
