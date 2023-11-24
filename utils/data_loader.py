@@ -73,10 +73,11 @@ class Talamo_train(keras.utils.Sequence):
         return x, y
     
 class Talamo_test(keras.utils.Sequence):
-    def __init__(self, batch_size,img_size,input_img_pahts, subjects,num_input, box):
+    def __init__(self, batch_size,img_size,input_img_pahts,header_paths ,subjects,num_input, box):
         self.batch_size=batch_size
         self.img_size=img_size
         self.input_img_paths=input_img_pahts
+        self.header_paths=header_paths
         self.subjects=subjects
         self.num_input=num_input
         self.box=box
@@ -102,7 +103,7 @@ class Talamo_test(keras.utils.Sequence):
     
     def get_header(self, idx):
         i=idx*self.batch_size
-        batch_input_img_paths=self.input_img_paths[i:i+self.batch_size]
+        batch_input_img_paths=self.header_paths[i:i+self.batch_size]
         head=[]
         for path in batch_input_img_paths:
             head.append(nib.load(path).header)
@@ -111,7 +112,7 @@ class Talamo_test(keras.utils.Sequence):
 
     def get_affine(self, idx):
         i=idx*self.batch_size
-        batch_input_img_paths=self.input_img_paths[i:i+self.batch_size]
+        batch_input_img_paths=self.header_paths[i:i+self.batch_size]
         affine=[]
         for  path in batch_input_img_paths:
             affine.append(nib.load(path).affine)
@@ -167,6 +168,26 @@ def data_generator_test_T1(json_object,batch_size=1,box_path=default_box):
 
     print('Number of samples:', len(input_img_paths))
         
-    test_gen=Talamo_test(batch_size,img_size,input_img_paths, subjects,1,box)
+    test_gen=Talamo_test(batch_size,img_size,input_img_paths,input_img_paths, subjects,1,box)
+    
+    return test_gen
+
+
+def data_gnerator_test_trac(json_object,batch_size=1,box_path=default_box):
+    box=get_box(box_path)
+    img_size=(box['x_max']-box['x_min'],box['y_max']-box['y_min'],box['z_max']-box['z_min'])
+
+    dataset=json_object['processed files']['dataset']
+    input_img_paths=[]
+    header_paths=[]
+    subjects=list(dataset.keys())
+    for sub in subjects:
+        input_img_paths.append(dataset[sub]['T1 image'])#?
+        header_paths.append(dataset[sub]['T1 image'])
+
+
+    print('Number of samples:', len(input_img_paths))
+        
+    test_gen=Talamo_test(batch_size,img_size,input_img_paths,header_paths ,subjects,1,box)
     
     return test_gen
