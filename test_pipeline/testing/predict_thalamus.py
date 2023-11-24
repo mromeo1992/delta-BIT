@@ -38,7 +38,7 @@ def predict_thalamus(dataset_file):
     print('\n\nSaving predictions in: '+output_dir+'\n\n')
     for i in range(len(predictions)):
         pred=predictions[i].reshape(img_size)
-        pred=pred>0.5
+        pred=pred > 0.5
         pred=pred.astype('uint8')
         to_save=np.zeros(header(i)[0]['dim'][1:4])
         to_save[x_min:x_max,y_min:y_max,z_min:z_max]=pred
