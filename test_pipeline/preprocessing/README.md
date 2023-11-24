@@ -87,7 +87,7 @@ Flags' explaination:
 
   >mkdir trained_models && cd trained_models
 
-  >wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/ET3xdngqj6VEt8LEvOud-mUBfe-pIHIO6dpGevT-ZE349A?download=1
+  >wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/Ea9L1kLoDpJIsCSwe795QpABF19uJiJ95GOnWygwHOaIVA?download=1
 
   >unzip trained_models.zip -d pretrained
 

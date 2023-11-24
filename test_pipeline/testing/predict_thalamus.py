@@ -9,8 +9,10 @@ from utils.json_menaging import reading_json, get_initialised_project
 from test_pipeline.preprocessing.write_json import write_json
 from utils.data_loader import data_generator_test_T1
 
-def predict_thalamus(dataset_file, output_dir, model):
+def predict_thalamus(dataset_file):
+
     test_gen=data_generator_test_T1(dataset_file)
+    model=os.path.join(os.environ['DELTA_BIT'], dataset_file['inputs']['models'], 'thalamus.h5')
     model=keras.models.load_model(model, compile=False)
     predictions=model.predict(test_gen)
 
@@ -35,11 +37,9 @@ if __name__=='__main__':
     name=config['name']
     json_object=get_initialised_project(name)
     json_object=reading_json(json_object)
-
-    model=os.path.join(os.environ['DELTA_BIT'], json_object['inputs'], 'thalamus.h5')
-
     output_dir=json_object['inputs']['output_dir']
     output_dir=os.path.join(output_dir,'thalamus_prediction')
     if os.path.exists(output_dir):
         os.system('rm -r '+output_dir)
     os.mkdir(output_dir)
+    json_object['inputs']['thalamus prediction']=output_dir
