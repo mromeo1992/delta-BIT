@@ -4,7 +4,9 @@ import numpy as np
 import nibabel as nib
 import keras
 import os
-from data_augmentation import random_data_augmentation
+from utils.data_augmentation import random_data_augmentation
+default_box=os.path.join(os.environ['DELTA_BIT'],'utils/cropping_border_default.npz')
+
 
 def get_box(file_path):
     box=np.load(file_path)
@@ -116,7 +118,7 @@ class Talamo_test(keras.utils.Sequence):
         
         return affine
     
-def data_generator_train(input_train_dir,target_train_dir,img_size,batch_size, num_input, val_size, box_path='./cropping_border_default.npz'):
+def data_generator_train(input_train_dir,target_train_dir,img_size,batch_size, num_input, val_size, box_path=default_box):
     box=get_box(box_path)
 
     input_img_pahts=sorted(
@@ -151,7 +153,7 @@ def data_generator_train(input_train_dir,target_train_dir,img_size,batch_size, n
     return train_gen, val_gen
 
 
-def data_generator_test_T1(json_object,batch_size=1,box_path='./cropping_border_default.npz'):
+def data_generator_test_T1(json_object,batch_size=1,box_path=default_box):
 
     box=get_box(box_path)
     img_size=(box['x_max']-box['x_min'],box['y_max']-box['y_min'],box['z_max']-box['z_min'])
