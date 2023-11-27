@@ -1,10 +1,20 @@
 # DELTA-BIT
 
-## Installing
+## System preparation
+We strongly recommend that you install delta-BIT in a virtual environment! Pip or anaconda are both fine. Python version 3.9.13 will work for sure.
+
+1) Create a new enviroment 
+    >conda create delta-BIT python==3.9.13
+2) Tensorflow installation. If you want to use pretrained models we strongly recomand to use the same version of thensorflow we used, tensorflow==2.10.0.
+    >
+ (for more details look at [tensorflow web site](https://www.tensorflow.org/install))
+
+## Downloading
+
 Clone the repository with
 >git clone https://github.com/mromeo1992/delta-BIT.git
 
-Instalation
+Setting delta-BIT's folder as system variable (required for syste,)
 
 >cd delta-BIT
 
@@ -28,6 +38,7 @@ You can download pretrained models and saving in the correct folder throught the
   >unzip trained_models.zip -d pretrained
 
   >rm trained_models.zip
+
 
 ## Preprocessing Pipeline
 To see the usar manual of the preprocessing pipeline for testing click [here](test_pipeline/preprocessing/README.md).
