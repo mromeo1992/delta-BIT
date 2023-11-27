@@ -94,8 +94,8 @@ Flags' explaination:
   >rm trained_models.zip
 * --data_type, here you can insert the output format you want to use. Available format are: nii, nii.gz, mgz. Default is nii.gz.
 * -dir, --dataset_directory, here you insert the main fold of your dataset (look at [dataset structure](#dataset-structure)).
-* --T1_path insert here T1 images' relative paths in accordance with the [dataset structure](#dataset-structure).
-* --dwi_path insert here DWI images' relative paths in accordance with the [dataset structure](#dataset-structure).
+* --T1_path insert here T1 images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure).
+* --dwi_path insert here DWI images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure).
 * --bvecs, insert here relative path to bvecs file.
 * --bvals, insert here relative path to bvecs file.
 * --registration, in general T1 and DWI images stay in different space, in order to make predictions DWI images must be registered on T1 space (look at the [below section](#register-dataset-on-mni152)). In some case it can happen that images have already been registered, if it is your case insert this flag to skip registration step.
