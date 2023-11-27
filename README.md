@@ -3,11 +3,15 @@
 ## System preparation
 We strongly recommend that you install delta-BIT in a virtual environment! Pip or anaconda are both fine. Python version 3.9.13 will work for sure.
 
-1) Create a new enviroment 
-    >conda create delta-BIT python==3.9.13
+1) Create a new enviroment and activate it
+    >conda create -n delta-BIT python==3.9.13
+    
+    >conda activate delta-BIT
 2) Tensorflow installation. If you want to use pretrained models we strongly recomand to use the same version of thensorflow we used, tensorflow==2.10.0.
-    >
- (for more details look at [tensorflow web site](https://www.tensorflow.org/install))
+
+    >pip install tensorflow==2.10.0
+ 
+    for more tensorflow installation details look at [tensorflow web site](https://www.tensorflow.org/install).
 
 ## Downloading
 
