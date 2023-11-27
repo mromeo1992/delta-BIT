@@ -8,3 +8,5 @@ copy DELTA-BIT in your computer and insert its path in the .bashrc file. Suppose
 
 ## Preprocessing Pipeline
 To see the usar manual of the preprocessing pipeline for testing click [here](test_pipeline/preprocessing/README.md).
+## Testing Pipeline
+To see the usar manual of the testing pipeline for testing click [here](test_pipeline/testing/README.md).
