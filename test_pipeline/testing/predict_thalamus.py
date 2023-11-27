@@ -5,7 +5,7 @@ import argparse
 import numpy as np
 import nibabel as nib
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../"))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ['DELTA_BIT']))
 
 from utils.json_menaging import reading_json, get_initialised_project
 from test_pipeline.preprocessing.write_json import write_json
@@ -39,7 +39,7 @@ def predict_thalamus(dataset_file):
     for i in range(len(predictions)):
         pred=predictions[i].reshape(img_size)
         pred=pred > 0.5
-        pred=pred.astype('uint8')
+        pred=pred.astype('uint16')
         to_save=np.zeros(header(i)[0]['dim'][1:4])
         to_save[x_min:x_max,y_min:y_max,z_min:z_max]=pred
         to_save=nib.Nifti1Image(to_save,affine=affine(i)[0],header=header(i)[0])

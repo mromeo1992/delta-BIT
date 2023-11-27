@@ -4,6 +4,9 @@ import numpy as np
 import nibabel as nib
 import keras
 import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ['DELTA_BIT']))
 from utils.data_augmentation import random_data_augmentation
 default_box=os.path.join(os.environ['DELTA_BIT'],'utils/cropping_border_default.npz')
 
