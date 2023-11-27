@@ -42,7 +42,8 @@ def predict_thalamus(dataset_file):
         pred=pred.astype('uint16')
         to_save=np.zeros(header(i)[0]['dim'][1:4])
         to_save[x_min:x_max,y_min:y_max,z_min:z_max]=pred
-        to_save=nib.Nifti1Image(to_save,affine=affine(i)[0],header=header(i)[0])
+        to_save=nib.Nifti1Image(to_save,affine=affine(i)[0], header=header(i)[0])
+        to_save.set_data_dtype('uint8')
         out_file=os.path.join(output_dir,subjects[i]+'.nii.gz')
         output_dataset.append([subjects[i], out_file])
         nib.save(to_save,out_file)
