@@ -65,3 +65,63 @@ Flags' explaination:
 * --T1_path insert here T1 images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure). By default the program will assume that T1 image's name is "T1.nii.gz" and it is located inside the subject's folder.
 * --registration, in general T1 is not registered on the [standard](../../utils/templates/MNI152_T1_1mm.nii.gz) so it is necessary to do it before predict thalamus mask. In some case it can happen that images have already been registered, if it is your case insert this flag to skip registration step.
 * -o, --output_dir, insewr here the output folder where all outputs will be saved on. Default: $HOME/project_name.
+
+
+## Thalamus prediction
+
+If you are following the full prediction work flow, before you get tractography prediction you need the binary mask of the thalamus of the left hemisphere. In order to get thalamus mask we implemented a pipeline which can use pretrained or own (after a training) models. You can use this script only if you have done the preprocessing pipeline and you make the dataset json file (otherwise, if you only want to predict thalamus binary mask you can use the [only thalamus prediction pipeline](#only-thalamus-prediction)). In particular, you need to initialise your project and preprocess your data (look at [Preprocessing pipelin](../preprocessing/README.md) for major details). \
+Once your data have been preprocessed, the pipeline uses the [data_loader](../../utils/data_loader.py) script to load, cut and pack images and then predict the binary mask using the selected model and save the output using affine and header information taken from the T1 images. The results are binary masks which can be overlaped to the T1 image and give shape to the thalamus of the left hemisphere. \
+The pretrained models work in a small portion of the image, the bounding box. A default box is defined for pretrained models, if you want to use an own box you can specify in this script its location. \
+The bounding box file is a npz file and contains the array coordinates. The keywords of the npz file are: 'x_min', 'x_max', y_min', y_max', 'z_min' and 'z_max'.
+
+### Usage
+Typing on the terminal the command
+
+```
+python $DELTA_BIT/test_pipeline/testing/predict_thalamus.py -h
+```
+
+it will output
+
+```
+usage: predict_thalamus.py [-h] -n NAME [--box BOX]
+
+With this script you can predict thalamus mask.The minimum requirements
+dataset json file produced by write_json.py, DWI preprocessing and
+registration.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Project's name (default: None)
+  --box BOX             If you want to use another bounding box insert here
+                        the path of the file (default: default)
+```
+
+So, if you are working with the default box, the only parameter you need to specify is the project's name.
+
+## Make network input
+Before predict tractography you need to pack all processed data in a specific tensor structure, a 4D image whose volumes are:
+- the binary mask of the thalamus;
+- the FA image;
+- the 9 images obtained by multipling the eigenvectors of the difusion tensor for their eigenvalues (3 vectors of dimension 3, $3\times3=9$ volumes ).
+
+The script outputs a dataset, of size of the lenght of the dataset, of 4D images of size $38\times60\times48\times11$.
+
+### Usage
+Typing on the terminal the command
+
+```
+python $DELTA_BIT/test_pipeline/testing/make_net_input.py -h
+```
+
+it will output
+```
+usage: make_net_input.py [-h] -n NAME
+
+With this script you can cut your dataset.The minimum requirements dataset
+json file produced by write_json.py, DWI preprocessing and registration.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Project's name (default: None)
+```
