@@ -8,7 +8,7 @@ In this pipeline are contained all files for thalamus and tractography predictio
 Anyway, we implemeted a pipeline for [only thalamus prediction](./only_thalamus_prediction.py) which needs only T1 files' location to work.
 
 ## Only thalamus prediction
-This pipeline permit to get the binary mask of the thalamus of the left hemispere. It can work using pretrained models or your own model (after you perform a training). It is indipendent of the full prediction work flow and the [preprocessing pipeline](../preprocessing/). It requires just a dataset of T1 images which respects the [dataset structure](../preprocessing/README.md#dataset-structure) **without DWI files**. If your data are already registered on the [MNI152_1mm template](../../utils/templates/MNI152_T1_1mm.nii.gz) you can directly predict binary masks just using the --registration flag, otherwise the pipeline performe automatically the regitration on the standard.
+This pipeline permit to get the binary mask of the thalamus of the left hemispere. It can work using pretrained models or your own model (after you perform a training). It is indipendent of the full prediction work flow and the [preprocessing pipeline](../preprocessing/). It requires just a dataset of T1 images which respects the [dataset structure](../preprocessing/README.md#dataset-structure) **without DWI files**. If your data are already registered on the [MNI152_1mm template](../../utils/templates/MNI152_T1_1mm.nii.gz) you can directly predict binary masks just using the --registration flag, otherwise the pipeline will performe automatically the regitration on the standard.
 
 ### Usage
 
