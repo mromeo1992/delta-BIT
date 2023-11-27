@@ -49,3 +49,19 @@ optional arguments:
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
                         output_directory (default: /home/pcuser1/project_name)
 ```
+Flags' explaination:
+* -n, --name, require to insert a project name, in this way all successive pipelines can be called throught this name.
+* -m, --models, here you insert the models you want to use for predictions. Models have been saved in the [trained models directory](../../trained_models) to be read. You can download pretrained models and saving in the correct folder throught the commands:
+
+  >cd $DELTA_BIT/trained_models
+
+  >wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/Ea9L1kLoDpJIsCSwe795QpABF19uJiJ95GOnWygwHOaIVA?download=1
+
+  >unzip trained_models.zip -d pretrained
+
+  >rm trained_models.zip
+* --data_type, here you can insert the output format you want to use. Available format are: nii, nii.gz, mgz. Default is nii.gz.
+* -dir, --dataset_directory, here you insert the main fold of your dataset (look at [dataset structure](#dataset-structure)).
+* --T1_path insert here T1 images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure). By default the program will assume that T1 image's name is "T1.nii.gz" and it is located inside the subject's folder.
+* --registration, in general T1 is not registered on the [standard](../../utils/templates/MNI152_T1_1mm.nii.gz) so it is necessary to do it before predict thalamus mask. In some case it can happen that images have already been registered, if it is your case insert this flag to skip registration step.
+* -o, --output_dir, insewr here the output folder where all outputs will be saved on. Default: $HOME/project_name.
