@@ -129,7 +129,7 @@ home=os.environ['HOME']
 model_dir=os.path.abspath(os.path.join(os.environ['DELTA_BIT'], 'trained_models'))
 models=sorted([mod for mod in os.listdir(model_dir)
                    if os.path.isdir(os.path.join(model_dir,mod))])
-json_out_folder=os.path.abspath(os.path.join('../','projects'))
+json_out_folder=os.path.abspath(os.path.join(os.environ['DELTA_BIT'],'test_pipeline','projects'))
 
 if __name__=='__main__':
     parser = argparse.ArgumentParser(description="With this script you can create the dataset json file for your own dataset."+
@@ -140,10 +140,10 @@ if __name__=='__main__':
     parser.add_argument("-m","--models",choices=models, help="Insert here the name of the models you want to use",default='pretrained')
     parser.add_argument("--data_type", help="Insert here the extention of the disired output data: possibility nii, nii.gz, mgz",default='nii.gz')
     parser.add_argument("-dir", "--dataset_directory", help="indicate here your main folder which cointains your dataset", required=True)
-    parser.add_argument("--T1_path", help="indicate here the T1 image's relative pathname (starting from the subject's folder)", required=True)    
-    parser.add_argument("--dwi_path", help="indicate here the DWI image's relative pathname (starting from the subject's folder)", required=True)
-    parser.add_argument("--bvecs", help="indicate here the bvecs's relative pathname (starting from the subject's folder)", required=True)
-    parser.add_argument("--bvals", help="indicate here the bvals's relative pathname (starting from the subject's folder)", required=True)
+    parser.add_argument("--T1_path", help="indicate here the T1 image's relative pathname (starting from the subject's folder)", default='T1.nii.gz')    
+    parser.add_argument("--dwi_path", help="indicate here the DWI image's relative pathname (starting from the subject's folder)", default='DWI.nii.gz')
+    parser.add_argument("--bvecs", help="indicate here the bvecs's relative pathname (starting from the subject's folder)", default='DWI.bvec')
+    parser.add_argument("--bvals", help="indicate here the bvals's relative pathname (starting from the subject's folder)", default='DWI.bval')
     parser.add_argument("--registration",action="store_true", help="Inser if you data have already been registered on a standard template")
     parser.add_argument("-o", "--output_dir", help="output_directory",default=home+"/project_name")
 

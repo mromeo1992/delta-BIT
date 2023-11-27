@@ -47,9 +47,9 @@ will output
 
 ```
 usage: write_json.py [-h] -n NAME [-m {pretrained}] [--data_type DATA_TYPE]
-                     -dir DATASET_DIRECTORY --T1_path T1_PATH --dwi_path
-                     DWI_PATH --bvecs BVECS --bvals BVALS [--registration]
-                     [-o OUTPUT_DIR]
+                     -dir DATASET_DIRECTORY [--T1_path T1_PATH]
+                     [--dwi_path DWI_PATH] [--bvecs BVECS] [--bvals BVALS]
+                     [--registration] [-o OUTPUT_DIR]
 
 With this script you can create the dataset json file for your own dataset.The
 minimum requirements are T1 images and DWI data placed in the standard Dataset
@@ -68,13 +68,15 @@ options:
                         indicate here your main folder which cointains your
                         dataset (default: None)
   --T1_path T1_PATH     indicate here the T1 image's relative pathname
-                        (starting from the subject's folder) (default: None)
+                        (starting from the subject's folder) (default:
+                        T1.nii.gz)
   --dwi_path DWI_PATH   indicate here the DWI image's relative pathname
-                        (starting from the subject's folder) (default: None)
+                        (starting from the subject's folder) (default:
+                        DWI.nii.gz)
   --bvecs BVECS         indicate here the bvecs's relative pathname (starting
-                        from the subject's folder) (default: None)
+                        from the subject's folder) (default: DWI.bvec)
   --bvals BVALS         indicate here the bvals's relative pathname (starting
-                        from the subject's folder) (default: None)
+                        from the subject's folder) (default: DWI.bval)
   --registration        Inser if you data have already been registered on a
                         standard template (default: False)
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
@@ -84,7 +86,7 @@ Flags' explaination:
 * -n, --name, require to insert a project name, in this way all successive pipelines can be called throught this name.
 * -m, --models, here you insert the models you want to use for predictions. Models have been saved in the [trained models directory](../../trained_models) to be read. You can download pretrained models and saving in the correct folder throught the commands:
 
-  >cd $DELTA-BIT
+  >cd $DELTA_BIT
 
   >mkdir trained_models && cd trained_models
 
@@ -95,16 +97,16 @@ Flags' explaination:
   >rm trained_models.zip
 * --data_type, here you can insert the output format you want to use. Available format are: nii, nii.gz, mgz. Default is nii.gz.
 * -dir, --dataset_directory, here you insert the main fold of your dataset (look at [dataset structure](#dataset-structure)).
-* --T1_path insert here T1 images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure).
-* --dwi_path insert here DWI images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure).
-* --bvecs, insert here relative path to bvecs file.
-* --bvals, insert here relative path to bvecs file.
+* --T1_path insert here T1 images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure). By default the program will assume that T1 image's name is "T1.nii.gz" and it is located inside the subject's folder.
+* --dwi_path insert here DWI images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure).  By default the program will assume that DWI image's name is "DWI.nii.gz" and it is located inside the subject's folder.
+* --bvecs, insert here relative path to bvecs file. By default the program will assume that the file bves' name is "DWI.bvec" and it is located inside the subject's folder.
+* --bvals, insert here relative path to bvecs file. By default the program will assume that the file bvals' name is "DWI.bval" and it is located inside the subject's folder.
 * --registration, in general T1 and DWI images stay in different space, in order to make predictions DWI images must be registered on T1 space (look at the [below section](#register-dataset-on-mni152)). In some case it can happen that images have already been registered, if it is your case insert this flag to skip registration step.
 * -o, --output_dir, insewr here the output folder where all outputs will be saved on. Default: $HOME/project_name.
 
 ### example
 ```
-python $DELTA-BIT/test_pipeline/write_json.py -n test1 -m pretrained -dir path/to/my/dataet --T1_path relative/path/to/T1.nii.gz --dwi_path relative/path/to/DATA.nii.gz --bvecs relative/path/to/bvecs --bvals relative/path/to/bvals
+python $DELTA-BIT/test_pipeline/write_json.py -n test1 -m pretrained -dir path/to/my/dataset --T1_path relative/path/to/T1.nii.gz --dwi_path relative/path/to/DATA.nii.gz --bvecs relative/path/to/bvecs --bvals relative/path/to/bvals
 ```
 
 ## Preprocess DWI images
