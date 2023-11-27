@@ -9,7 +9,13 @@ We strongly recommend that you install delta-BIT in a virtual environment! Pip o
     >conda activate delta-BIT
 2) Tensorflow installation. If you want to use pretrained models we strongly recomand to use the same version of thensorflow we used, tensorflow==2.10.0.
 
-    >pip install tensorflow==2.10.0
+    ```
+    # For GPU users
+    pip install tensorflow-gpu==2.10.0
+    
+    # For CPU users
+    pip install tensorflow==2.10.0
+    ```
  
     for more tensorflow installation details look at [tensorflow web site](https://www.tensorflow.org/install).
 
