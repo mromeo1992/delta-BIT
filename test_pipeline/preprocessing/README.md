@@ -46,9 +46,9 @@ python write_json.py -h
 will output
 
 ```
-usage: write_json.py [-h] -n NAME [-m {}] [--data_type DATA_TYPE] -dir
-                     DATASET_DIRECTORY --T1_path T1_PATH --dwi_path DWI_PATH
-                     --bvecs BVECS --bvals BVALS [--registration]
+usage: write_json.py [-h] -n NAME [-m {pretrained}] [--data_type DATA_TYPE]
+                     -dir DATASET_DIRECTORY --T1_path T1_PATH --dwi_path
+                     DWI_PATH --bvecs BVECS --bvals BVALS [--registration]
                      [-o OUTPUT_DIR]
 
 With this script you can create the dataset json file for your own dataset.The
@@ -58,7 +58,8 @@ Structure (view Preporcessing user manual).
 options:
   -h, --help            show this help message and exit
   -n NAME, --name NAME  Project's name (default: None)
-  -m {}, --models {}    Insert here the name of the models you want to use
+  -m {pretrained}, --models {pretrained}
+                        Insert here the name of the models you want to use
                         (default: pretrained)
   --data_type DATA_TYPE
                         Insert here the extention of the disired output data:
@@ -67,17 +68,17 @@ options:
                         indicate here your main folder which cointains your
                         dataset (default: None)
   --T1_path T1_PATH     indicate here the T1 image's relative pathname
-                        (default: None)
+                        (starting from the subject's folder) (default: None)
   --dwi_path DWI_PATH   indicate here the DWI image's relative pathname
-                        (default: None)
-  --bvecs BVECS         indicate here the bvecs's relative pathname (default:
-                        None)
-  --bvals BVALS         indicate here the bvals's relative pathname (default:
-                        None)
+                        (starting from the subject's folder) (default: None)
+  --bvecs BVECS         indicate here the bvecs's relative pathname (starting
+                        from the subject's folder) (default: None)
+  --bvals BVALS         indicate here the bvals's relative pathname (starting
+                        from the subject's folder) (default: None)
   --registration        Inser if you data have already been registered on a
                         standard template (default: False)
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
-                        output_directory (default: $HOME/project_name)
+                        output_directory (default: /home/pcuser1/project_name)
 ```
 Flags' explaination:
 * -n, --name, require to insert a project name, in this way all successive pipelines can be called throught this name.
