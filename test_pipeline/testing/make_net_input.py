@@ -93,12 +93,7 @@ def make_net_input(dataset_file, num_inputs=11):
 
 
 
-
-
-
-
-
-if __name__=='__main__':
+def main():
     parser = argparse.ArgumentParser(description="With this script you can cut your dataset."+
                                     "The minimum requirements dataset json file produced by write_json.py, DWI preprocessing and registration.",
 
@@ -120,4 +115,11 @@ if __name__=='__main__':
     os.mkdir(output_dir)
 
     make_net_input(json_object)
+
+
+
+
+
+if __name__=='__main__':
+    main()
 

@@ -118,7 +118,10 @@ def preprocessing_dwi(dataset_file,tmp):
     print('\n\nDONE!\n\n')
 
 
-if __name__=='__main__':
+
+
+def main():
+
     parser = argparse.ArgumentParser(description="With this script you can preprocess your  dwi files."+
                                     "The minimum requirements dataset json file produced by write_json.py.",
 
@@ -139,3 +142,7 @@ if __name__=='__main__':
     if tmp==None:
         tmp=False
     preprocessing_dwi(json_object,tmp)
+
+
+if __name__=='__main__':
+    main()

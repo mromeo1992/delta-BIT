@@ -69,9 +69,7 @@ def predict_thalamus(dataset_file):
     
 
 
-
-
-if __name__=='__main__':
+def main():
     parser = argparse.ArgumentParser(description="With this script you can predict thalamus mask."+
                                     "The minimum requirements dataset json file produced by write_json.py, DWI preprocessing and registration.",
 
@@ -103,3 +101,8 @@ if __name__=='__main__':
     json_object['inputs']['thalamus predictions']=output_dir
 
     predict_thalamus(json_object)
+
+
+
+if __name__=='__main__':
+    main()

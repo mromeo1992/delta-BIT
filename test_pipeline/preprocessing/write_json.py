@@ -131,7 +131,8 @@ models=sorted([mod for mod in os.listdir(model_dir)
                    if os.path.isdir(os.path.join(model_dir,mod))])
 json_out_folder=os.path.abspath(os.path.join(os.environ['DELTA_BIT'],'test_pipeline','projects'))
 
-if __name__=='__main__':
+
+def main():
     parser = argparse.ArgumentParser(description="With this script you can create the dataset json file for your own dataset."+
                                     "The minimum requirements are T1 images and DWI data placed in the standard Dataset Structure (view Preporcessing user manual).",
 
@@ -179,4 +180,9 @@ if __name__=='__main__':
 
     config['steps']=["Initialising"]
     write_file(config=config,dataset=dataset)
+
+
+
+if __name__=='__main__':
+    main()
 

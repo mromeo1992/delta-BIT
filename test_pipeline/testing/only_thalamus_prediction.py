@@ -137,7 +137,7 @@ json_out_folder=os.path.abspath(os.path.join(os.environ['DELTA_BIT'],'test_pipel
 acpc_script=os.path.abspath(os.path.expandvars('$DELTA_BIT/utils/ACPCalignment.sh'))
 
 
-if __name__=='__main__':
+def main():
     parser = argparse.ArgumentParser(description="With this script you can directly predict the binary mask of the thalamus of the left hemisphere."+
                                     "The minimum requirements are T1 images in the standard Dataset Structure (view Testing user manual).",
 
@@ -188,3 +188,7 @@ if __name__=='__main__':
     print(cmd)
 
     os.system(cmd)
+
+
+if __name__=='__main__':
+    main()

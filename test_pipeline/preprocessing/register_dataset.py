@@ -107,7 +107,8 @@ templates=sorted([fil for fil in os.listdir(templates)
                   if fil.endswith('.nii.gz')])
 acpc_script=os.path.abspath(os.path.expandvars('$DELTA_BIT/utils/ACPCalignment.sh'))
 
-if __name__=='__main__':
+
+def main():
     parser = argparse.ArgumentParser(description="With this script you can register your dataset."+
                                     "The minimum requirements dataset json file produced by write_json.py and DWI preprocessing.",
 
@@ -156,5 +157,10 @@ if __name__=='__main__':
     print('\n'+cmd)
     os.system(cmd)
 
+
+
+
+if __name__=='__main__':
+    main()
 
     
