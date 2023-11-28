@@ -40,22 +40,22 @@ The first step un this pipeline is mapping your dataset and its features in a JS
 The command 
 
 ```
-python write_json.py -h
+d-BIT_initialise -h
 
 ```
 will output
 
 ```
-usage: write_json.py [-h] -n NAME [-m {pretrained}] [--data_type DATA_TYPE]
-                     -dir DATASET_DIRECTORY [--T1_path T1_PATH]
-                     [--dwi_path DWI_PATH] [--bvecs BVECS] [--bvals BVALS]
-                     [--registration] [-o OUTPUT_DIR]
+usage: d-BIT_initialise [-h] -n NAME [-m {pretrained}] [--data_type DATA_TYPE]
+                        -dir DATASET_DIRECTORY [--T1_path T1_PATH]
+                        [--dwi_path DWI_PATH] [--bvecs BVECS] [--bvals BVALS]
+                        [--registration] [-o OUTPUT_DIR]
 
 With this script you can create the dataset json file for your own dataset.The
 minimum requirements are T1 images and DWI data placed in the standard Dataset
 Structure (view Preporcessing user manual).
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -n NAME, --name NAME  Project's name (default: None)
   -m {pretrained}, --models {pretrained}
@@ -84,15 +84,7 @@ options:
 ```
 Flags' explaination:
 * -n, --name, require to insert a project name, in this way all successive pipelines can be called throught this name.
-* -m, --models, here you insert the models you want to use for predictions. Models have been saved in the [trained models directory](../../trained_models) to be read. You can download pretrained models and saving in the correct folder throught the commands:
-
-  >cd $DELTA_BIT/trained_models
-
-  >wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/Ea9L1kLoDpJIsCSwe795QpABF19uJiJ95GOnWygwHOaIVA?download=1
-
-  >unzip trained_models.zip -d pretrained
-
-  >rm trained_models.zip
+* -m, --models, here you insert the models you want to use for predictions. Models have been saved in the [trained models directory](../../trained_models) to be read. To download pretrained models and save in the correct folder look [here](../../README.md#get-pretrained-models).
 * --data_type, here you can insert the output format you want to use. Available format are: nii, nii.gz, mgz. Default is nii.gz.
 * -dir, --dataset_directory, here you insert the main fold of your dataset (look at [dataset structure](#dataset-structure)).
 * --T1_path insert here T1 images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure). By default the program will assume that T1 image's name is "T1.nii.gz" and it is located inside the subject's folder.
@@ -104,7 +96,7 @@ Flags' explaination:
 
 ### example
 ```
-python $DELTA-BIT/test_pipeline/write_json.py -n test1 -m pretrained -dir path/to/my/dataset --T1_path relative/path/to/T1.nii.gz --dwi_path relative/path/to/DATA.nii.gz --bvecs relative/path/to/bvecs --bvals relative/path/to/bvals
+d-BIT_initialise -n test1 -m pretrained -dir path/to/my/dataset --T1_path relative/path/to/T1.nii.gz --dwi_path relative/path/to/DATA.nii.gz --bvecs relative/path/to/bvecs --bvals relative/path/to/bvals
 ```
 
 ## Preprocess DWI images
@@ -149,16 +141,16 @@ In addiction you need to map your processed data in the json file. We suggest to
 ### Usage
 Typing on the terminal the command
 ```
-python preprocessing_dwi.py -h
+d-BIT_preprocessDWI -h
 ```
 it will output
 ```
-usage: preprocessing_dwi.py [-h] -n NAME [--tmp]
+usage: d-BIT_preprocessDWI [-h] -n NAME [--tmp]
 
-With this script you can preproces your dwi files.The minimum requirements
+With this script you can preprocess your dwi files.The minimum requirements
 dataset json file produced by write_json.py.
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -n NAME, --name NAME  Project's name (default: None)
   --tmp                 Insert if you want to keep temporary files (default:
@@ -185,19 +177,19 @@ This pipeline has been developed taking inspiration from [FSL/FLIR/FAQ](https://
 
 Typing on the terminal the command:
 ```
-python register_dataset.py -h
+d-BIT_regDataset -h
 ```
 it will output
 
 ```
-usage: register_dataset.py [-h] -n NAME
-                           [-t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}]
-                           [--tmp]
+usage: d-BIT_regDataset [-h] -n NAME
+                        [-t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}]
+                        [--tmp]
 
 With this script you can register your dataset.The minimum requirements
 dataset json file produced by write_json.py and DWI preprocessing.
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -n NAME, --name NAME  Project's name (default: None)
   -t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}, --template {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}

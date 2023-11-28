@@ -18,7 +18,7 @@ setup(name='delta-BIT',
       entry_points={
           'console_scripts': [
               'd-BIT_initialise=test_pipeline.preprocessing.write_json:main',
-              'd-BIT_preoprocessDWI=test_pipeline.preprocessing.preprocessing_dwi:main',
+              'd-BIT_preprocessDWI=test_pipeline.preprocessing.preprocessing_dwi:main',
               'd-BIT_regDataset=test_pipeline.preprocessing.register_dataset:main',
               'd-BIT_predict_thalamus=test_pipeline.testing.predict_thalamus:main',
               'd-BIT_only_thalamus_pred=test_pipeline.testing.only_thalamus_prediction:main',
