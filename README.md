@@ -32,6 +32,11 @@ We strongly recommend that you install delta-BIT in a virtual environment! Pip o
 
         >printf "\n%s\n" "export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH" >> ./etc/conda/activate.d/env_vars.sh
 
+        (add a line for FSL)
+
+        >printf "\n%s\n" "PATH=\${FSL_DIR}/share/fsl/bin:\${PATH}" "export FSLDIR PATH" ". ${FSLDIR}/etc/fslconf/fsl.sh" >> ./etc/conda/activate.d/env_vars.sh
+
+
         >printf "\n%s\n" "unset PATH" "unset LD_LIBRARY_PATH" >> ./etc/conda/deactivate.d/env_vars.sh
 
         Deactivate and activate the enviroment:
