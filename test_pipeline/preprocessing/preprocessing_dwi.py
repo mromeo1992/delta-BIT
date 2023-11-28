@@ -136,7 +136,6 @@ def main():
 
     name=config['name']
     json_path=get_initialised_project(name)
-    print('Json file found in: '+json_path)
     json_object=reading_json(json_path)
     tmp=config['tmp']
     if tmp==None:

@@ -19,13 +19,21 @@ def get_box(file_path):
 
 def process_scann(path, box):#, size_x, size_y, size_z):
     """Read an resize volume"""
-
-    x_min, x_max = box['x_min'], box['x_max']
-    y_min, y_max = box['y_min'], box['y_max']
-    z_min, z_max = box['z_min'], box['z_max']
+    if box:
+        x_min, x_max = box['x_min'], box['x_max']
+        y_min, y_max = box['y_min'], box['y_max']
+        z_min, z_max = box['z_min'], box['z_max']
+    else:
+        x_min, x_max = None, None
+        y_min, y_max = None, None
+        z_min, z_max = None, None
     #lettura file
     volume = nib.load(path).get_fdata()[x_min:x_max,y_min:y_max,z_min:z_max,]
-    volume = (volume - np.min(volume)) / np.ptp(volume)
+    shape=volume.shape
+    if len(shape)==4:
+        volume=(volume - np.min(volume,axis=(0,1,2))) / np.ptp(volume,axis=(0,1,2))
+    else:
+        volume = (volume - np.min(volume)) / np.ptp(volume)
     return volume
 
 
@@ -176,7 +184,7 @@ def data_generator_test_T1(json_object,batch_size=1,box_path=default_box):
     return test_gen
 
 
-def data_gnerator_test_trac(json_object,batch_size=1,box_path=default_box):
+def data_gnerator_test_trac(json_object, num_input=11,batch_size=1,box_path=default_box):
     box=get_box(box_path)
     img_size=(box['x_max']-box['x_min'],box['y_max']-box['y_min'],box['z_max']-box['z_min'])
 
@@ -185,12 +193,12 @@ def data_gnerator_test_trac(json_object,batch_size=1,box_path=default_box):
     header_paths=[]
     subjects=list(dataset.keys())
     for sub in subjects:
-        input_img_paths.append(dataset[sub]['T1 image'])#?
+        input_img_paths.append(dataset[sub]['Network input'])#?
         header_paths.append(dataset[sub]['T1 image'])
 
 
     print('Number of samples:', len(input_img_paths))
         
-    test_gen=Talamo_test(batch_size,img_size,input_img_paths,header_paths ,subjects,1,box)
+    test_gen=Talamo_test(batch_size,img_size,input_img_paths,header_paths ,subjects,num_input,None)
     
     return test_gen
