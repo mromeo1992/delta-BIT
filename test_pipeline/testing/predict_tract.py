@@ -13,7 +13,6 @@ from utils.data_loader import data_gnerator_test_trac, get_box
 
 
 def predict_tractography(dataset_file, cortex_area):
-    keras.backend.clear_session()
     test_gen=data_gnerator_test_trac(dataset_file)
     model=dataset_file['inputs']['models']
     model=os.path.join(os.environ['DELTA_BIT'],'trained_models',model,cortex_area+'.h5')
@@ -70,6 +69,7 @@ def predict(dataset_file,models):
     for model in models:
         print('\n\nPredicting '+model+' cortex area projection')
         predict_tractography(dataset_file,model)
+        keras.backend.clear_session()
         print('\n\n'+model+' Done!\n')
     print('\n\nAll cortex area projection are complete!\n\n')
     print('Done!')

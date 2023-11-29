@@ -50,6 +50,7 @@ def predict_thalamus(dataset_file):
         print('Subject '+subjects[i]+' done\n')
 
     print("\n\nAll subject are completed\n\n")
+    keras.backend.clear_session()
     print("Saving json file\n\n")
     if "Thalamus prediction" not in dataset_file['inputs']['steps']:
         dataset_file['inputs']['steps'].append("Thalamus prediction")
