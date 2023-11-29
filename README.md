@@ -20,17 +20,11 @@ We strongly recommend that you install delta-BIT in a virtual environment! Pip o
 
         >pip install tensorflow[and-cuda]==2.10.0
       
-        Sometimes it can happen that you have multiple installation of cuda drivers, for this reason we recomand to set local enviroment variable to avoid issues. In order to do it you can run the below commands in the terminals (ensure you are working in the delta-BIT enviroments):
+        Sometimes it can happen that you have multiple installation of cuda drivers, for this reason we recomand to set local enviroment variable to avoid issues. In order to do it you can run the [set_environ.sh script](set_environ.sh) (ensure you are working in the delta-BIT enviroments):
         
-        >cd $CONDA_PREFIX
+        >cd $DELTA_BIT #only if you changed directory
 
-        >mkdir -p ./etc/conda/activate.d && touch ./etc/conda/activate.d/env_vars.sh
-
-        >mkdir -p ./etc/conda/deactivate.d && touch ./etc/conda/deactivate.d/env_vars.sh
-
-        >printf "\n%s\n" "export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH" >> ./etc/conda/activate.d/env_vars.sh
-
-        >printf "\n%s\n" "unset LD_LIBRARY_PATH" >> ./etc/conda/deactivate.d/env_vars.sh
+        >sh set_environ.sh
 
         Deactivate and activate the enviroment:
 
@@ -48,7 +42,7 @@ We strongly recommend that you install delta-BIT in a virtual environment! Pip o
         
         >pip install tensorflow==2.10.0
  
-    for more tensorflow installation details look at [tensorflow web site](https://www.tensorflow.org/install).
+    for more details about tensorflow installation look at [tensorflow web site](https://www.tensorflow.org/install).
 
 
 ### Downloading
