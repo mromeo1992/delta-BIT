@@ -10,13 +10,7 @@ conda activate delta-BIT
 echo $CONDA_PREFIX
 
 #tensorflow and cuda installation
-conda install -c conda-forge cudnn==8.1.0.77 cudatoolkit==11.2.2
-pip install tensorflow[and-cuda]==2.10.0
-
-#setting environment variables for cuda drivers
-sh $DELTA_BIT/set_environ.sh
-conda deactivate
-conda activate delta-BIT
+pip install tensorflow==2.10.0
 
 echo $CONDA_PREFIX
 #Installation

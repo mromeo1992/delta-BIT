@@ -4,9 +4,72 @@ For a standard and easy installation we suggest you to satisfy the below require
 1) [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/) installation (required).
 2) nvidia drivers (for gpu users).
 3) [conda](https://conda.io/projects/conda/en/latest/index.html#) installation (strongly recommend).
+4) git.
 
-## Installation
+## Fast installation
+1) Download repository:
+    >git clone https://github.com/mromeo1992/delta-BIT.git
+2) Setting delta-BIT's folder as system variable
+    >cd delta-BIT
+
+    >var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
+
+    >source ~/.bashrc
+3) 1.  for CPU user
+        >sh install_cpu.sh
+   2. for GPU user
+        >sh install_gpu.sh
+4) Activate delta-BIT environment
+    >conda activate delta-BIT
+5) Test installation
+    >d-BIT_regDataset -h
+
+    if you show this message:
+
+        ```
+        usage: d-BIT_regDataset [-h] -n NAME
+                                [-t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}]
+                                [--tmp]
+
+        With this script you can register your dataset.The minimum requirements
+        dataset json file produced by write_json.py and DWI preprocessing.
+
+        optional arguments:
+        -h, --help            show this help message and exit
+        -n NAME, --name NAME  Project's name (default: None)
+        -t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}, --template {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}
+                                choose a template for registration (for testing
+                                pretrained models only MNI152_T1_1mm.nii.gz) (default:
+                                MNI152_T1_1mm.nii.gz)
+        --tmp                 Insert this flag if you want to keep temporary files
+                                (default: False)
+        ```
+    
+    **the installation was successful!**
+
+    The installation is now complete and you will be able to run the commands of delta-BIT. Each command has usage guide as the above output, for more information you can have a look at the readme files of the pipelines.
+
+6) (only for GPU user) Test tensorflow installation
+    >python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+    
+    If a list of GPU devices is returned, you've installed TensorFlow successfully.
+
+## Step by step Installation
 We strongly recommend that you install delta-BIT in a virtual environment! Here we will show you how to set a conda environment and install delta-BIT in it. We recommend Python version 3.9.13 also, it will work for sure.
+### Download repository
+
+Clone the repository with
+>git clone https://github.com/mromeo1992/delta-BIT.git
+
+### Setting delta-BIT's folder as system variable
+
+>cd delta-BIT
+
+>var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
+
+>source ~/.bashrc
+
+
 
 ### Preparing and setting up the Conda environment
 1) Create a new enviroment and activate it
@@ -45,18 +108,7 @@ We strongly recommend that you install delta-BIT in a virtual environment! Here 
     for more details about tensorflow installation look at [tensorflow web site](https://www.tensorflow.org/install).
 
 
-### Downloading
 
-Clone the repository with
->git clone https://github.com/mromeo1992/delta-BIT.git
-
-### Setting delta-BIT's folder as system variable
-
->cd delta-BIT
-
->var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
-
->source ~/.bashrc
 
 ### Upgrade version (for developper)
 To get newer version type on terminal in the delt-BIT folder
