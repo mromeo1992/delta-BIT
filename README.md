@@ -2,11 +2,11 @@
 ## Requirements
 For a standard and easy installation we suggest you to satisfy the below requirements:
 1) [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/) installation (required).
-2) nvidia drivers and [cuda tool-kit](https://developer.nvidia.com/cuda-toolkit) (for gpu users).
+2) nvidia drivers (for gpu users).
 3) [conda](https://conda.io/projects/conda/en/latest/index.html#) installation (strongly recommend).
 
 ## Installation
-We strongly recommend that you install delta-BIT in a virtual environment! Pip or anaconda are both fine. Python version 3.9.13 will work for sure.
+We strongly recommend that you install delta-BIT in a virtual environment! Here we will show you how to set a conda environment and install delta-BIT in it. We recommend Python version 3.9.13 also, it will work for sure.
 
 ### Preparing and setting up the Conda environment
 1) Create a new enviroment and activate it
