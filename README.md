@@ -15,10 +15,8 @@ For a standard and easy installation we suggest you to satisfy the below require
     >var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
 
     >source ~/.bashrc
-3) 1.  for CPU user
-        >sh install_cpu.sh
-   2. for GPU user
-        >sh install_gpu.sh
+3) Run installation script
+    >sh install.sh
 4) Activate delta-BIT environment
     >conda activate delta-BIT
 5) Test installation
