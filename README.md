@@ -4,11 +4,17 @@ For a standard and easy installation we suggest you to satisfy the below require
 1) [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/) installation (required).
 2) nvidia drivers (for gpu users).
 3) [conda](https://conda.io/projects/conda/en/latest/index.html#) installation (strongly recommend).
-4) git.
+
 
 ## Fast installation
 1) Download repository:
-    >git clone https://github.com/mromeo1992/delta-BIT.git
+    ```
+    #use git clone
+    git clone https://github.com/mromeo1992/delta-BIT.git
+    
+    #or download it from the link and then unzip it
+    https://github.com/mromeo1992/delta-BIT/archive/refs/heads/main.zip
+    ```
 2) Setting delta-BIT's folder as system variable
     >cd delta-BIT
 
