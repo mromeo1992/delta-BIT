@@ -134,7 +134,7 @@ json_out_folder=os.path.abspath(os.path.join(os.environ['DELTA_BIT'],'test_pipel
 
 def main():
     parser = argparse.ArgumentParser(description="With this script you can create the dataset json file for your own dataset."+
-                                    "The minimum requirements are T1 images and DWI data placed in the standard Dataset Structure (view Preporcessing user manual).",
+                                    "The minimum requirements are T1 images and DWI data placed in the standard Dataset Structure (view Preprocessing user manual).",
 
                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("-n", "--name", help="Project's name", required=True)
