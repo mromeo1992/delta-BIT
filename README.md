@@ -6,7 +6,7 @@ For a standard and easy installation we suggest you to satisfy the below require
 3) [conda](https://conda.io/projects/conda/en/latest/index.html#) installation (strongly recommend).
 
 
-## Fast installation
+## Fast installation 
 1) Download repository:
     ```
     #use git clone
@@ -17,10 +17,12 @@ For a standard and easy installation we suggest you to satisfy the below require
     ```
 2) Setting delta-BIT's folder as system variable
     >cd delta-BIT
-
+    
     >var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
 
     >source ~/.bashrc
+
+
 3) Run installation script
     >sh install.sh
 4) Activate delta-BIT environment
@@ -58,6 +60,60 @@ For a standard and easy installation we suggest you to satisfy the below require
     
     If a list of GPU devices is returned, you've installed TensorFlow successfully.
 
+## For MacOS installer
+Installing on Mac is quite similar to installing on Linux, however you may encounter some issues, such as the strongly recommended tensorflow version 2.10.0 not being available. For more details on the tensorflow version for MacOS we suggest taking a look at the [tensorflow web site](https://www.tensorflow.org/install/pip#macos). Moreover, tensorflow has no GPU support for Mac installer, [here](https://github.com/deganza/Install-TensorFlow-on-Mac-M1-GPU/blob/main/Install-TensorFlow-on-Mac-M1-GPU.ipynb) you might find a solution.
+
+1) Download repository:
+    ```
+    #use git clone
+    git clone https://github.com/mromeo1992/delta-BIT.git
+    
+    #or download it from the link and then unzip it
+    https://github.com/mromeo1992/delta-BIT/archive/refs/heads/main.zip
+    ```
+2) Setting delta-BIT's folder as system variable
+    >cd delta-BIT
+    
+    >var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.zshrc
+
+    >source ~/.zshrc
+
+
+3) Run installation script
+    >sh install.sh
+    
+    entry 2 for macOS installation
+
+4) Activate delta-BIT environment
+    >conda activate delta-BIT
+5) Test installation
+    >d-BIT_regDataset -h
+
+    if you show this message:
+
+        ```
+        usage: d-BIT_regDataset [-h] -n NAME
+                                [-t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}]
+                                [--tmp]
+
+        With this script you can register your dataset.The minimum requirements
+        dataset json file produced by write_json.py and DWI preprocessing.
+
+        optional arguments:
+        -h, --help            show this help message and exit
+        -n NAME, --name NAME  Project's name (default: None)
+        -t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}, --template {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}
+                                choose a template for registration (for testing
+                                pretrained models only MNI152_T1_1mm.nii.gz) (default:
+                                MNI152_T1_1mm.nii.gz)
+        --tmp                 Insert this flag if you want to keep temporary files
+                                (default: False)
+        ```
+    
+    **the installation was successful!**
+
+    The installation is now complete and you will be able to run the commands of delta-BIT. Each command has usage guide as the above output, for more information you can have a look at the readme files of the pipelines.
+
 ## Step by step Installation
 We strongly recommend that you install delta-BIT in a virtual environment! Here we will show you how to set a conda environment and install delta-BIT in it. We recommend Python version 3.9.13 also, it will work for sure.
 ### Download repository
@@ -85,7 +141,7 @@ Clone the repository with
 
         >conda install -c conda-forge cudnn==8.1.0.77 cudatoolkit==11.2.2
 
-        >pip install tensorflow[and-cuda]==2.10.0
+        >pip install tensorflow==2.10.0
       
         Sometimes it can happen that you have multiple installation of cuda drivers, for this reason we recomand to set local enviroment variable to avoid issues. In order to do it you can run the [set_environ.sh script](set_environ.sh) (ensure you are working in the delta-BIT enviroments):
         
