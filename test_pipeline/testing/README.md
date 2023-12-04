@@ -7,6 +7,7 @@ In this pipeline are contained all files for thalamus and tractography predictio
 
 Anyway, we implemeted a pipeline for [only thalamus prediction](#only-thalamus-prediction) which needs only T1 files' location to work.
 
+
 ## Only thalamus prediction
 This pipeline permit to get the binary mask of the thalamus of the left hemispere. It can work using pretrained models or your own model (after you perform a training). It is indipendent of the full prediction work flow and the [preprocessing pipeline](../preprocessing/README.md). It requires just a dataset of T1 images which respects the [dataset structure](../preprocessing/README.md#dataset-structure) **without DWI files**. If your data are already registered on the [MNI152_1mm template](../../utils/templates/MNI152_T1_1mm.nii.gz) you can directly predict binary masks just using the --registration flag, otherwise the pipeline will performe automatically the regitration on the standard.
 
@@ -117,3 +118,38 @@ optional arguments:
   -h, --help            show this help message and exit
   -n NAME, --name NAME  Project's name (default: None)
 ```
+
+## Tractographies prediction
+This is the final step of the test pipeline for probabilistic tractography prediction. In order to be more specific, delta-BIT was trained in predicting [voxel by ROI connectivity](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#voxel_by_ROI_connectivity). In brief, probabilistic tractographies are random walks which use DWI images to get structural connectivity information. After a diffusion model has been build up and a fiber Orientation Distribution Function (fODF) for each voxcel has been evaluated, it is possible to run several sample streamlines by starting from some seed and then taking steps in random directions chosen according to the fODF. The result of the streamlines can be used to represent the structural connectivity of the seed voxels with certain ROIs in the brain, such as areas of the cortex.
+
+In delta-BIT we implemented models for the voxels by ROI connectivity fast estimation using deep Neural Network. In particular we considered the connectivity of the voxel of the thalamus with the below cortex areas:
+- frontal cortex;
+- occipital cortex;
+- parietal cortex;
+- postcentral gyrus;
+- precentral gyrus;
+- temporal cortex.
+
+When you run this pipeline you can choose to get one, more than one or all connectivity maps.
+
+### Usage
+Typing on the terminal the command
+```
+d-BIT_pred_tract -h
+```
+it will output
+```
+usage: d-BIT_pred_tract [-h] -n NAME [--cortex_area CORTEX_AREA [CORTEX_AREA ...]]
+
+With this script you can predict probabilistic tractographies.The minimum requirements dataset json file produced by
+write_json.py, DWI preprocessing, registration and make network input.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Project's name (default: None)
+  --cortex_area CORTEX_AREA [CORTEX_AREA ...]
+                        Insert here the cortex area you want to predict choose between ['frontal', 'occipital', 'parietal',
+                        'postcentral', 'precentral', 'temporal', 'all'] (default: all)
+
+```
+with the flag --cortex_area you can choose the maps to predict, by default delta-BIT predicts all maps.

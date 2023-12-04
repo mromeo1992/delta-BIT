@@ -8,23 +8,23 @@ Before running the pipeline you should prepare your raw data. The best should be
 ```
 Dataset main folder
 ├── Subject_1
-|   ├── path_to_T1
-|   └── path_to_DWI
-|   └── path_to_bvecs
-|   └── path_to_bvals
+|   ├── T1 image
+|   └── DWI image
+|   └── bvecs file
+|   └── bvals file
 ├── Subject_2
-|   ├── path_to_T1
-|   └── path_to_DWI
-|   └── path_to_bvecs
-|   └── path_to_bvals 
+|   ├── T1 image
+|   └── DWI image
+|   └── bvecs file
+|   └── bvals file
 |
 |
 |
 ├── Subject_N
-|   ├── path_to_T1
-|   └── path_to_DWI
-|   └── path_to_bvecs
-|   └── path_to_bvals
+|   ├── T1 image
+|   └── DWI image
+|   └── bvecs file
+|   └── bvals file
 ```
 
 In this way it is possible to map your data in a JSON file.
@@ -46,57 +46,45 @@ d-BIT_initialise -h
 will output
 
 ```
-usage: d-BIT_initialise [-h] -n NAME [-m {pretrained}] [--data_type DATA_TYPE]
-                        -dir DATASET_DIRECTORY [--T1_path T1_PATH]
-                        [--dwi_path DWI_PATH] [--bvecs BVECS] [--bvals BVALS]
-                        [--registration] [-o OUTPUT_DIR]
+usage: d-BIT_initialise [-h] -n NAME [-m {pretrained}] [--data_type DATA_TYPE] -dir DATASET_DIRECTORY [--T1 T1] [--dwi DWI]
+                        [--bvecs BVECS] [--bvals BVALS] [--registration] [-o OUTPUT_DIR]
 
-With this script you can create the dataset json file for your own dataset.The
-minimum requirements are T1 images and DWI data placed in the standard Dataset
-Structure (view Preporcessing user manual).
+With this script you can create the dataset json file for your own dataset.The minimum requirements are T1 images and DWI
+data placed in the standard Dataset Structure (view Preprocessing user manual).
 
 optional arguments:
   -h, --help            show this help message and exit
   -n NAME, --name NAME  Project's name (default: None)
   -m {pretrained}, --models {pretrained}
-                        Insert here the name of the models you want to use
-                        (default: pretrained)
+                        Insert here the name of the models you want to use (default: pretrained)
   --data_type DATA_TYPE
-                        Insert here the extention of the disired output data:
-                        possibility nii, nii.gz, mgz (default: nii.gz)
+                        Insert here the extention of the disired output data: possibility nii, nii.gz, mgz (default: nii.gz)
   -dir DATASET_DIRECTORY, --dataset_directory DATASET_DIRECTORY
-                        indicate here your main folder which cointains your
-                        dataset (default: None)
-  --T1_path T1_PATH     indicate here the T1 image's relative pathname
-                        (starting from the subject's folder) (default:
-                        T1.nii.gz)
-  --dwi_path DWI_PATH   indicate here the DWI image's relative pathname
-                        (starting from the subject's folder) (default:
-                        DWI.nii.gz)
-  --bvecs BVECS         indicate here the bvecs's relative pathname (starting
-                        from the subject's folder) (default: DWI.bvec)
-  --bvals BVALS         indicate here the bvals's relative pathname (starting
-                        from the subject's folder) (default: DWI.bval)
-  --registration        Inser if you data have already been registered on a
-                        standard template (default: False)
+                        indicate here your main folder which cointains your dataset (default: None)
+  --T1 T1               file name of the T1 image (default: T1.nii.gz)
+  --dwi DWI             file name of the DWI image (default: DWI.nii.gz)
+  --bvecs BVECS         file name of the bvecs file (default: DWI.bvec)
+  --bvals BVALS         file name of the bvals file (default: DWI.bval)
+  --registration        Inser if you data have already been registered on a standard template (default: False)
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
-                        output_directory (default: /home/pcuser1/project_name)
+                        output_directory (default: $HOME/project_name)
+
 ```
 Flags' explaination:
 * -n, --name, require to insert a project name, in this way all successive pipelines can be called throught this name.
 * -m, --models, here you insert the models you want to use for predictions. Models have been saved in the [trained models directory](../../trained_models) to be read. To download pretrained models and save in the correct folder look [here](../../README.md#get-pretrained-models).
 * --data_type, here you can insert the output format you want to use. Available format are: nii, nii.gz, mgz. Default is nii.gz.
 * -dir, --dataset_directory, here you insert the main fold of your dataset (look at [dataset structure](#dataset-structure)).
-* --T1_path insert here T1 images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure). By default the program will assume that T1 image's name is "T1.nii.gz" and it is located inside the subject's folder.
-* --dwi_path insert here DWI images' relative paths, starting from the subject's folder and in accordance with the [dataset structure](#dataset-structure).  By default the program will assume that DWI image's name is "DWI.nii.gz" and it is located inside the subject's folder.
-* --bvecs, insert here relative path to bvecs file. By default the program will assume that the file bves' name is "DWI.bvec" and it is located inside the subject's folder.
-* --bvals, insert here relative path to bvecs file. By default the program will assume that the file bvals' name is "DWI.bval" and it is located inside the subject's folder.
+* --T1 insert here the file name of the T1 image. By default the program will assume that T1 image's name is "T1.nii.gz" and it is located inside the subject's folder.
+* --dwi insert here the file name of the  DWI image.  By default the program will assume that DWI image's name is "DWI.nii.gz" and it is located inside the subject's folder.
+* --bvecs, insert here the name of the bvecs file. By default the program will assume that the file bves' name is "DWI.bvec" and it is located inside the subject's folder.
+* --bvals, insert here the name of the bvecs file. By default the program will assume that the file bvals' name is "DWI.bval" and it is located inside the subject's folder.
 * --registration, in general T1 and DWI images stay in different space, in order to make predictions DWI images must be registered on T1 space (look at the [below section](#register-dataset-on-mni152)). In some case it can happen that images have already been registered, if it is your case insert this flag to skip registration step.
 * -o, --output_dir, insewr here the output folder where all outputs will be saved on. Default: $HOME/project_name.
 
 ### example
 ```
-d-BIT_initialise -n test1 -m pretrained -dir path/to/my/dataset --T1_path relative/path/to/T1.nii.gz --dwi_path relative/path/to/DATA.nii.gz --bvecs relative/path/to/bvecs --bvals relative/path/to/bvals
+d-BIT_initialise -n test1 -m pretrained -dir path/to/my/dataset --T1 T1.nii.gz --dwi DWI.nii.gz --bvecs DWI.bvec --bvals DWI.bval -o output/fold/test1
 ```
 
 ## Preprocess DWI images
@@ -166,7 +154,7 @@ The networks has been trained to work on a small portion of the image which is c
 T1 registration is performed using the [ACPC Alignment script](https://github.com/Washington-University/HCPpipelines/blob/master/PreFreeSurfer/scripts/ACPCAlignment.sh) taken by the [HCP pipeline](https://github.com/Washington-University/HCPpipelines) of the University of Washington. At the end of this registration a trasformation matrix is saved for DTI image registration. \
 DTI registration is more coplicated than that performed on T1 images.In general, this is because DWI (and therefore DTI) images usually have a lower resolution. Furthermore, the T1 image is not preprocessed, it does not have a normalized gray level distribution, so normal registration pipelines as [flirt](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FLIRT) cannot find the correct transformation in one step. Our registration pipeline works following the below steps:
 * 2D registration of the FA image on the T1 native image (slice by slice);
-* 3D registration above result on the T1 native image;
+* 3D registration of the above result on the T1 native image;
 * concatenation of the above transformations and the T1 to standard registration;
 * application of the resulting trasformation matrix to FA and other DTI images.
 
