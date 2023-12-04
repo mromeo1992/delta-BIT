@@ -48,13 +48,6 @@ def write_file(config, dataset=None):
 
     jsonfile=os.path.join(output_dir,'dataset.json')
     write_json(json_ditc,jsonfile)    
-
-    '''json_object = json.dumps(json_ditc, indent=len(config))
-    # Writing json
-    
-    with open(jsonfile, "w") as outfile:
-        outfile.write(json_object)'''
-
     cmd='cp '+jsonfile+' '+config['project_file']
     print('\nCoping report json in '+config['project_file'])
     print('\n'+cmd)
