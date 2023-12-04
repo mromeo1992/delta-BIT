@@ -81,7 +81,7 @@ def main():
         tmp=False
 
     #initialise project
-    cmd='d-BIT_initialise -n '+name+' -m '+model+' --data_type '+datatype+' -dir '+directory+' --T1_path '+T1+' --dwi_path '+dwi+'  --bvecs '+bvecs+' --bvals '+bvals
+    cmd='d-BIT_initialise -n '+name+' -m '+model+' --data_type '+datatype+' -dir '+directory+' --T1 '+T1+' --dwi '+dwi+'  --bvecs '+bvecs+' --bvals '+bvals
     if reg:
         cmd=cmd+' --registration'
     
