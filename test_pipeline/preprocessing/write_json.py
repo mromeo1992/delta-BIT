@@ -155,8 +155,8 @@ def main():
 
     #Input variables
     project_name=config['name']
-    T1_path=config['T1_path']
-    dwi_path=config['dwi_path']
+    T1_path=config['T1']
+    dwi_path=config['dwi']
     bvecs=config['bvecs']
     bvals=config['bvals']
     dataset_dir=os.path.abspath(config['dataset_directory'])
