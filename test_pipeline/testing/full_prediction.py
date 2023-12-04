@@ -48,7 +48,7 @@ def main():
     name=config['name']
     model=config['models']
     datatype=config['data_type']
-    directory=config['dataset_directory']ù
+    directory=config['dataset_directory']
     T1=config['T1_path']
     dwi=config['dwi_path']
     bvecs=config['bvecs']
