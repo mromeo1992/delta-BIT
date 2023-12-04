@@ -61,7 +61,8 @@ For a standard and easy installation we suggest you to satisfy the below require
     If a list of GPU devices is returned, you've installed TensorFlow successfully.
 
 ## For MacOS installer
-Installing on Mac is quite similar to installing on Linux, however you may encounter some issues, such as the strongly recommended tensorflow version 2.10.0 not being available. For more details on the tensorflow version for MacOS we suggest taking a look at the [tensorflow web site](https://www.tensorflow.org/install/pip#macos). Moreover, tensorflow has no GPU support for Mac installer, [here](https://github.com/deganza/Install-TensorFlow-on-Mac-M1-GPU/blob/main/Install-TensorFlow-on-Mac-M1-GPU.ipynb) you might find a solution.
+Installing on Mac is quite similar to installing on Linux, however you may encounter some issues, such as tensorflow versions not being available for M1 or M2 architectures. For more details on the tensorflow version for MacOS we suggest taking a look at the [tensorflow web site](https://www.tensorflow.org/install/pip#macos). Moreover, tensorflow has no GPU support for Mac installer, [here](https://github.com/deganza/Install-TensorFlow-on-Mac-M1-GPU/blob/main/Install-TensorFlow-on-Mac-M1-GPU.ipynb) you might find a solution.
+### Fast installation for CPU users
 
 1) Download repository:
     ```
