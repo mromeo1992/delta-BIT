@@ -14,6 +14,7 @@ from utils.data_loader import data_generator_test_T1, get_box
 def predict_thalamus(dataset_file):
 
     box=dataset_file['inputs']['bounding box file']
+    datatype=dataset_file['inputs']['data_type']
 
     test_gen=data_generator_test_T1(dataset_file,box_path=box)
     model=os.path.join(os.environ['DELTA_BIT'],'trained_models', dataset_file['inputs']['models'], 'thalamus.h5')
@@ -44,7 +45,7 @@ def predict_thalamus(dataset_file):
         to_save[x_min:x_max,y_min:y_max,z_min:z_max]=pred
         to_save=nib.Nifti1Image(to_save,affine=affine(i)[0], header=header(i)[0])
         to_save.set_data_dtype('uint8')
-        out_file=os.path.join(output_dir,subjects[i]+'.nii.gz')
+        out_file=os.path.join(output_dir,subjects[i]+'.'+datatype)
         output_dataset.append([subjects[i], out_file])
         nib.save(to_save,out_file)
         print('Subject '+subjects[i]+' done\n')

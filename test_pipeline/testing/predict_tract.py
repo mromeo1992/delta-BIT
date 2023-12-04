@@ -13,6 +13,7 @@ from utils.data_loader import data_gnerator_test_trac, get_box
 
 
 def predict_tractography(dataset_file, cortex_area):
+    datatype=dataset_file['inputs']['data_type']
     test_gen=data_gnerator_test_trac(dataset_file)
     model=dataset_file['inputs']['models']
     model=os.path.join(os.environ['DELTA_BIT'],'trained_models',model,cortex_area+'.h5')
@@ -42,7 +43,7 @@ def predict_tractography(dataset_file, cortex_area):
         to_save=np.zeros(header(i)[0]['dim'][1:4])
         to_save[x_min:x_max,y_min:y_max,z_min:z_max]=pred
         to_save=nib.Nifti1Image(to_save,affine=affine(i)[0], header=header(i)[0])
-        out_file=os.path.join(output_dir,subjects[i]+'.nii.gz')
+        out_file=os.path.join(output_dir,subjects[i]+'.'+datatype)
         output_dataset.append([subjects[i], out_file])
         nib.save(to_save,out_file)
         print('Subject '+subjects[i]+' done\n')

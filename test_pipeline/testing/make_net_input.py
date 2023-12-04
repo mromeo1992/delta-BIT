@@ -25,6 +25,7 @@ dti_images=[
 def make_net_input(dataset_file, num_inputs=11):
     
     box=dataset_file['inputs']['bounding box file']
+    datatype=dataset_file['inputs']['data_type']
     box=get_box(box)
     x_min, x_max=box['x_min'], box['x_max']
     y_min, y_max=box['y_min'], box['y_max']
@@ -64,7 +65,7 @@ def make_net_input(dataset_file, num_inputs=11):
                 output_img[:,:,:,2+3*i+j]=im
         
         to_save=nib.Nifti1Image(output_img,affine)
-        fname=os.path.join(output_dir, sb+'.nii.gz')
+        fname=os.path.join(output_dir, sb+'.'+datatype)
         nib.save(to_save,fname)
         output_dataset.append([sb,fname])
         print('Subject '+sb+' done\n')
