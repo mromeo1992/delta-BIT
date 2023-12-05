@@ -29,7 +29,7 @@ do
             if [ "$varname" = y ]
             then
                 check2=false
-                echo "Removing conda environment: conda remove --name delta-BIT --all"
+                echo "Removing conda environment"
                 pip uninstall tensorflow
                 conda deactivate
                 conda activate base
