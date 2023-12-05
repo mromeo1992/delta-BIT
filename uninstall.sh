@@ -52,13 +52,18 @@ do
             echo "Do you want to remove delta-BIT directory? [y]es [n]o"
             read varname
 
-            if [ "$varname" = y]
+            if [ "$varname" = y ]
             then
+            check3=false
                 echo Removing directory
                 cd 
                 rm -r $DELTA_BIT
                 sed '/^export DELTA_BIT/d' ~/.bashrc -i
                 echo DONE!
+            elif [ "$varname" = n ]
+            then
+                check3=false
+                break
             fi
         done
     
