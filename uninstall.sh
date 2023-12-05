@@ -18,6 +18,9 @@ do
 
         python setup.py install --record files.txt
         xargs rm -rf < files.txt
+        rm -r build
+        rm -r delta_BIT.egg-info
+        rm -r dist
         check2=true
         
         while $check2
