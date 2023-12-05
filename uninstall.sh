@@ -38,6 +38,7 @@ do
                 conda activate base
                 conda remove --name delta-BIT --all
                 conda clean -a
+                sed '/^export DELTA_BIT/d' ~/.bashrc -i
             
             elif [ "$varname" = n ]
             then
