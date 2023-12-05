@@ -9,27 +9,46 @@ conda deactivate
 conda activate delta-BIT
 echo $CONDA_PREFIX
 
-#tensorflow and cuda installation
-conda install -c conda-forge cudnn==8.1.0.77 cudatoolkit==11.2.2
-pip install tensorflow==2.10.0
+conda info | grep 'active environment'
+check=true
+while $check
+do
+    echo "Is the active environment delta-BIT? [y]es or [n]o"
 
-#setting environment variables for cuda drivers
-sh $DELTA_BIT/set_environ.sh
-conda deactivate
-conda activate delta-BIT
+    read varname
+    if [ "$varname" = y ]
+    then
+        check=false
+        #tensorflow and cuda installation
+        conda install -c conda-forge cudnn==8.1.0.77 cudatoolkit==11.2.2
+        pip install tensorflow==2.10.0
 
-echo $CONDA_PREFIX
-#Installation
+        #setting environment variables for cuda drivers
+        sh $DELTA_BIT/set_environ.sh
+        conda deactivate
+        conda activate delta-BIT
 
-python setup.py build
-python setup.py install
+        echo $CONDA_PREFIX
+        #Installation
+
+        python setup.py build
+        python setup.py install
 
 
-# Get pretrained models
+        # Get pretrained models
 
-cd $DELTA_BIT/trained_models
-wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/Ea9L1kLoDpJIsCSwe795QpABF19uJiJ95GOnWygwHOaIVA?download=1
-unzip trained_models.zip -d pretrained
-rm trained_models.zip
+        cd $DELTA_BIT/trained_models
+        wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/Ea9L1kLoDpJIsCSwe795QpABF19uJiJ95GOnWygwHOaIVA?download=1
+        unzip trained_models.zip -d pretrained
+        rm trained_models.zip
 
-printf "\n%s\n" "installation successful"
+        printf "\n%s\n" "installation successful"
+    elif [ "$varname" = n ]
+    then
+        check=false
+        echo Sometimes FSL installation may have conflicts with conda enviroments
+        echo Please enter'\n''\n'#'\t'conda deactivate'\n'#'\t'conda activate'\n'
+        echo And try again
+    fi
+
+done

@@ -3,27 +3,45 @@
 eval "$(conda shell.bash hook)"
 
 #create a new environment and activate it
-conda create -n delta-BIT python==3.9.13
-conda deactivate
+#conda create -n delta-BIT python==3.9.13
+#conda deactivate
 
 conda activate delta-BIT
 echo $CONDA_PREFIX
+conda info | grep 'active environment'
+check=true
+while $check
+do
+    echo "Is the active environment delta-BIT? [y]es or [n]o"
 
-#tensorflow and cuda installation
-pip install tensorflow==2.10.0
+    read varname
+    if [ "$varname" = y ]
+    then
 
-echo $CONDA_PREFIX
-#Installation
+        #tensorflow and cuda installation
+        pip install tensorflow==2.10.0
 
-python setup.py build
-python setup.py install
+        echo $CONDA_PREFIX
+        #Installation
+
+        python setup.py build
+        python setup.py install
 
 
-# Get pretrained models
+        # Get pretrained models
 
-cd $DELTA_BIT/trained_models
-wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/Ea9L1kLoDpJIsCSwe795QpABF19uJiJ95GOnWygwHOaIVA?download=1
-unzip trained_models.zip -d pretrained
-rm trained_models.zip
+        cd $DELTA_BIT/trained_models
+        wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/Ea9L1kLoDpJIsCSwe795QpABF19uJiJ95GOnWygwHOaIVA?download=1
+        unzip trained_models.zip -d pretrained
+        rm trained_models.zip
 
-printf "\n%s\n" "installation successful"
+        printf "\n%s\n" "installation successful"
+    elif [ "$varname" = n ]
+    then
+        check=false
+        echo Sometimes FSL installation may have conflicts with conda enviroments
+        echo Please enter'\n''\n'#'\t'conda deactivate'\n'#'\t'conda activate'\n'
+        echo And try again
+    fi
+
+done

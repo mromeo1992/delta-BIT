@@ -1,4 +1,7 @@
 #!bin/bash
+sed '/^export DELTA_BIT/d' ~/.bashrc -i
+var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
+source ~/.bashrc
 check0=true
 while $check0
 do 

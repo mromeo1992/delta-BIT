@@ -16,13 +16,8 @@ For a standard and easy installation we suggest you to satisfy the below require
     https://github.com/mromeo1992/delta-BIT/archive/refs/heads/main.zip
     #when you unzip the folder change the name in 'delta-BIT' (remove -main from the name)
     ```
-2) Setting delta-BIT's folder as system variable
+2) Navigate to delta-BIT's folder
     >cd delta-BIT
-    
-    >var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
-
-    >source ~/.bashrc
-
 
 3) Run installation script
     >sh install.sh
