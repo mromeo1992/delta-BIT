@@ -17,7 +17,7 @@ do
         conda deactivate
         conda activate base
 
-        python setup.py --record files.txt
+        python setup.py install --record files.txt
         xargs rm -rf < files.txt
         check2=true
         
