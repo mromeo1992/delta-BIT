@@ -38,13 +38,27 @@ do
                 conda activate base
                 conda remove --name delta-BIT --all
                 conda clean -a
-                sed '/^export DELTA_BIT/d' ~/.bashrc -i
             
             elif [ "$varname" = n ]
             then
                 check2=false
-                break
       
+            fi
+        done
+
+        check3=true
+        while $check3
+        do
+            echo "Do you want to remove delta-BIT directory? [y]es [n]o"
+            read varname
+
+            if [ "$varname" = y]
+            then
+                echo Removing directory
+                cd 
+                rm -r $DELTA_BIT
+                sed '/^export DELTA_BIT/d' ~/.bashrc -i
+                echo DONE!
             fi
         done
     
