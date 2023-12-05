@@ -40,6 +40,7 @@ do
                 break
       
             fi
+        done
     
     elif [ "$varname" = n ]
     then
