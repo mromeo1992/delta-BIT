@@ -15,13 +15,13 @@ then
 	check1=true
 	while $check1
 	do
-	echo Would you like GPU installation? yes/no
+	echo "Would you like GPU installation? [y]es/[n]o"
 
 	read varname
 
 
 
-	if [ "$varname" = "yes" ]
+	if [ "$varname" = "y" ]
 	then
 		check1=false
 		echo you chose GPU installation
@@ -30,18 +30,18 @@ then
 		check2=true
 		while $check2
 		do
-		echo Do you see nvidia-smi output? yes/no
+		echo "Do you see nvidia-smi output? [y]es/[n]o"
 
 		read varname
 
-		if [ "$varname" = yes ]
+		if [ "$varname" = "y" ]
 		then
 			check2=false
 			echo "\n"nvidia drivers check succesful! "\n"
 			echo running installation script
 			sh ./gpu_script.sh
 
-		elif [ "$varname" = no ]
+		elif [ "$varname" = "n" ]
 		then
 			echo "\n"There is a problem in nvidia-smi driver!
 			echo Tensorflow might not found GPU devices
@@ -50,16 +50,16 @@ then
 			check3=true
 			while $check3
 			do
-			echo Do you want to install CPU version? yes/no
+			echo "Do you want to install CPU version? [y]es/[n]o"
 			read varname
 
-			if [ "$varname" = yes ]
+			if [ "$varname" = "y" ]
 			then
 				check3=false
 				echo "\n"you chose CPU installation"\n"
 				echo Running installation script
 				sh ./cpu_script.sh
-			elif [ "$varname" = no ]
+			elif [ "$varname" = "n" ]
 			then
 				check3=false
 				echo Exiting!
@@ -69,7 +69,7 @@ then
 		fi
 		done
 
-	elif [ "$varname" = "no" ]
+	elif [ "$varname" = "n" ]
 	then
 		check1=false
 		echo you chose CPU installation

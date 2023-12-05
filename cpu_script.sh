@@ -7,15 +7,16 @@ eval "$(conda shell.bash hook)"
 #conda deactivate
 
 conda activate delta-BIT
-echo $CONDA_PREFIX
+echo $CONDA_PREFIX'\n''\n'
 conda info | grep 'active environment'
+echo '\n'
 check=true
 while $check
 do
     echo "Is the active environment delta-BIT? [y]es or [n]o"
 
     read varname
-    if [ "$varname" = y ]
+    if [ "$varname" = "y" ]
     then
 
         #tensorflow and cuda installation
@@ -36,7 +37,7 @@ do
         rm trained_models.zip
 
         printf "\n%s\n" "installation successful"
-    elif [ "$varname" = n ]
+    elif [ "$varname" = "n" ]
     then
         check=false
         echo Sometimes FSL installation may have conflicts with conda enviroments

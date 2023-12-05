@@ -7,16 +7,22 @@ conda create -n delta-BIT python==3.9.13
 conda deactivate
 
 conda activate delta-BIT
-echo $CONDA_PREFIX
+echo $CONDA_PREFIX '\n''\n'
 
-conda info | grep 'active environment'
+bold=$(tput bold)
+normal=$(tput sgr0)
+cmd=$(conda info | grep 'active environment')
+echo ${bold}$cmd${normal}
+
+echo '\n'
 check=true
 while $check
-do
+do  
+
     echo "Is the active environment delta-BIT? [y]es or [n]o"
 
     read varname
-    if [ "$varname" = y ]
+    if [ "$varname" = "y" ]
     then
         check=false
         #tensorflow and cuda installation
@@ -43,12 +49,13 @@ do
         rm trained_models.zip
 
         printf "\n%s\n" "installation successful"
-    elif [ "$varname" = n ]
+    
+    elif [ "$varname" = "n" ]
     then
         check=false
         echo Sometimes FSL installation may have conflicts with conda enviroments
         echo Please enter'\n''\n'#'\t'conda deactivate'\n'#'\t'conda activate'\n'
         echo And try again
+    
     fi
-
 done
