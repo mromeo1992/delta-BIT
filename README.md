@@ -1,4 +1,4 @@
-# DELTA-BIT
+# delta-BIT
 ## Requirements
 For a standard and easy installation we suggest you to satisfy the below requirements:
 1) [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/) installation (required).
