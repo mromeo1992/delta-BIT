@@ -14,6 +14,7 @@ For a standard and easy installation we suggest you to satisfy the below require
     
     #or download it from the link and then unzip it
     https://github.com/mromeo1992/delta-BIT/archive/refs/heads/main.zip
+    #when you unzip the folder change the name in 'delta-BIT' (remove -main from the name)
     ```
 2) Setting delta-BIT's folder as system variable
     >cd delta-BIT
