@@ -14,8 +14,7 @@ do
     then
         check=false
         echo Removing delta-BIT
-        conda deactivate
-        conda activate base
+        conda activate delta-BIT
 
         python setup.py install --record files.txt
         xargs rm -rf < files.txt
@@ -31,6 +30,9 @@ do
             then
                 check2=false
                 echo "Removing conda environment: conda remove --name delta-BIT --all"
+                pip uninstall tensorflow
+                conda deactivate
+                conda activate base
                 conda remove --name delta-BIT --all
                 conda clean -a
             
