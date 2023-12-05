@@ -59,6 +59,7 @@ do
                 cd 
                 rm -r $DELTA_BIT
                 sed '/^export DELTA_BIT/d' ~/.bashrc -i
+                source ~/.bashrc
                 echo DONE!
             elif [ "$varname" = n ]
             then
