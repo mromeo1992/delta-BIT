@@ -20,7 +20,7 @@ do
         xargs rm -rf < files.txt
         rm -r build
         rm -r delta_BIT.egg-info
-        rm -r dist
+        rm -r dist  
         check2=true
         
         while $check2
@@ -58,15 +58,17 @@ do
                 echo Removing directory
                 cd 
                 rm -r $DELTA_BIT
-                sed '/^export DELTA_BIT/d' ~/.bashrc -i
-                source ~/.bashrc
-                echo DONE!
+                
             elif [ "$varname" = n ]
             then
                 check3=false
                 break
             fi
         done
+        
+        sed '/^export DELTA_BIT/d' ~/.bashrc -i
+        source ~/.bashrc
+        echo DONE!
     
     elif [ "$varname" = n ]
     then
