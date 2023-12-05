@@ -69,7 +69,6 @@ then
 	elif [ "$varname" = "no" ]
 	then
 		check1=false
-		echo $check1
 		echo you chose CPU installation
 		echo running installation script
 		sh ./cpu_script.sh
