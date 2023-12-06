@@ -7,18 +7,23 @@ conda create -n delta-BIT python==3.9.13
 conda deactivate
 
 conda activate delta-BIT
-echo $CONDA_PREFIX'\n''\n'
-conda info | grep 'active environment'
+echo $CONDA_PREFIX '\n''\n'
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+cmd=$(conda info | grep 'active environment')
+echo ${bold}$cmd${normal}
+
 echo '\n'
 check=true
 while $check
 do
-    echo "Is the active environment delta-BIT? [y]es or [n]o"
+    echo "Look at the above line, is the active environment delta-BIT? [y]es or [n]o"
 
     read varname
     if [ "$varname" = "y" ]
     then
-
+        check=false
         #tensorflow and cuda installation
         pip install tensorflow==2.10.0
 

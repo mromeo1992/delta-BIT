@@ -19,7 +19,7 @@ check=true
 while $check
 do  
 
-    echo "Is the active environment delta-BIT? [y]es or [n]o"
+    echo "Look at the above line, is the active environment delta-BIT? [y]es or [n]o"
 
     read varname
     if [ "$varname" = "y" ]
