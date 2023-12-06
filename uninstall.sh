@@ -66,9 +66,26 @@ do
             fi
         done
         
-        sed '/^export DELTA_BIT/d' ~/.bashrc -i
-        source ~/.bashrc
-        echo DONE!
+        check4=true
+        while check4
+        do
+            echo "Linux or MacOS installation? \n1: Linux \n2: MacOS\n"
+
+            read varname
+
+            if [ $varname -eq 1 ]
+            then
+                sed '/^export DELTA_BIT/d' ~/.bashrc -i
+                source ~/.bashrc
+                echo DONE!
+            
+            elif [ $varname -eq 2 ]
+            then
+                sed '/^export DELTA_BIT/d' ~/.zshrc -i
+                source ~/.zshrc
+                echo DONE!            
+        
+        done
     
     elif [ "$varname" = n ]
     then
