@@ -84,7 +84,7 @@ do
                 sed '/^export DELTA_BIT/d' ~/.zshrc -i
                 source ~/.zshrc
                 echo DONE!            
-        
+            fi
         done
     
     elif [ "$varname" = n ]
