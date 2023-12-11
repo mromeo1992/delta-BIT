@@ -1,5 +1,0 @@
-tensorflow==2.10.0
-nibabel
-numpy
-scipy
-matplotlib
