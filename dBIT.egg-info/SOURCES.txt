@@ -19,7 +19,6 @@ dBIT/test_pipeline/testing/make_net_input.py
 dBIT/test_pipeline/testing/only_thalamus_prediction.py
 dBIT/test_pipeline/testing/predict_thalamus.py
 dBIT/test_pipeline/testing/predict_tract.py
-dBIT/trained_models/full_prediction.py
 dBIT/utils/__init__.py
 dBIT/utils/data_augmentation.py
 dBIT/utils/data_loader.py

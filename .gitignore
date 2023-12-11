@@ -1,5 +1,5 @@
 build/
-delta_BIT.egg-info/
+dBIT.egg-info/
 dist/
 test.ipynb
 files.txt
