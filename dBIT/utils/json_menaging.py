@@ -25,7 +25,7 @@ def get_initialised_project(name):
 
     """
     print('\n\nSearching project file\n\n')
-    path_file=os.environ['DELTA_BIT']+"/test_pipeline/projects/"+name+".json"
+    path_file=os.environ['DELTA_BIT']+"dBIT/test_pipeline/projects/"+name+".json"
     path_file=os.path.abspath(path_file)
     print('looking at the path: ',path_file)
     if not os.path.exists(path_file):
