@@ -1,7 +1,7 @@
 from setuptools import setup, find_namespace_packages
 
-setup(name='delta-BIT',
-      packages=find_namespace_packages(include=["test_pipeline.*", "utils.*"]),
+setup(name='dBIT',
+      packages=find_namespace_packages(include=["dBIT","dBIT.*"]),
       version='1.0',
       description='delta-BIT. Framework for probabilistic tractography prediction',
       url='https://github.com/mromeo1992/delta-BIT',
