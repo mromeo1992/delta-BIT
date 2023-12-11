@@ -1,14 +1,11 @@
 import sys
 import os
 import argparse
-import numpy as np
-import nibabel as nib
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ['DELTA_BIT']))
 
-from test_pipeline.preprocessing.write_json import write_json
-from test_pipeline.preprocessing.write_json import outputdir_creation
-from test_pipeline.preprocessing.register_dataset import reg_T1_to_mni
+from dBIT.test_pipeline.preprocessing.write_json import write_json
+from dBIT.test_pipeline.preprocessing.write_json import outputdir_creation
+from dBIT.test_pipeline.preprocessing.register_dataset import reg_T1_to_mni
 
 
 def registration(dataset_file):
@@ -129,12 +126,12 @@ def get_file_path(dataset_dir, T1_path):
 
 
 home=os.environ['HOME']
-model_dir=os.path.abspath(os.path.join(os.environ['DELTA_BIT'], 'trained_models'))
+model_dir=os.path.abspath(os.path.join(os.environ['DELTA_BIT'], 'dBIT/trained_models'))
 models=sorted([mod for mod in os.listdir(model_dir)
                    if os.path.isdir(os.path.join(model_dir,mod))])
-json_out_folder=os.path.abspath(os.path.join(os.environ['DELTA_BIT'],'test_pipeline','projects'))
+json_out_folder=os.path.abspath(os.path.join(os.environ['DELTA_BIT'],'dBIT/test_pipeline','projects'))
 
-acpc_script=os.path.abspath(os.path.expandvars('$DELTA_BIT/utils/ACPCalignment.sh'))
+acpc_script=os.path.abspath(os.path.expandvars('$DELTA_BIT/dBIT/utils/ACPCalignment.sh'))
 
 
 def main():

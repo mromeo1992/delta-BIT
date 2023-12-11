@@ -1,11 +1,9 @@
 import os 
-import sys
-import json
 import argparse
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ['DELTA_BIT']))
 
-from utils.json_menaging import reading_json, get_initialised_project
-from test_pipeline.preprocessing.write_json import write_json
+
+from dBIT.utils.json_menaging import reading_json, get_initialised_project
+from dBIT.test_pipeline.preprocessing.write_json import write_json
 
 
 def reg_T1_to_mni(T1, template,script, out_dir):
@@ -102,10 +100,10 @@ def loop(dataset_file,template, tmp):
     os.system(cmd)
 
 
-templates=os.path.join(os.environ['DELTA_BIT'],'utils/templates')
+templates=os.path.join(os.environ['DELTA_BIT'],'dBIT/utils/templates')
 templates=sorted([fil for fil in os.listdir(templates)
                   if fil.endswith('.nii.gz')])
-acpc_script=os.path.abspath(os.path.expandvars('$DELTA_BIT/utils/ACPCalignment.sh'))
+acpc_script=os.path.abspath(os.path.expandvars('$DELTA_BIT/dBIT/utils/ACPCalignment.sh'))
 
 
 def main():

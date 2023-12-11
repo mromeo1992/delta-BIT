@@ -1,16 +1,12 @@
 import nibabel as nib
-import json
 import os
 import numpy as np
-import sys
 import argparse
 import os
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ['DELTA_BIT']))
-
-from utils.json_menaging import reading_json, get_initialised_project
-from test_pipeline.preprocessing.write_json import write_json
-from utils.data_loader import get_box
+from dBIT.utils.json_menaging import reading_json, get_initialised_project
+from dBIT.test_pipeline.preprocessing.write_json import write_json
+from dBIT.utils.data_loader import get_box
 
 dti_images=[
     'FA.nii.gz',

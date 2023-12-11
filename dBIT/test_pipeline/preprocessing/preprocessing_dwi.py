@@ -2,10 +2,8 @@ import os
 import sys
 import argparse
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ['DELTA_BIT']))
-
-from utils.json_menaging import reading_json, get_initialised_project
-from test_pipeline.preprocessing.write_json import write_json
+from dBIT.utils.json_menaging import reading_json, get_initialised_project
+from dBIT.test_pipeline.preprocessing.write_json import write_json
 
 
 def preprocessing_dwi(dataset_file,tmp):

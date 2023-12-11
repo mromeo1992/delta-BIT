@@ -5,18 +5,16 @@ import argparse
 import numpy as np
 import nibabel as nib
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ['DELTA_BIT']))
-
-from utils.json_menaging import reading_json, get_initialised_project
-from test_pipeline.preprocessing.write_json import write_json
-from utils.data_loader import data_gnerator_test_trac, get_box
+from dBIT.test_pipeline.preprocessing.write_json import write_json
+from dBIT.utils.json_menaging import reading_json, get_initialised_project
+from dBIT.utils.data_loader import data_gnerator_test_trac, get_box
 
 
 def predict_tractography(dataset_file, cortex_area):
     datatype=dataset_file['inputs']['data_type']
     test_gen=data_gnerator_test_trac(dataset_file)
     model=dataset_file['inputs']['models']
-    model=os.path.join(os.environ['DELTA_BIT'],'trained_models',model,cortex_area+'.h5')
+    model=os.path.join(os.environ['DELTA_BIT'],'dBIT/trained_models',model,cortex_area+'.h5')
 
     output_dir=dataset_file['inputs'][cortex_area]
     output_dataset=[]

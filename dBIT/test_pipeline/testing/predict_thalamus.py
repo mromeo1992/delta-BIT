@@ -5,11 +5,10 @@ import argparse
 import numpy as np
 import nibabel as nib
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ['DELTA_BIT']))
 
-from utils.json_menaging import reading_json, get_initialised_project
-from test_pipeline.preprocessing.write_json import write_json
-from utils.data_loader import data_generator_test_T1, get_box
+from dBIT.utils.json_menaging import reading_json, get_initialised_project
+from dBIT.test_pipeline.preprocessing.write_json import write_json
+from dBIT.utils.data_loader import data_generator_test_T1, get_box
 
 def predict_thalamus(dataset_file):
 
@@ -17,7 +16,7 @@ def predict_thalamus(dataset_file):
     datatype=dataset_file['inputs']['data_type']
 
     test_gen=data_generator_test_T1(dataset_file,box_path=box)
-    model=os.path.join(os.environ['DELTA_BIT'],'trained_models', dataset_file['inputs']['models'], 'thalamus.h5')
+    model=os.path.join(os.environ['DELTA_BIT'],'dBit/trained_models', dataset_file['inputs']['models'], 'thalamus.h5')
     output_dir=dataset_file['inputs']['thalamus predictions']
     output_dataset=[]
 
@@ -97,7 +96,7 @@ def main():
     
     box=config['box']
     if box=="default":
-        box=os.path.join(os.environ['DELTA_BIT'],'utils/cropping_border_default.npz')
+        box=os.path.join(os.environ['DELTA_BIT'],'dBIT/utils/cropping_border_default.npz')
     
     json_object['inputs']['bounding box file']=box
     json_object['inputs']['thalamus predictions']=output_dir

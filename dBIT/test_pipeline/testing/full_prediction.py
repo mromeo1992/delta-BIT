@@ -14,10 +14,10 @@ models=[
 ]
 
 home=os.environ['HOME']
-model_dir=os.path.abspath(os.path.join(os.environ['DELTA_BIT'], 'trained_models'))
+model_dir=os.path.abspath(os.path.join(os.environ['DELTA_BIT'], 'dBIT/trained_models'))
 models=sorted([mod for mod in os.listdir(model_dir)
                    if os.path.isdir(os.path.join(model_dir,mod))])
-json_out_folder=os.path.abspath(os.path.join(os.environ['DELTA_BIT'],'test_pipeline','projects'))
+json_out_folder=os.path.abspath(os.path.join(os.environ['DELTA_BIT'],'dBIT/test_pipeline','projects'))
 
 
 def main():

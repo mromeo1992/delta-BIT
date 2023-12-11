@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: dBIT
+Version: 1.0
+Summary: delta-BIT. Framework for probabilistic tractography prediction
+Home-page: https://github.com/mromeo1992/delta-BIT
+Author: Mattia Romeo
+Author-email: mattia.romeo@community.unipa.it
+License: ..............
+Keywords: deep learning,image segmentation,medical image analysis,medical image segmentation,delta-BIT,image translation
+Requires-Dist: tensorflow==2.10.0
+Requires-Dist: nibabel
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: matplotlib

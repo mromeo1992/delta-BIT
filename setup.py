@@ -1,7 +1,7 @@
 from setuptools import setup, find_namespace_packages
 
-setup(name='delta-BIT',
-      packages=find_namespace_packages(include=["test_pipeline.*", "utils.*"]),
+setup(name='dBIT',
+      packages=find_namespace_packages(include=["dBIT","dBIT.*"]),
       version='1.0',
       description='delta-BIT. Framework for probabilistic tractography prediction',
       url='https://github.com/mromeo1992/delta-BIT',
@@ -17,14 +17,14 @@ setup(name='delta-BIT',
       ],
       entry_points={
           'console_scripts': [
-              'd-BIT_initialise=test_pipeline.preprocessing.write_json:main',
-              'd-BIT_preprocessDWI=test_pipeline.preprocessing.preprocessing_dwi:main',
-              'd-BIT_regDataset=test_pipeline.preprocessing.register_dataset:main',
-              'd-BIT_predict_thalamus=test_pipeline.testing.predict_thalamus:main',
-              'd-BIT_only_thalamus_pred=test_pipeline.testing.only_thalamus_prediction:main',
-              'd-BIT_make_net_input=test_pipeline.testing.make_net_input:main',
-              'd-BIT_pred_tract=test_pipeline.testing.predict_tract:main',
-              'd-BIT_full_test_pipeline=test_pipeline.testing.full_prediction:main'
+              'd-BIT_initialise=dBIT.test_pipeline.preprocessing.write_json:main',
+              'd-BIT_preprocessDWI=dBIT.test_pipeline.preprocessing.preprocessing_dwi:main',
+              'd-BIT_regDataset=dBIT.test_pipeline.preprocessing.register_dataset:main',
+              'd-BIT_predict_thalamus=dBIT.test_pipeline.testing.predict_thalamus:main',
+              'd-BIT_only_thalamus_pred=dBIT.test_pipeline.testing.only_thalamus_prediction:main',
+              'd-BIT_make_net_input=dBIT.test_pipeline.testing.make_net_input:main',
+              'd-BIT_pred_tract=dBIT.test_pipeline.testing.predict_tract:main',
+              'd-BIT_full_test_pipeline=dBIT.test_pipeline.testing.full_prediction:main'
           ],
       },
       keywords=['deep learning', 'image segmentation', 'medical image analysis',
