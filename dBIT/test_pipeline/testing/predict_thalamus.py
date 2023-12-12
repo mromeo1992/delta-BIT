@@ -34,7 +34,7 @@ def predict_thalamus(dataset_file):
     datatype=dataset_file['inputs']['data_type']
 
     test_gen=data_generator_test_T1(dataset_file,box_path=box)
-    model=os.path.join(os.environ['DELTA_BIT'],'dBit/trained_models', dataset_file['inputs']['models'], 'thalamus.h5')
+    model=os.path.join(os.environ['DELTA_BIT'],'dBIT/trained_models', dataset_file['inputs']['models'], 'thalamus.h5')
     output_dir=dataset_file['inputs']['thalamus predictions']
     output_dataset=[]
 
