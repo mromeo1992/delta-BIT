@@ -1,4 +1,4 @@
-delta-BIT (c) 2014 – (the "Software")
+delta-BIT (c) 2023 – (the "Software")
 
 
 GNU GENERAL PUBLIC LICENSE
@@ -680,19 +680,10 @@ Public License instead of this License.  But first, please read
 
 -------------------------------------------------------------------
 
-The Standard Space Atlases
 
-The standard space atlases included in the repository,
-are released under the terms of the main Lead-DBS License above, 
-at the request of their owners with the exception of the Hammers_mith atlas (see below). These atlases should therefore not be used for commercial purposes; for such
-purposes please contact the primary co-ordinator for the relevant
-atlas.
+The MNI templates 
 
--------------------------------------------------------------------
-
-The MNI templates
-
-The following applies to the files mni_hires.nii (which is the t2-template), mni_hires_t1.nii, mni_hires_pd.nii (which are originally distributed as the ICBM 2009b asymmetrical template series available here: http://nist.mni.mcgill.ca/?page_id=714) as well as to the files mni_icbm152_gm_tal_nlin_asym_09c, mni_icbm152_wm_tal_nlin_asym_09c and mni_icbm152_csf_tal_nlin_asym_09c.nii which are part of the ICBM 2009c asymmetric template series available from the same location.
+The following applies to the files MNI152_T1_1mm.nii.gz (which corresponds to the "152 nonlinear 6th generation" atlas) available here: http://nist.mni.mcgill.ca/?page_id=714).
 
 Copyright (C) 1993-2004 Louis Collins, McConnell Brain
 Imaging Centre, Montreal Neurological Institute, McGill University.
@@ -706,97 +697,6 @@ responsible for any data loss, equipment damage, property loss, or
 injury to subjects or patients resulting from the use or misuse of
 this software package. 
 
--------------------------------------------------------------------
-
-The FSL FA standard template
-
-The mni_hires_fa.nii template stems from the FMRIB Software Library v5.0 and has been warped from 6th generation MNI space to MNI 2009b nonlinear space by applying the nonlinear deformation published here (https://figshare.com/articles/MNI_T1_6thGen_NLIN_to_MNI_2009b_NLIN_ANTs_transform/3502238).
-
-FMRIB Software Library, Release 5.0 (c) 2012, The University of Oxford
-(the „Software“)
-
-The Software remains the property of the University of Oxford („the
-University“).
-
-The Software is distributed „AS IS“ under this Licence solely for
-non-commercial use in the hope that it will be useful, but in order
-that the University as a charitable foundation protects its assets for
-the benefit of its educational and research purposes, the University
-makes clear that no condition is made or to be implied, nor is any
-warranty given or to be implied, as to the accuracy of the Software,
-or that it will be suitable for any particular purpose or for use
-under any specific conditions. Furthermore, the University disclaims
-all responsibility for the use which is made of the Software. It
-further disclaims any liability for the outcomes arising from using
-the Software.
-
-The Licensee agrees to indemnify the University and hold the
-University harmless from and against any and all claims, damages and
-liabilities asserted by third parties (including claims for
-negligence) which arise directly or indirectly from the use of the
-Software or the sale of any products based on the Software.
-
-No part of the Software may be reproduced, modified, transmitted or
-transferred in any form or by any means, electronic or mechanical,
-without the express permission of the University. The permission of
-the University is not required if the said reproduction, modification,
-transmission or transference is done without financial return, the
-conditions of this Licence are imposed upon the receiver of the
-product, and all original and amended source code is included in any
-transmitted product. You may be held legally responsible for any
-copyright infringement that is caused or encouraged by your failure to
-abide by these terms and conditions.
-
-You are not permitted under this Licence to use this Software
-commercially. Use for which any financial return is received shall be
-defined as commercial use, and includes (1) integration of all or part
-of the source code or the Software into a product for sale or license
-by or on behalf of Licensee to third parties or (2) use of the
-Software or any derivative of it for research with the final aim of
-developing software products for sale or license to a third party or
-(3) use of the Software or any derivative of it for research with the
-final aim of developing non-software products for sale or license to a
-third party, or (4) use of the Software to provide any service to an
-external organisation for which payment is received. If you are
-interested in using the Software commercially, please contact Isis
-Innovation Limited („Isis“), the technology transfer company of the
-University, to negotiate a licence. Contact details are:
-innovation@isis.ox.ac.uk quoting reference BS/9564.
-
-
--------------------------------------------------------------------
-
-Novel tissue priors (templates/TPM_Lorio_Draganski.nii)
-
-The novel tissue priors have been graciously contributed by Bogdan Draganski and information can be found here:
-http://unil.ch/lren/home/menuinst/data--utilities.html
-
-
--------------------------------------------------------------------
-
-The Hammers_mith Atlas
-
-FREE ACADEMIC END USER LICENCE AGREEMENT
-© Copyright Imperial College of Science Technology & Medicine (“Imperial”), 2004-2016.
-Maximum probability brain atlas based on manually drawn atlases from 30 healthy adults (with 83 regions each) (the “Atlas”), with a list of regions (together the “Materials”) [Release v[1.0] 2008]
-All Rights Reserved
-Developed jointly by Alexander Hammers1, Ioannis S. Gousias1, Laila Ahsan1, Spyridon Vossos1, Chi-Hua Chen1, Rolf Heckemann1, Tim M Williams2, Louis Lemieux3, David J Brooks1, John S Duncan3 and Matthias J Koepp3 (the “Authors”) 
-1 Department of Clinical Neuroscience and MRC Clinical Sciences Centre, Division of Neuroscience and Mental Health, Faculty of Medicine Imperial College London
-2 Psychopharmacology Unit, University of Bristol
-3 Department of Clinical and Experimental Epilepsy, Institute of Neurology, University College London
-In accessing the materials, documents and content (you agree to the following terms and conditions:
-
-1. The materials, documents and content (“Materials”) on this site are protected by copyright, moral rights and/or database right throughout the world and are owned by Imperial and/or the Authors. The Authors assert their moral rights to be identified as the authors of the Materials.
-2. You may read, print and download the Materials for academic, non-commercial research including teaching.
-3. You may use the Materials (in whole or in part) for the purposes of academic, non-commercial research and teaching (“Permitted Purpose”). For the avoidance of doubt, the Permitted Purpose does not include using Materials for (i) commercially-sponsored research or (ii) the diagnosis, treatment or medical care of patients.
-4. You shall not (i) sub-licence or distribute the Materials to third parties or (ii) use the Materials (in whole or in part) as the basis of any commercial product. If you require a commercial licence for the Materials please contact Imperial’s technology commercialisation company, Imperial Innovations Limited (http://www.imperialinnovations.co.uk).
-5. You must not alter, modify, add to or delete anything from the Materials you download or use, except as is permitted in paragraphs 2 and 3 above. Subject both to the previous sentence and paragraph 6, any alterations, modifications, additions or deletions from the Materials must be clearly described in any publications or presentations.
-6. You shall, in any use of the Materials, include an acknowledgement in the form of “© Copyright Imperial College of Science, Technology and Medicine 2007. All rights reserved.” In addition, in all publications or presentations, you shall cite (i) the source of the Materials as “www.brain-development.org” and (ii) the appropriate paper or papers documenting the creation of the Atlas (Hammers A, Allom R et al., Hum Brain Mapp 2003 for regions 1- 49 and the principle; Gousias IS et al. Neuroimage 2008 for regions 50-83).
-7. The Materials are being provided as a service to the academic community and on a non-commercial basis, without charge. Accordingly, to the fullest extent permitted under applicable law, Imperial accepts no liability and offers no warranties in relation to the Materials.
-8. Without prejudice to the generality of the foregoing paragraph, the Materials provided under this free, academic end-user licence are a research tool undergoing further development and are not intended to be a clinical diagnostic aid. They are provided ‘as is’ and without any express or implied warranties, representations or undertakings. As examples, but without limiting the foregoing, Imperial does not give any warranty that the Materials do not infringe third party rights, are of merchantable or satisfactory quality, are fit for any particular purpose or for use under any specific conditions, or comply with any statement, demonstration or model provided or supplied by Imperial.
-9. In no event, unless required by law or agreed to in writing, will Imperial be liable to you for damages, including any general, special, incidental or consequential damages arising out of the use or inability to use the Materials (including but not limited to loss of data, data being rendered inaccurate, losses being sustained by you or third parties), or a failure of the Materials to operate with any materials or software used by you.
-10. You agree to indemnify Imperial and its officers, employees, students, other researchers and agents (together, the “Indemnitees”) and hold the Indemnitees harmless from and against any and all claims, damages and liabilities asserted by third parties (including claims for negligence) which arise directly or indirectly from the use of the Materials or the sale of any products based on the Materials.
-11. To maintain the protection of human subjects you undertake not to use the Materials so as to attempt in any way to discover the identity of or make contact with any individual from whom the information originated.
 
 -------------------------------------------------------------------
 
@@ -853,6 +753,3 @@ innovation@isis.ox.ac.uk quoting reference BS/9564.
 
 -------------------------------------------------------------------
 
-The Neuromorphometrics atlas
-
-Maximum probability tissue labels derived from the ``MICCAI 2012 Grand Challenge and Workshop on Multi-Atlas Labeling’’ (https://masi.vuse.vanderbilt.edu/workshop2012/index.php/Challenge_Details). These data were released under the Creative Commons Attribution-NonCommercial (CC BY-NC) with no end date. Users should credit the MRI scans as originating from the OASIS project (http://www.oasis-brains.org/) and the labeled data as “provided by Neuromorphometrics, Inc. (http://Neuromorphometrics.com/) under academic subscription”.  These references should be included in all workshop and final publications.
