@@ -2,6 +2,7 @@
 ## Fix FSL-conda conflict
 The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not installed, in fact [fslinstaller.py](https://git.fmrib.ox.ac.uk/fsl/conda/installer) installs miniconda in the FSL directory. Double conda installations or the installation of miniconda and anaconda together should be avoided due to the problems that may arise. We found a conflict which happens with the normal installation of FSL 6.0.6 and 6.0.7 is coupled with the installation of delta-BIT. In general, this issue happens for **ALL CONDA ENVIRONMENTS** in your system. We found a solution which avoid any problems.
 
+### If FSL has already been installed
 1. If not present, install conda or miniconda on your pc (we suggest miniconda which is  is a minimal installer for Conda, [here](https://docs.conda.io/projects/miniconda/en/latest/miniconda-install.html) the official site).
 2. move the FSL directory into a backup folder
     >mv $FSLDIR path/to/the/backup/folder
@@ -63,11 +64,11 @@ The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not
 
 If you want to avoid this procedure you can install old version of FSL (up to FSL 6.0.5.2) with the old installer which you can find [here](https://git.fmrib.ox.ac.uk/fsl/installer).
 
-### First installation of FSL
+### If this is your first installation of FSL
 If this is your first installation of FSL you will need to configure the bash variables. To do it you just need to open the profile with a text editor and past in it the lines:
 ```
 # FSL Setup
-FSLDIR=#insert here the location of your fsl directory 
+FSLDIR=#insert here the location of your fsl directory (if you have multiple users a root folder is recomended)
 PATH=${FSLDIR}/bin:${PATH}
 export FSLDIR PATH
 . ${FSLDIR}/etc/fslconf/fsl.sh
@@ -85,7 +86,7 @@ export FSLDIR PATH
 . ${FSLDIR}/etc/fslconf/fsl.sh
 ```
 
-You can do this and then you can follow the above guide.
+You can do this and then you can follow [the above guide](#if-fsl-has-already-been-installed) whitou saving the backup version (point 2).
 
 ## Fast installation 
 1) Download repository:
