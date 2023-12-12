@@ -57,7 +57,7 @@ do
         #Installation
 
         python setup.py build
-        python setup.py install
+        python setup.py install --record files.txt
 
 
         # Get pretrained models

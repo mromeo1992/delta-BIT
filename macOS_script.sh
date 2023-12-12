@@ -36,7 +36,7 @@ echo $CONDA_PREFIX
 #Installation
 
 python setup_mac.py build
-python setup_mac.py install
+python setup_mac.py install --record files.txt
 
 
 # Get pretrained models

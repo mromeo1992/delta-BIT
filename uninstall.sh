@@ -35,7 +35,6 @@ do
         echo Removing delta-BIT
         conda activate delta-BIT
 
-        python setup.py install --record files.txt
         xargs rm -rf < files.txt
         rm -r build
         rm -r delta_BIT.egg-info
