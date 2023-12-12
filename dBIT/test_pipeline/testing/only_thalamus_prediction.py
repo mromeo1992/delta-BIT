@@ -198,7 +198,7 @@ def main():
 
     print('\n\nThalamus prediction\n\n')
 
-    tal_pred_script=os.path.join(os.environ['DELTA_BIT'],'test_pipeline','testing','predict_thalamus.py')
+    tal_pred_script=os.path.join(os.environ['DELTA_BIT'],'dBIT','test_pipeline','testing','predict_thalamus.py')
     cmd='python '+tal_pred_script+' -n '+project_name
     print(cmd)
 
