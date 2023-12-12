@@ -1,4 +1,6 @@
-# GET STARTED
+# Installation
+## Fix FSL-conda conflict
+
 ## Fast installation 
 1) Download repository:
     ```
