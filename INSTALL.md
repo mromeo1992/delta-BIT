@@ -1,5 +1,91 @@
 # Installation
 ## Fix FSL-conda conflict
+The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not installed, in fact [fslinstaller.py](https://git.fmrib.ox.ac.uk/fsl/conda/installer) installs miniconda in the FSL directory. Double conda installations or the installation of miniconda and anaconda together should be avoided due to the problems that may arise. We found a conflict which happens with the normal installation of FSL 6.0.6 and 6.0.7 is coupled with the installation of delta-BIT. In general, this issue happens for **ALL CONDA ENVIRONMENTS** in your system. We found a solution which avoid any problems.
+
+1. If not present, install conda or miniconda on your pc (we suggest miniconda which is  is a minimal installer for Conda, [here](https://docs.conda.io/projects/miniconda/en/latest/miniconda-install.html) the official site).
+2. move the FSL directory into a backup folder
+    >mv $FSLDIR path/to/the/backup/folder
+
+    so you will be able to restore your old version in case of problems.
+3. create the FSL directory in the same path. \
+    Even you moved the directory, the FSLDIR variable is still in your bash profile, so you can type:
+    >mkdir $FSLDIR
+
+    If FSL was stored in a root directory type:
+    >sudo mkdir $FSLDIR
+4. Download the environment file of FSL from this url https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/?C=M;O=D . You can choose the version you want, even the last one. When the download is terminated move the file on the FSLDIR
+
+    ```
+    # for no root folder
+    mv Downloads/name_of_the_file_you_downloaded.yml $FSLDIR/
+
+    #for root folder
+    sudo mv Downloads/name_of_the_file_you_downloaded.yml $FSLDIR/
+    ```
+5. move to the parent folder of FSLDIR and type:
+    ```
+    #for no root folder
+    cd $FSLDIR
+    cd ..
+    conda update conda
+    conda env create -p ./fsl -f name_of_the_file_you_downloaded.yml
+    ```
+    If FSL was installed in a root directory you need to work as root user, you can do it by typing:
+    >sudo su
+
+    In most cases anaconda is not active in root user, so you need to activate it. Take note of your conda or miniconda directory (usually it is $HOME/anaconda3 or $HOME/miniconda3) and type:
+    ```
+    #for anaconda in $HOME/anaconda3/
+    source $HOME/anaconda3/bin/activate
+
+    #for miniconda in $HOME/miniconda3/
+    source $HOME/anaconda3/bin/activate
+    ```
+    You will see the write ```(base)``` on the left in your terminal which is the environment. Now you can install FSL:
+    ```
+    cd $FSLDIR
+    cd ..
+    conda update conda
+    conda env create -p fsl/ -f name_of_the_file_you_downloaded.yml
+    exit
+    ```
+6. Close and open terminal or type
+    >source ~/.bashrc
+
+    and try FSL by typing
+    >flirt -version
+    
+    if the output is something like
+    ```
+    FLIRT version 6.0
+    ```
+    Everything is ready for delta-BIT installation. If you found some problem that you cannot fix delete the FSL directory and move back the backup copy.
+
+If you want to avoid this procedure you can install old version of FSL (up to FSL 6.0.5.2) with the old installer which you can find [here](https://git.fmrib.ox.ac.uk/fsl/installer).
+
+### First installation of FSL
+If this is your first installation of FSL you will need to configure the bash variables. To do it you just need to open the profile with a text editor and past in it the lines:
+```
+# FSL Setup
+FSLDIR=#insert here the location of your fsl directory 
+PATH=${FSLDIR}/bin:${PATH}
+export FSLDIR PATH
+. ${FSLDIR}/etc/fslconf/fsl.sh
+```
+
+Example: Suppose your FSL directory is in /usr/local you can opend the profile file with gedit or another text editor:
+>gedit ~/.profile
+
+and the you append at the end the following lines:
+```
+# FSL Setup
+FSLDIR=/usr/local/fsl
+PATH=${FSLDIR}/bin:${PATH}
+export FSLDIR PATH
+. ${FSLDIR}/etc/fslconf/fsl.sh
+```
+
+You can do this and then you can follow the above guide.
 
 ## Fast installation 
 1) Download repository:
