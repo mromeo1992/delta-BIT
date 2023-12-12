@@ -204,9 +204,17 @@ Clone the repository with
 
 >cd delta-BIT
 
->var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
+```
+#for linux users
+var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
 
->source ~/.bashrc
+source ~/.bashrc
+
+#for macOS users
+var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.zshrc
+
+source ~/.zshrc
+```
 
 
 
