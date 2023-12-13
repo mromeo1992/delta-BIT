@@ -1,4 +1,7 @@
 # delta-BIT
+## What is delta-BIT
+
+
 ## Get started
 
 * [Requirements](#requirements)
@@ -16,7 +19,7 @@ For a standard and easy installation we suggest you to satisfy the below require
 *FSL last versions (since 6.0.6) maight have conflict with conda environments (not only with delta-BIT) for this reason we suggest to have a look at [fix FSL-conda conflict](./INSTALL.md#fix-fsl-conda-conflict) section.
 
 ### Installation
-There is a [fast installation](INSTALL.md#fast-installation) section and a [step-by-step](INSTALL.md#step-by-step-installation) section in the [installation guide](INSTALL.md). If you are not a developer we recommend you only follow the first one. In case you encounter any problems you can try following the section step by step to better understand the installation process and find a solution.
+There is a [fast installation](INSTALL.md#fast-installation) section and a [step-by-step](INSTALL.md#step-by-step-installation) section in the [installation guide](INSTALL.md). If you are not a developer we recommend you to only follow the first one. In case you encounter any problems you can try following the section step by step to better understand the installation process and find a solution.
 
 
 ### Usage
@@ -63,6 +66,6 @@ optional arguments:
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
                         output_directory (default: $HOME/project_name)
 ```
-As you can see, you need to specify only few flags and for almost all of them you have a default version, in this way you can make your own dataset (in accordance with [the data structure](./dBIT/test_pipeline/preprocessing/README.md#dataset-structure)) using the dafault names. The flag --name, the project name, is used to map old and processed data, in this way for all command you run you will need just the project name.
+As you can see, you need to specify only few flags and for almost all of them you have a default version, in this way you can make your own dataset (in accordance with [the data structure](./dBIT/test_pipeline/preprocessing/README.md#dataset-structure)) using the default names. The flag --name, the project name, is used to map old and processed data, in this way for all command you run you will need just the project name.
 
 
