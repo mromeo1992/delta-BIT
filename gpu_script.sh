@@ -61,7 +61,7 @@ do
 
 
         # Get pretrained models
-
+        source ~/.bashrc
         cd $DELTA_BIT/dBIT/trained_models
         wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/Ea9L1kLoDpJIsCSwe795QpABF19uJiJ95GOnWygwHOaIVA?download=1
         unzip trained_models.zip -d pretrained
