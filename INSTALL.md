@@ -103,8 +103,15 @@ You can do this and then you can follow [the above guide](#if-fsl-has-already-be
 
 3) Run installation script
     >sh install.sh
-4) Activate delta-BIT environment
-    >conda activate delta-BIT
+4) Reload bash variables and activate delta-BIT environment
+    ```
+    #on linux
+    source ~/.bashrc
+    #on mac
+    source ~/.zshrc
+    ```
+
+    >conda activate delta-BIT 
 5) Test installation
     >d-BIT_regDataset -h
 
