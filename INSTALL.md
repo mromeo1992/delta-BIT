@@ -83,7 +83,7 @@ export FSLDIR PATH
 . ${FSLDIR}/etc/fslconf/fsl.sh
 ```
 
-Example: Suppose your FSL directory is in /usr/local you can opend the profile file with gedit or another text editor:
+Example: Suppose your FSL directory is in /usr/local you can open the profile file with gedit or another text editor:
 >gedit ~/.profile
 
 and the you append at the end the following lines:
