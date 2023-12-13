@@ -25,6 +25,44 @@ delta-BIT can be run from terminal, all commands start with ```d-BIT_``` and all
 At the moment delta-BIT has the following main pipeline:
 
 * Preprocessing Pipeline
-To see the usar manual of the preprocessing pipeline for testing click [here](test_pipeline/preprocessing/README.md).
+To see the usar manual of the preprocessing pipeline for testing click [here](./dBIT/test_pipeline/preprocessing/README.md).
 * Testing Pipeline
-To see the usar manual of the testing pipeline for testing click [here](test_pipeline/testing/README.md).
+To see the usar manual of the testing pipeline for testing click [here](./dBIT/test_pipeline/testing/README.md).
+
+If you are not interested in the preprocessing processes you can directly predict tractographies using the command ```d-BIT_full_test_pipeline```, it will run the full and standard pipeline. By typing:
+>d-BIT_full_test_pipeline -h
+
+it will output
+```
+usage: d-BIT_full_test_pipeline [-h] -n NAME [-m {pretrained}] [--data_type DATA_TYPE] -dir DATASET_DIRECTORY
+                                [--T1 T1] [--dwi DWI] [--bvecs BVECS] [--bvals BVALS] [--registration] [--tmp]
+                                [--cortex_area CORTEX_AREA [CORTEX_AREA ...]] [-o OUTPUT_DIR]
+
+With this script you can run the standard pipeline to predict probabilistic tractographies.The minimum requirement is
+the dataset preparation in accordance with the dataset structure
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Project's name (default: None)
+  -m {pretrained}, --models {pretrained}
+                        Insert here the name of the models you want to use (default: pretrained)
+  --data_type DATA_TYPE
+                        Insert here the extention of the disired output data: possibility nii, nii.gz, mgz (default:
+                        nii.gz)
+  -dir DATASET_DIRECTORY, --dataset_directory DATASET_DIRECTORY
+                        indicate here your main folder which cointains your dataset (default: None)
+  --T1 T1               file name of the T1 image (default: T1.nii.gz)
+  --dwi DWI             file name of the DWI image (default: DWI.nii.gz)
+  --bvecs BVECS         file name of the bvecs file (default: DWI.bvec)
+  --bvals BVALS         file name of the bvals file (default: DWI.bval)
+  --registration        Inser if you data have already been registered on a standard template (default: False)
+  --tmp                 Insert this flag if you want to keep temporary files (default: False)
+  --cortex_area CORTEX_AREA [CORTEX_AREA ...]
+                        Insert here the cortex area you want to predict choose between ['pretrained', 'all'] (default:
+                        ['all'])
+  -o OUTPUT_DIR, --output_dir OUTPUT_DIR
+                        output_directory (default: $HOME/project_name)
+```
+As you can see, you need to specify only few flags and for almost all of them you have a default version, in this way you can make your own dataset (in accordance with [the data structure](./dBIT/test_pipeline/preprocessing/README.md#dataset-structure)) using the dafault names. The flag --name, the project name, is used to map old and processed data, in this way for all command you run you will need just the project name.
+
+
