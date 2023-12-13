@@ -99,3 +99,9 @@ optional arguments:
 As you can see, you need to specify only few flags and for almost all of them you have a default version, in this way you can make your own dataset (in accordance with [the data structure](./dBIT/test_pipeline/preprocessing/README.md#dataset-structure)) using the default names. The flag --name, the project name, is used to map old and processed data, in this way for all command you run you will need just the project name.
 
 
+## Acknowledgments
+Data were provided [in part] by the Human Connectome Project, WU-Minn Consortium (Principal Investigators: David Van Essen and Kamil Ugurbil; 1U54MH091657) funded by the 16 NIH Institutes and Centers that support the NIH Blueprint for Neuroscience Research; and by the McDonnell Center for Systems Neuroscience at Washington University.
+
+This work was received funding from the Italian Ministry of Health Ricerca Finalizzata 2016-Giovani Ricercatori call under grant agreement no. GR-2016-02364526, from the Italian National Institute of Nuclear Physics with the research project Artificial Intelligence in Medicine (next-AIM) and the Minitrsy of Research with the Project "SiciliAn MicronanOTecH Research And Innovation CEnter "SAMOTHRACE" (MUR, PNRR-M4C2, ECS\_00000022), spoke 5 - Università degli Studi di Palermo "S2-COMMs - Micro and Nanotechnologies for Smart \& Sustainable Communities".
+
+Research partly supported by PNRR - M4C2 - Investimento 1.3, Partenariato Esteso PE00000013 - "FAIR - Future Artificial Intelligence Research" - Spoke 8 "Pervasive AI", funded by the European Commission under the NextGeneration EU programme.
