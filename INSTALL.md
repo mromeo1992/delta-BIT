@@ -95,7 +95,7 @@ export FSLDIR PATH
 . ${FSLDIR}/etc/fslconf/fsl.sh
 ```
 
-You can do this and then you can follow [the above guide](#if-fsl-has-already-been-installed) whitou saving the backup version (point 2).
+You can do this and then you can follow [the above guide](#if-fsl-has-already-been-installed) whitout saving the backup version (point 2.).
 
 ## Fast installation 
 1) Download repository:
