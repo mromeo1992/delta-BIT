@@ -43,6 +43,17 @@ python setup_mac.py install --record files.txt
 source ~/.zshrc
 cd $DELTA_BIT/dBIT/trained_models
 wget -O ./trained_models.zip https://unipa-my.sharepoint.com/:u:/g/personal/mattia_romeo_unipa_it/Ea9L1kLoDpJIsCSwe795QpABF19uJiJ95GOnWygwHOaIVA?download=1
+
+#check for unzip
+if ! command -v uzip > /dev/null
+then
+    echo "unzip could not be found"
+    echo install it and then follow the "Get pretrained models" section in the installation guide
+    exit 1
+else
+    echo ok
+fi
+
 unzip trained_models.zip -d pretrained
 rm trained_models.zip
 
