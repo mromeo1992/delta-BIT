@@ -1,6 +1,36 @@
 # delta-BIT
 ## What is delta-BIT
+DELTA-BIT stands for Deep-learning Local TrActography for BraIn Targeting, it comes from the idea to make faster the [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki) pipeline for [probabilistic tractography](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres). 
 
+In brief, probabilistic tractographies are random walks which use DWI images to get structural connectivity information. After a diffusion model has been build up and a fiber Orientation Distribution Function (fODF) for each voxcel has been evaluated, it is possible to run several sample streamlines by starting from some seed and then taking steps in random directions chosen according to the fODF. The result of the streamlines can be used to represent the structural connectivity of the seed voxels with certain ROIs in the brain, such as areas of the cortex. One of the applications of probabilistic tractography is the voxels by ROI connectivity [[1](#1)-[2](#2)-[3](#3)], which can be used for the *in-vivo* parcellation of the thalamus (look at the figures below) .
+
+![Alt text](./images/fsl_tract2.gif)
+<img src="./images/fsl_tract1.gif" alt="drawing" width="250"/>
+
+This type of analysis can be used for targeting purpuose, such as in tcMRgFUS treatment for essential tremor.
+
+In delta-BIT we implemented Convolutional Neural Network (CNN) for the voxels by ROI connectivity fast estimation. In particular we considered the connectivity of the voxel of the thalamus with the below cortex areas:
+
+- frontal cortex;
+- occipital cortex;
+- parietal cortex;
+- postcentral gyrus;
+- precentral gyrus;
+- temporal cortex.
+
+The idea was to train one U-NET for thalamus segmentation on T1 image, and 6 U-NETs which combine DTI images to predict the connectivity maps of the thalamus with the above cortex areas.
+
+Our workflow involves the application of minimal preprocessing (DWI eddy current and movement correction and acpc registration on the standard template MNI152_1mm), prediction of the thalamus of the left hemisphere, combining of the DTI images whith thalamus and finaly tractographies prediction.
+
+The full pipeline takes approximately 3 minutes and 30 seconds to make predictions, which is a great result compared to at least 2 and a half hours required by FSL for a complete tractography analysis(starting from raw data).
+
+
+
+### References
+<a id="1">[1]</a> Behrens, T.E., Berg, H.J., Jbabdi, S., Rushworth, M.F., Woolrich, M.W., 2007. Probabilistic diffusion tractography with multiple fibre orientations: What can we gain? neuroimage 34, 144–155.
+<a id="2">[2]</a> Behrens, T.E., Johansen-Berg, H., Woolrich, M., Smith, S., Wheeler-Kingshott, C., Boulby, P., Barker, G., Sillery, E., Sheehan, K., Ciccarelli, O., et al., 2003a. Non-invasive mapping of connections between human thalamus and cortex using diffusion imaging. Nature neuroscience 6, 750–757.
+<a id="3">[3]</a> Behrens, T.E., Woolrich, M.W., Jenkinson, M., Johansen-Berg, H., Nunes, R.G., Clare, S., Matthews, P.M., Brady, J.M., Smith, S.M., 2003b. Characterization and propagation of uncertainty in diffusion-weighted mr imaging. Magnetic Resonance in Medicine: An Official Journal of the International Society for Magnetic
+Resonance in Medicine 50, 1077–1088
 
 ## Get started
 
