@@ -1,4 +1,6 @@
 # delta-BIT
+<img src="./images/abstract_grafico.png" alt="drawing" width="500"/>
+
 ## What is delta-BIT
 DELTA-BIT stands for Deep-learning Local TrActography for BraIn Targeting, it comes from the idea to make faster the [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki) pipeline for [probabilistic tractography](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FDT/UserGuide#PROBTRACKX_-_probabilistic_tracking_with_crossing_fibres). 
 
