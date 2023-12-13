@@ -146,7 +146,7 @@ def main():
     json_object=reading_json(json_path)
     
     #getting template
-    template=os.path.join(os.environ['DELTA_BIT'],'utils/templates',config['template'])
+    template=os.path.join(os.environ['DELTA_BIT'],'dBIT/utils/templates',config['template'])
 
     #out directory
     json_object['inputs']['reg_dir']=os.path.join(json_object['inputs']['preprocessing_dir'],'registered')
