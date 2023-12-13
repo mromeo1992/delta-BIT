@@ -161,7 +161,7 @@ def main():
     parser.add_argument("-m","--models",choices=models, help="Insert here the name of the models you want to use",default='pretrained')
     parser.add_argument("--data_type", help="Insert here the extention of the disired output data: possibility nii, nii.gz, mgz",default='nii.gz')
     parser.add_argument("-dir", "--dataset_directory", help="indicate here your main folder which cointains your dataset", required=True)
-    parser.add_argument("--T1_path", help="indicate here the T1 image's relative pathname (starting from the subject's folder)", default='T1.nii.gz')
+    parser.add_argument("--T1", help="file name of the T1 image", default='T1.nii.gz')
     parser.add_argument("--registration",action="store_true", help="Inser if you data have already been registered on a standard template")
     parser.add_argument("-o", "--output_dir", help="output_directory",default=home+"/project_name")
 
