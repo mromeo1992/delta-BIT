@@ -5,6 +5,9 @@ delta-BIT has been developed on Linux (Ubuntu 22.04) and it has been tested on m
 ## Fix FSL-conda conflict
 The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not installed, in fact [fslinstaller.py](https://git.fmrib.ox.ac.uk/fsl/conda/installer) installs miniconda in the FSL directory. Double conda installations or the installation of miniconda and anaconda together should be avoided due to the problems that may arise. We found a conflict which happens with the normal installation of FSL 6.0.6 and 6.0.7 is coupled with the installation of delta-BIT. In general, this issue happens for **ALL CONDA ENVIRONMENTS** in your system. We found a solution which avoid any problems.
 
+* [IF FSL has already been installed](#if-fsl-has-already-been-installed)
+* [If this is your first installation](#if-this-is-your-first-installation-of-fsl)
+
 ### If FSL has already been installed
 1. If not present, install conda or miniconda on your pc (we suggest miniconda which is  is a minimal installer for Conda, [here](https://docs.conda.io/projects/miniconda/en/latest/miniconda-install.html) the official site).
 2. move the FSL directory into a backup folder
@@ -27,12 +30,14 @@ The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not
     sudo mv Downloads/name_of_the_file_you_downloaded.yml $FSLDIR/
     ```
 5. move to the parent folder of FSLDIR and type:
+    if FSL is not located in a root folder
     ```
     #for no root folder
     cd $FSLDIR
     cd ..
     conda update conda
     conda env create -p ./fsl -f name_of_the_file_you_downloaded.yml
+    conda update -c conda-forge --update-all fsleyes
     ```
     If FSL was installed in a root directory you need to work as root user, you can do it by typing:
     >sudo su
@@ -51,6 +56,7 @@ The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not
     cd ..
     conda update conda
     conda env create -p fsl/ -f name_of_the_file_you_downloaded.yml
+    conda update -c conda-forge --update-all fsleyes
     exit
     ```
 6. Close and open terminal or type
