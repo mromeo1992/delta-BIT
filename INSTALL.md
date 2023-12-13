@@ -29,7 +29,7 @@ The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not
     #for root folder
     sudo mv Downloads/name_of_the_file_you_downloaded.yml $FSLDIR/
     ```
-5. move to the parent folder of FSLDIR and type:
+5. move to the parent folder of FSLDIR and type: \
     if FSL is not located in a root folder
     ```
     #for no root folder
