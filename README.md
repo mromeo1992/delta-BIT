@@ -20,7 +20,7 @@ In delta-BIT we implemented Convolutional Neural Network (CNN) for the voxels by
 
 The idea was to train one U-NET for thalamus segmentation on T1 image, and 6 U-NETs which combine DTI images to predict the connectivity maps of the thalamus with the above cortex areas.
 
-Our workflow involves the application of minimal preprocessing (DWI eddy current and movement correction and acpc registration on the standard template MNI152_1mm), prediction of the thalamus of the left hemisphere, combining of the DTI images whith thalamus and finaly tractographies prediction.
+Our workflow involves the application of minimal preprocessing (DWI eddy current and movement correction and acpc registration on the standard template MNI152_1mm), prediction of the thalamus of the left hemisphere, combining the DTI images with thalamus, and finaly tractographies prediction.
 
 The full pipeline takes approximately 3 minutes and 30 seconds to make predictions, which is a great result compared to at least 2 and a half hours required by FSL for a complete tractography analysis(starting from raw data).
 
