@@ -9,14 +9,14 @@
 * [Usage](#usage)
 
 ### Requirements
-delta-BIT has been developed on Linux (Ubuntu 22.04) and it has been tested on macOS. For Windows installation we suggest to use [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/) (FSL recomend the same, https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation/Windows). 
+delta-BIT has been developed on Linux (Ubuntu 22.04) and it has been tested on macOS and on Windows using [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/) (FSL recomendation for Windows user, https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation/Windows). 
 
 For a standard and easy installation we suggest you to satisfy the below requirements:
 1) [FSL](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/) installation (required).*
 2) nvidia drivers (for gpu users).
 3) [conda](https://conda.io/projects/conda/en/latest/index.html#) installation (strongly recommend).
 
-*FSL last versions (since 6.0.6) maight have conflict with conda environments (not only with delta-BIT) for this reason we suggest to have a look at [fix FSL-conda conflict](./INSTALL.md#fix-fsl-conda-conflict) section.
+*FSL last versions (since 6.0.6) might have conflict with conda environments (not only with delta-BIT) for this reason we suggest to have a look at [fix FSL-conda conflict](./INSTALL.md#fix-fsl-conda-conflict) section before install it or delta-BIT.
 
 ### Installation
 There is a [fast installation](INSTALL.md#fast-installation) section and a [step-by-step](INSTALL.md#step-by-step-installation) section in the [installation guide](INSTALL.md). If you are not a developer we recommend you to only follow the first one. In case you encounter any problems you can try following the section step by step to better understand the installation process and find a solution.
