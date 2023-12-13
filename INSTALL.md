@@ -1,4 +1,7 @@
 # Installation
+
+delta-BIT has been developed on Linux (Ubuntu 22.04) and it has been tested on macOS and on Windows installation using [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/) (FSL recomend the same, https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/FslInstallation/Windows). If you are a Windows user we recomand to follow the standard Windows installation.
+
 ## Fix FSL-conda conflict
 The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not installed, in fact [fslinstaller.py](https://git.fmrib.ox.ac.uk/fsl/conda/installer) installs miniconda in the FSL directory. Double conda installations or the installation of miniconda and anaconda together should be avoided due to the problems that may arise. We found a conflict which happens with the normal installation of FSL 6.0.6 and 6.0.7 is coupled with the installation of delta-BIT. In general, this issue happens for **ALL CONDA ENVIRONMENTS** in your system. We found a solution which avoid any problems.
 
@@ -145,60 +148,28 @@ You can do this and then you can follow [the above guide](#if-fsl-has-already-be
     
     If a list of GPU devices is returned, you've installed TensorFlow successfully.
 
-## For MacOS installer
-Installing on Mac is quite similar to installing on Linux, however you may encounter some issues, such as tensorflow versions not being available for M1 or M2 architectures. For more details on the tensorflow version for MacOS we suggest taking a look at the [tensorflow web site](https://www.tensorflow.org/install/pip#macos). Moreover, tensorflow has no GPU support for Mac installer, [here](https://github.com/deganza/Install-TensorFlow-on-Mac-M1-GPU/blob/main/Install-TensorFlow-on-Mac-M1-GPU.ipynb) you might find a solution.
-### Fast installation for CPU users
+## Windows installation
+delta-BIT has been developed on Unix platform, so we did not write a Windows version. Anyway, since several years Windows has released the [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/about), wls, which is '''a feature of Windows that allows you to run a Linux environment on your Windows machine, without the need for a separate virtual machine or dual booting. WSL is designed to provide a seamless and productive experience for developers who want to use both Windows and Linux at the same time'''. In this section we offer a guide for a simple installation of wls with Ubuntu 22.04 and miniconda3 inside. After this you will be able to follow the [fast installation guide](#fast-installation).
 
-1) Download repository:
-    ```
-    #use git clone
-    git clone https://github.com/mromeo1992/delta-BIT.git
-    
-    #or download it from the link and then unzip it
-    https://github.com/mromeo1992/delta-BIT/archive/refs/heads/main.zip
-    ```
-2) Setting delta-BIT's folder as system variable
-    >cd delta-BIT
-    
-    >var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.zshrc
+### Install WLS with Ubuntu 22.04
+Open PowerShell or Windows Command Prompt in administrator mode by right-clicking and selecting "Run as administrator", enter: 
+>wsl --install
 
-    >source ~/.zshrc
+then restart your machine. After login open PowerShell or Windows Command Prompt and type
+>wsl --install -d Ubuntu-22.04
+
+after install will be finished you will be able to use a Ubuntu terminal by typing ```wsl```.
+### Install miniconda
+If you want, you can install GUI apps on WSL (look [here](https://learn.microsoft.com/en-us/windows/wsl/tutorials/gui-apps)), but delta-BIT does not requires it. 
+Download the miniconda script:
+>wget -O miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+and install the script by typing
+>sh miniconda.sh
+
+After you will be able to install firt FSL (follow [this guide](#fix-fsl-conda-conflict)) and then delta-BIT ([here](#fast-installation) the fast installation)
 
 
-3) Run installation script
-    >sh install.sh
-    
-    entry 2 for macOS installation
-
-4) Activate delta-BIT environment
-    >conda activate delta-BIT
-5) Test installation
-    >d-BIT_regDataset -h
-
-    if you show this message:
-
-        ```
-        usage: d-BIT_regDataset [-h] -n NAME
-                                [-t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}]
-                                [--tmp]
-
-        With this script you can register your dataset.The minimum requirements
-        dataset json file produced by write_json.py and DWI preprocessing.
-
-        optional arguments:
-        -h, --help            show this help message and exit
-        -n NAME, --name NAME  Project's name (default: None)
-        -t {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}, --template {MNI152_T1_1mm.nii.gz,MNI152_T1_2mm.nii.gz}
-                                choose a template for registration (for testing
-                                pretrained models only MNI152_T1_1mm.nii.gz) (default:
-                                MNI152_T1_1mm.nii.gz)
-        --tmp                 Insert this flag if you want to keep temporary files
-                                (default: False)
-        ```
-    
-    **the installation was successful!**
-
-    The installation is now complete and you will be able to run the commands of delta-BIT. Each command has usage guide as the above output, for more information you can have a look at the readme files of the pipelines.
 
 ## Step by step Installation
 We strongly recommend that you install delta-BIT in a virtual environment! Here we will show you how to set a conda environment and install delta-BIT in it. We recommend Python version 3.9.13 also, it will work for sure.
