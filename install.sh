@@ -20,9 +20,7 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-sed '/^export DELTA_BIT/d' ~/.bashrc -i
-var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
-source ~/.bashrc
+
 check0=true
 while $check0
 do 
@@ -33,6 +31,11 @@ if [ $varname -eq 1 ]
 then
 	check0=false
 	echo Linux installation
+
+	sed '/^export DELTA_BIT/d' ~/.bashrc -i
+	var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.bashrc
+	source ~/.bashrc
+
 	check1=true
 	while $check1
 	do
@@ -103,6 +106,11 @@ elif [ $varname -eq 2 ]
 then
 	check0=false
 	echo MacOS installation: CPU version
+
+	sed '/^export DELTA_BIT/d' ~/.zshrc -i
+	var=$(realpath ./) && printf "\n%s\n" "export DELTA_BIT=$var" >> ~/.zshrc
+	source ~/.zshrc
+
 	sh ./macOS_script.sh	
 fi
 done
