@@ -36,7 +36,7 @@ The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not
     cd $FSLDIR
     cd ..
     conda update conda
-    conda env create -p ./fsl -f name_of_the_file_you_downloaded.yml
+    conda env create -p ./fsl -f ./fsl/name_of_the_file_you_downloaded.yml
     conda update -c conda-forge --update-all fsleyes
     ```
     If FSL was installed in a root directory you need to work as root user, you can do it by typing:
@@ -55,7 +55,7 @@ The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not
     cd $FSLDIR
     cd ..
     conda update conda
-    conda env create -p fsl/ -f name_of_the_file_you_downloaded.yml
+    conda env create -p ./fsl/ -f ./fsl/name_of_the_file_you_downloaded.yml
     conda update -c conda-forge --update-all fsleyes
     exit
     ```
