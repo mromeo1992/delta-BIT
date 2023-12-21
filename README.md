@@ -25,7 +25,10 @@ The full pipeline takes approximately 3 minutes and 30 seconds to make predictio
 Please cite the [following paper]() when using delta-BIT:
 ```
 Mattia Romeo, Cesare Gagliardo, Eleonora Bruno, Maria Cristina D’Oca, Massimo Midiri, Francesca Lizzi, Ian
-Postuma, Alessandro Lascialfari, Alessandra Retico, Maurizio Marrale, article under submission...
+Postuma, Alessandro Lascialfari, Alessandra Retico, Maurizio Marrale. (2023)
+DELTA-BIT: a probabilistic tractography-based deep learning framework for thalamic targeting in functional neurological disorders.
+
+article under submission...
 ```
 
 
