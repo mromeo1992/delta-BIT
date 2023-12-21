@@ -26,6 +26,11 @@ Our workflow involves the application of minimal preprocessing (DWI eddy current
 
 The full pipeline takes approximately 3 minutes and 30 seconds to make predictions, which is a great result compared to at least 2 and a half hours required by FSL for a complete tractography analysis(starting from raw data).
 
+Please cite the [following paper]() when using delta-BIT:
+```
+article under submission...
+```
+
 
 
 ### References
