@@ -20,15 +20,14 @@ The idea was to train one U-NET for thalamus segmentation on T1 image, and 6 U-N
 
 Our workflow involves the application of minimal preprocessing (DWI eddy current and movement correction and acpc registration on the standard template MNI152_1mm), prediction of the thalamus of the left hemisphere, combining the DTI images with thalamus, and finaly tractographies prediction.
 
-The full pipeline takes approximately 3 minutes and 30 seconds to make predictions, which is a great result compared to at least 2 and a half hours required by FSL for a complete tractography analysis(starting from raw data).
+The full pipeline takes approximately 3 minutes and 30 seconds to make predictions, which is a great result compared to at least 2 and a half hours required by FSL for a complete tractography analysis (starting from raw data).
 
-Please cite the [following paper]() when using delta-BIT:
+Please cite the [following paper](https://arxiv.org/abs/2312.15462) when using delta-BIT:
 ```
 Mattia Romeo, Cesare Gagliardo, Eleonora Bruno, Maria Cristina D’Oca, Massimo Midiri, Francesca Lizzi, Ian
 Postuma, Alessandro Lascialfari, Alessandra Retico, Maurizio Marrale. (2023)
 DELTA-BIT: a probabilistic tractography-based deep learning framework for thalamic targeting in functional neurological disorders.
 
-article under submission...
 ```
 
 
