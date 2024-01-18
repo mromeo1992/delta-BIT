@@ -48,7 +48,7 @@ The versions of FSL 6.0.6 or newer assume that in your system ```conda``` is not
     source $HOME/anaconda3/bin/activate
 
     #for miniconda in $HOME/miniconda3/
-    source $HOME/anaconda3/bin/activate
+    source $HOME/miniconda3/bin/activate
     ```
     You will see the write ```(base)``` on the left in your terminal which is the environment. Now you can install FSL:
     ```
