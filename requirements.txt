@@ -1,1 +1,6 @@
-streamlit==1.40.0
+protobuf<3.20
+streamlit
+nibabel
+matplotlib
+scikit-learn
+pydicom

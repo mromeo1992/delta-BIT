@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.11-slim
+FROM tensorflow/tensorflow:2.10.0-gpu
 
 # Evita prompt interattivi
 ENV DEBIAN_FRONTEND=noninteractive
@@ -14,7 +14,7 @@ WORKDIR /app
 
 # Copia requirements e installa
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --use-feature=2020-resolver -r requirements.txt
 
 # Copia il codice
 COPY app/ ./app/
@@ -30,3 +30,4 @@ EXPOSE 8501
 
 # Comando di avvio: lancia Streamlit
 CMD ["streamlit", "run", "app/streamlit_app.py", "--server.address=0.0.0.0", "--server.port=8501"]
+#CMD ["/bin/bash"]
