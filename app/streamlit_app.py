@@ -2,35 +2,14 @@
 import streamlit as st
 from pathlib import Path
 from pipeline import test_func
-
-st.title("Pipeline di segmentazione")
-st.markdown("Seleziona le cartelle di input e output")
-
-# =========================
-# Funzione helper: selezione cartella con selectbox ricorsivo
-# =========================
-def choose_folder(start_path: Path, key_prefix=""):
-    path = start_path
-    while True:
-        dirs = [p for p in path.iterdir() if p.is_dir()]
-        if not dirs:
-            break
-
-        scelta = st.selectbox(
-            f"Scegli cartella ({path})", ["--"] + [d.name for d in dirs], key=f"{key_prefix}_{path}"
-        )
-        if scelta == "--":
-            break
-        path = path / scelta
-
-    return path
+from file_browser import dir_browser
 
 # =========================
 # Input
 # =========================
 st.subheader("Cartella Input")
 input_root = Path("/data/input")
-input_dir = choose_folder(input_root, "input")
+input_dir = dir_browser(input_root, "input")
 st.write("Input selezionato:", input_dir)
 
 # =========================
@@ -38,7 +17,7 @@ st.write("Input selezionato:", input_dir)
 # =========================
 st.subheader("Cartella Output")
 output_root = Path("/data/output")
-output_dir = choose_folder(output_root, "output")
+output_dir = dir_browser(output_root, "output")
 st.write("Output selezionato:", output_dir)
 
 # =========================
