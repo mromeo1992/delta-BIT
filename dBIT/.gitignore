@@ -1,3 +1,0 @@
-#ignore jupyter notebook for local test
-*.ipynb
-__pycache__/
