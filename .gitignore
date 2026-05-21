@@ -7,3 +7,4 @@ __pycache__/
 delta-bit/data/DICOM/*
 delta-bit/data/NIFTI/*
 delta-bit/data/datasets/*
+delta-bit/data/uploads/*
