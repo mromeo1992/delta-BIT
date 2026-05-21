@@ -3,6 +3,6 @@ FROM python:3.11-slim
 WORKDIR /app
 #COPY ./gui.py .
 
-RUN pip install nicegui
+RUN pip install nicegui requests
 
 EXPOSE 8080

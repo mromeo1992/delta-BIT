@@ -68,8 +68,31 @@ ui.button("Generate config", on_click=generate_config)
 
 def run_mnireg():
     #devo chiamare il servizio di tools
-    pass
+    print("Running MNI registration...")
+    import requests
+    try:
+        response = requests.post("http://tools:8000/run")
+        if response.status_code == 200:
+            ui.notify("MNI registration completed successfully!")
+        else:
+            ui.notify(f"Error: {response.status_code} - {response.text}")
+    except Exception as e:
+        ui.notify(f"Request failed: {e}")
 
 ui.button("Run MNIREG", on_click=run_mnireg)
+
+def run_vim():
+    print("Running VIM prediction...")
+    import requests
+    try:
+        response = requests.post("http://tf:9000/predict")
+        if response.status_code == 200:
+            ui.notify("VIM prediction completed successfully!")
+        else:
+            ui.notify(f"Error: {response.status_code} - {response.text}")
+    except Exception as e:
+        ui.notify(f"Request failed: {e}")
+
+ui.button("Run VIM", on_click=run_vim)
 
 ui.run()

@@ -1,3 +1,5 @@
 nibabel
 matplotlib
 scikit-learn
+fastapi
+uvicorn
