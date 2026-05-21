@@ -1,0 +1,9 @@
+services:
+
+  tf:
+    build: ./TF
+    user: "${HOST_UID}:${HOST_GID}"
+    volumes:
+      - ./data:/app/data
+    working_dir: /app
+    command: bash

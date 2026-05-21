@@ -1,0 +1,8 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+#COPY ./gui.py .
+
+RUN pip install nicegui
+
+EXPOSE 8080

@@ -1,6 +1,6 @@
 import numpy as np
 
-cropping_border='utils/cropping_border_default.npz'
+cropping_border='data/script/utils/cropping_border_default.npz'
 
 
 def get_cropping_border():

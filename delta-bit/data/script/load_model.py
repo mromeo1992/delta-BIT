@@ -1,5 +1,7 @@
-from utils.Unet import generator
+from .utils.Unet import generator
 import keras
+
+keras.backend.clear_session()
 
 def from_model(config):
     path=config['path_model']
@@ -8,7 +10,7 @@ def from_model(config):
 
 def from_weights(config):
     path=config['path_model']
-    img_size=config['img_size']
+    img_size=tuple(config['img_size'])
     num_input=config['num_input']
     n_can_in=config['n_can_in']
     model=generator(img_size=img_size, num_input=num_input, n_can_in=n_can_in)
@@ -19,5 +21,8 @@ def load_model(config):
     try:
         model=from_model(config)
     except:
-        model=from_weights(config)
+        try:
+            model=from_weights(config)
+        except:
+            raise ValueError("Invalid model file. Please check the path and the format of the model file.")
     return model
