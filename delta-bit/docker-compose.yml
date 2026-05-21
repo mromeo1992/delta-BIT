@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+
+  tf:
+    build: ./TF
+    runtime: nvidia
+    gpus: all
+    volumes:
+      - ./data:/app/data
+    working_dir: /app
+    command: bash
+
+  tools:
+    build: ./tools
+    volumes:
+      - ./data:/data
+    working_dir: /data
+    gpus: all
+    command: bash
