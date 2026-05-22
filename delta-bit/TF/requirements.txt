@@ -3,3 +3,4 @@ matplotlib
 scikit-learn
 fastapi
 uvicorn
+scikit-image

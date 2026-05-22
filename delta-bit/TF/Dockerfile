@@ -25,7 +25,10 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir --use-feature=2020-resolver -r requirements.txt
 
+WORKDIR /app/data
+
+
 # Comando di avvio: lancia Streamlit
 #CMD ["streamlit", "run", "app/streamlit_app.py", "--server.address=0.0.0.0", "--server.port=8501"]
 #CMD ["/bin/bash"]
-CMD ["uvicorn", "data.script.tf_open_port:app2", "--host", "0.0.0.0", "--port", "9000"]
+CMD ["uvicorn", "script.tf_open_port:app2", "--host", "0.0.0.0", "--port", "9000"]

@@ -24,7 +24,7 @@ def run_registration():
     for i in img:
         im=os.path.join(UPLOAD_DIR,i)
         print(f"Processing {im} with MNI template {mni}")
-        cmd=f"antsRegistrationSyNQuick.sh -d 3 -f {mni} -m {im} -t r"
+        cmd=f"antsRegistrationSyNQuick.sh -d 3 -f {mni} -m {im} -t a"
         out_path="outputWarped.nii.gz"
         print(f"Running command: {cmd}")
         os.system(cmd)

@@ -4,10 +4,12 @@ import json
 import nibabel as nib
 import numpy as np
 import os
+from skimage.measure import label
 
-config='data/script/utils/config_file.json'
+
+config='script/utils/config_file.json'
 config_data = json.load(open(config))
-out_path = "data/NIFTI/"
+out_path = "NIFTI/"
 in_path = "/app"
 
 border = get_cropping_border()
@@ -27,6 +29,7 @@ def crop_image(img_data):
 def load_image(path):
     img = nib.load(path)
     img_data = img.get_fdata()
+    #img_data = (img_data - np.min(img_data)) / (np.max(img_data) - np.min(img_data))
     affine = img.affine
     return img_data, affine
 
@@ -38,9 +41,22 @@ def predict_vim(config_img):
     img_data, affine = load_image(path_img)
     img_cropped = crop_image(img_data)
     img_cropped = img_cropped[np.newaxis, ..., np.newaxis]  # Aggiungi dimensioni batch e canali
+    img_cropped = (img_cropped - np.min(img_cropped)) / (np.max(img_cropped) - np.min(img_cropped))
     model=load_model(config_data['model'])
     prediction = model.predict(img_cropped)
     prediction = prediction.squeeze()
+
+    prediction = (prediction > 0.5).astype(np.uint8)
+
+    labels, num=label(prediction,return_num=1,connectivity=1)
+    if num>1:
+        j=np.zeros(num)
+        for i in range(num):
+            j[i]=len(np.where(labels==i+1)[0])
+        biggest_component=np.where(j==np.max(j))[0]+1
+        labels=labels==biggest_component
+    prediction=labels.astype('uint8')
+
     pred = np.zeros_like(img_data)
     pred[x_min:x_max, y_min:y_max, z_min:z_max] = prediction
     to_save = nib.Nifti1Image(pred, affine)

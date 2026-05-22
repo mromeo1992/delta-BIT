@@ -4,8 +4,8 @@ import json
 import shutil
 import os
 
-UPLOAD_DIR = Path("data/uploads")
-CONFIG_DIR = Path("data/config")
+UPLOAD_DIR = Path("uploads")
+CONFIG_DIR = Path("config")
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 CONFIG_DIR.mkdir(parents=True, exist_ok=True)
