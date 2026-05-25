@@ -24,18 +24,21 @@ def run_registration():
     for i in img:
         im=os.path.join(UPLOAD_DIR,i)
         print(f"Processing {im} with MNI template {mni}")
-        cmd=f"antsRegistrationSyNQuick.sh -d 3 -f {mni} -m {im} -t a"
+        cmd=f"antsRegistrationSyNQuick.sh -d 3 -f {mni} -m {im} -t r"
         out_path="outputWarped.nii.gz"
         print(f"Running command: {cmd}")
         os.system(cmd)
         
-        shutil.copy(out_path, os.path.join(output_dir, "T1_mni.nii.gz"))
+        #shutil.copy(out_path, os.path.join(output_dir, "T1_mni.nii.gz"))
         update_config(os.path.join(output_dir, "T1_mni.nii.gz"))
         print(config)
         print("Cleaning up temporary files...")
         for f in os.listdir("/data"):
             if f.startswith("output"):
-                os.remove(os.path.join("/data", f))
+                #os.remove(os.path.join("/data", f))
+                shutil.move(os.path.join("/data", f), os.path.join(output_dir, f))
+                if f==out_path:
+                    shutil.move(os.path.join(output_dir, f), os.path.join(output_dir, "T1_mni.nii.gz"))
         
 
     return {"status": "done"}
