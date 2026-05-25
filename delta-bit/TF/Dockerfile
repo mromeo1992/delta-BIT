@@ -25,7 +25,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir --use-feature=2020-resolver -r requirements.txt
 
-WORKDIR /app/data
+WORKDIR /data
+
 
 
 # Comando di avvio: lancia Streamlit

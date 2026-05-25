@@ -8,10 +8,11 @@ from skimage.measure import label
 import requests
 
 
-config='script/utils/config_file.json'
-config_data = json.load(open(config))
+config_file='/data/script/utils/config_file.json' #gestisce i modelli e i parametri
+config_data = '/data/config/config.json' #gestisce i path delle immagini
 out_path = "NIFTI/"
-in_path = "/app"
+
+job_file = "/data/config/job.json"
 
 border = get_cropping_border()
 x_min , x_max = border['x_min'] , border['x_max']
@@ -24,6 +25,33 @@ z_min , z_max = border['z_min'] , border['z_max']
 #img_data=img.get_fdata()[x_min:x_max,y_min:y_max,z_min:z_max]
 #print(config_data['model']['img_size'])
 
+def update_config(key, path_pred):
+    config= json.load(open(config_data))
+    if  key not in config.keys():
+        config[key] = []
+    if path_pred not in config[key]:        
+        config[key].append(path_pred)
+    with open(config_data, "w") as f:
+        json.dump(config, f,indent=4)
+
+def create_job_file_regMNI(path_file):
+    job = {
+        "command": "regMNI",
+        "images": [path_file]
+    }
+    with open(job_file, "w") as f:
+        json.dump(job, f, indent=4)
+
+def create_job_file_revertMNI(path_file_in, path_file_out):
+    job = {
+        "command": "revertMNI",
+        "images": [path_file_in ],
+        "predictions": [path_file_out]
+    }
+    with open(job_file, "w") as f:
+        json.dump(job, f, indent=4)        
+
+
 def crop_image(img_data):
     return img_data[x_min:x_max,y_min:y_max,z_min:z_max]
 
@@ -35,39 +63,61 @@ def load_image(path):
     return img_data, affine
 
 def predict_vim(config_img):
+    #config_data = json.load(open(config_img))
     #path_img = os.path.join(in_path, config_img['images'][0])
-    path_img = os.path.join(in_path, config_img['predictions'][0][1:])
-    out_path_img = os.path.join(out_path, "vim_prediction.nii.gz")
-    print(f"Loading image from {path_img}")
-    img_data, affine = load_image(path_img)
-    img_cropped = crop_image(img_data)
-    img_cropped = img_cropped[np.newaxis, ..., np.newaxis]  # Aggiungi dimensioni batch e canali
-    img_cropped = (img_cropped - np.min(img_cropped)) / (np.max(img_cropped) - np.min(img_cropped))
-    model=load_model(config_data['model'])
-    prediction = model.predict(img_cropped)
-    prediction = prediction.squeeze()
+    config_model= json.load(open(config_file))
+    model=load_model(config_model['model'])
+    if "registered" not in config_img.keys():
+        config_img["registered"] = []
+    for idx, im in enumerate(config_img['images']):
+        #path_img = im
+        patient_dir= os.path.join(out_path,os.path.basename(im).split(".")[0])
+        os.makedirs(patient_dir, exist_ok=True)
+        reg_img=os.path.join(patient_dir, "T1_mni.nii.gz")
+        if reg_img not in config_img["registered"]:
+            print("Required registration, running registration pipeline...")
+            create_job_file_regMNI(im)
+            try:
+                response = requests.post("http://tools:8000/run")
+            except Exception as e:
+                print(f"Request failed: {e}")
 
-    prediction = (prediction > 0.5).astype(np.uint8)
+        out_path_img = os.path.join(patient_dir, "vim_prediction.nii.gz")
+        print(f"Loading image from {im}")
+        img_data, affine = load_image(reg_img)
+        img_cropped = crop_image(img_data)
+        img_cropped = img_cropped[np.newaxis, ..., np.newaxis]  # Aggiungi dimensioni batch e canali
+        img_cropped = (img_cropped - np.min(img_cropped)) / (np.max(img_cropped) - np.min(img_cropped))
+        
+        prediction = model.predict(img_cropped)
+        
+        prediction = prediction.squeeze()
 
-    labels, num=label(prediction,return_num=1,connectivity=1)
-    if num>1:
-        j=np.zeros(num)
-        for i in range(num):
-            j[i]=len(np.where(labels==i+1)[0])
-        biggest_component=np.where(j==np.max(j))[0]+1
-        labels=labels==biggest_component
-    prediction=labels.astype('uint8')
+        prediction = (prediction > 0.5).astype(np.uint8)
+        labels, num=label(prediction,return_num=1,connectivity=1)
+        if num>1:
+            j=np.zeros(num)
+            for i in range(num):
+                j[i]=len(np.where(labels==i+1)[0])
+            biggest_component=np.where(j==np.max(j))[0]+1
+            labels=labels==biggest_component
+        prediction=labels.astype('uint8')
 
-    pred = np.zeros_like(img_data)
-    pred[x_min:x_max, y_min:y_max, z_min:z_max] = prediction
-    to_save = nib.Nifti1Image(pred, affine)
-    nib.save(to_save, out_path_img)
+        
+        pred = np.zeros_like(img_data)
+        pred[x_min:x_max, y_min:y_max, z_min:z_max] = prediction
+        to_save = nib.Nifti1Image(pred, affine)
+        
+        nib.save(to_save, out_path_img)
+        print(f"Saved prediction to {out_path_img}")
+        update_config("predictions", out_path_img)
+        create_job_file_revertMNI(im, out_path_img)
 
-    #revert_transform
-    try:
-        response = requests.post("http://tools:8000/revert")
-    except Exception as e:
-        print(f"Request failed: {e}")
+        #revert_transform
+        try:
+            response = requests.post("http://tools:8000/revert")
+        except Exception as e:
+            print(f"Request failed: {e}")
 
 
     return {"status": "done"}

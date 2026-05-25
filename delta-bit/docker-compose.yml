@@ -16,8 +16,8 @@ services:
     ports:
       - "9000:9000"
     volumes:
-      - ./data:/app/data
-    working_dir: /app/data
+      - ./data:/data
+    working_dir: /data
 
   tools:
     build: ./tools

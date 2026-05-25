@@ -5,6 +5,10 @@ services:
     runtime: nvidia
     gpus: all
     user: "${HOST_UID}:${HOST_GID}"
+    # Do not map host ports here: this file is intended as an override for GPU support.
+    # Leaving ports empty prevents re-mapping the same host port and avoids "port already
+    # allocated" errors when combining with docker-compose.yml.
+    ports: []
     volumes:
-      - ./data:/app/data
-    working_dir: /app/data
+      - ./data:/data
+    working_dir: /data
