@@ -42,3 +42,16 @@ def run_registration():
         
 
     return {"status": "done"}
+
+@app.post("/revert")
+def revert_registration():
+    out_vim=os.path.join(output_dir, "vim_prediction.nii.gz")
+    config_img = json.load(open("/data/config/config.json"))
+    ref= os.path.join(UPLOAD_DIR, config_img["images"][0])
+    output_vim = os.path.join(output_dir, "vim_prediction_native.nii.gz")
+    matrix=os.path.join(output_dir, "output0GenericAffine.mat")
+    cmd="antsApplyTransforms -d 3 -i {} -r {} -o {} -t {} -u int".format(out_vim, ref, output_vim, str([matrix, 1]))
+    print(f"Running command: {cmd}")
+    os.system(cmd)
+
+    return {"status": "done"}

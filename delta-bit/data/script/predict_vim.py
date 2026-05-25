@@ -5,6 +5,7 @@ import nibabel as nib
 import numpy as np
 import os
 from skimage.measure import label
+import requests
 
 
 config='script/utils/config_file.json'
@@ -61,4 +62,13 @@ def predict_vim(config_img):
     pred[x_min:x_max, y_min:y_max, z_min:z_max] = prediction
     to_save = nib.Nifti1Image(pred, affine)
     nib.save(to_save, out_path_img)
+
+    #revert_transform
+    try:
+        response = requests.post("http://tools:8000/revert")
+    except Exception as e:
+        print(f"Request failed: {e}")
+
+
+    return {"status": "done"}
 
