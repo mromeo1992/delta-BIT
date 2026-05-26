@@ -9,12 +9,12 @@ output_dir = "/data/NIFTI"
 UPLOAD_DIR = "/data/uploads"
 os.makedirs(output_dir, exist_ok=True)
 
-def update_config(key, path_pred):
+def update_config(sub , key, path_pred):
     config= json.load(open(config_file))
-    if  key not in config.keys():
-        config[key] = []
-    if path_pred not in config[key]:
-        config[key].append(path_pred)
+    if  key not in list(config["subjects"][sub].keys()):
+        config["subjects"][sub][key] = []
+    if path_pred not in config["subjects"][sub][key]:
+        config["subjects"][sub][key].append(path_pred)
     with open(config_file, "w") as f:
         json.dump(config, f,indent=4)
 
@@ -27,20 +27,21 @@ def run_registration():
     # esegui ants
     config= json.load(open(job_file))
     mni="/data/script/utils/MNI152_T1_1mm.nii.gz"
-    img=config["images"]
+    sub = list(config["subjects"].keys())[0]
+    img=config["subjects"][sub]["images"]
+    print(f"Subject: {sub}, Images: {img}")
     for i in img:
-        im=os.path.join(UPLOAD_DIR,i)
-        print(f"Processing {im} with MNI template {mni}")
-        cmd=f"antsRegistrationSyNQuick.sh -d 3 -f {mni} -m {im} -t r"
+        print(f"Processing {i} with MNI template {mni}")
+        cmd=f"antsRegistrationSyNQuick.sh -d 3 -f {mni} -m {i} -t r"
         out_path="outputWarped.nii.gz"
         print(f"Running command: {cmd}")
         os.system(cmd)
-        out_dir=os.path.join(output_dir,os.path.basename(im).split(".")[0])
+        out_dir=os.path.join(output_dir,sub)
         os.makedirs(out_dir, exist_ok=True)
         out_img=os.path.join(out_dir, "T1_mni.nii.gz")
         #shutil.copy(out_path, os.path.join(output_dir, "T1_mni.nii.gz"))
-        update_config("registered", os.path.join(output_dir, out_img))
-        print(config)
+        update_config(sub, "registered", out_img)
+        #print(config)
         print("Cleaning up temporary files...")
         for f in os.listdir("/data"):
             if f.startswith("output"):
@@ -55,16 +56,17 @@ def run_registration():
 @app.post("/revert")
 def revert_registration():
     config = json.load(open(job_file))
-    for idx, im in enumerate(config["predictions"]):
-        print(idx, im)
+    sub = list(config["subjects"].keys())[0]
+    for im in config["subjects"][sub]["predictions"]:
+        print(im)
         output_vim=os.path.join(os.path.dirname(im), "vim_prediction_native.nii.gz")
-        ref= os.path.join(UPLOAD_DIR, config["images"][idx])
+        ref= config["subjects"][sub]["images"][0]
         #output_vim = os.path.join(output_dir, "vim_prediction_native.nii.gz")
         matrix=os.path.join(os.path.dirname(im), "output0GenericAffine.mat")
         cmd="antsApplyTransforms -d 3 -i {} -r {} -o {} -t {} -n NearestNeighbor".format(im, ref, output_vim, str([matrix, 1]))
         print(f"Running command: {cmd}")
         os.system(cmd)
 
-        update_config("native_predictions", output_vim)
+        update_config(sub,"native_predictions", output_vim)
 
     return {"status": "done"}

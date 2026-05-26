@@ -10,7 +10,7 @@ import requests
 
 config_file='/data/script/utils/config_file.json' #gestisce i modelli e i parametri
 config_data = '/data/config/config.json' #gestisce i path delle immagini
-out_path = "NIFTI/"
+out_path = "/data/NIFTI/"
 
 job_file = "/data/config/job.json"
 
@@ -25,12 +25,12 @@ z_min , z_max = border['z_min'] , border['z_max']
 #img_data=img.get_fdata()[x_min:x_max,y_min:y_max,z_min:z_max]
 #print(config_data['model']['img_size'])
 
-def update_config(key, path_pred):
+def update_config(sub , key, path_pred):
     config= json.load(open(config_data))
-    if  key not in config.keys():
-        config[key] = []
-    if path_pred not in config[key]:        
-        config[key].append(path_pred)
+    if  key not in list(config["subjects"][sub].keys()):
+        config["subjects"][sub][key] = []
+    if path_pred not in config["subjects"][sub][key]:
+        config["subjects"][sub][key].append(path_pred)
     with open(config_data, "w") as f:
         json.dump(config, f,indent=4)
 
@@ -49,7 +49,14 @@ def create_job_file_revertMNI(path_file_in, path_file_out):
         "predictions": [path_file_out]
     }
     with open(job_file, "w") as f:
-        json.dump(job, f, indent=4)        
+        json.dump(job, f, indent=4)
+
+def create_job(sub, metadata, command):
+
+    job = {"subjects": {sub: metadata}}
+    job["command"] = command
+    with open(job_file, "w") as f:
+        json.dump(job, f, indent=4)              
 
 
 def crop_image(img_data):
@@ -67,23 +74,25 @@ def predict_vim(config_img):
     #path_img = os.path.join(in_path, config_img['images'][0])
     config_model= json.load(open(config_file))
     model=load_model(config_model['model'])
-    if "registered" not in config_img.keys():
-        config_img["registered"] = []
-    for idx, im in enumerate(config_img['images']):
+
+    for sub in config_img['subjects'].keys():
         #path_img = im
-        patient_dir= os.path.join(out_path,os.path.basename(im).split(".")[0])
+        pt_metadata = config_img['subjects'][sub]
+        patient_dir= os.path.join(out_path, sub)
         os.makedirs(patient_dir, exist_ok=True)
         reg_img=os.path.join(patient_dir, "T1_mni.nii.gz")
-        if reg_img not in config_img["registered"]:
+        if reg_img not in pt_metadata['registered']:
             print("Required registration, running registration pipeline...")
-            create_job_file_regMNI(im)
+            create_job(sub, pt_metadata, command="regMNI")
             try:
                 response = requests.post("http://tools:8000/run")
+                config_img= json.load(open(config_data))
+                pt_metadata = config_img['subjects'][sub]
             except Exception as e:
                 print(f"Request failed: {e}")
 
         out_path_img = os.path.join(patient_dir, "vim_prediction.nii.gz")
-        print(f"Loading image from {im}")
+        print(f"Loading image from {reg_img}")
         img_data, affine = load_image(reg_img)
         img_cropped = crop_image(img_data)
         img_cropped = img_cropped[np.newaxis, ..., np.newaxis]  # Aggiungi dimensioni batch e canali
@@ -110,8 +119,11 @@ def predict_vim(config_img):
         
         nib.save(to_save, out_path_img)
         print(f"Saved prediction to {out_path_img}")
-        update_config("predictions", out_path_img)
-        create_job_file_revertMNI(im, out_path_img)
+        update_config(sub, "predictions", out_path_img)
+        config_img= json.load(open(config_data))
+        pt_metadata = config_img['subjects'][sub]   
+        print(pt_metadata)     
+        create_job(sub, pt_metadata, command="revertMNI")
 
         #revert_transform
         try:

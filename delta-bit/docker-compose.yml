@@ -6,8 +6,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./data:/app/data
-    working_dir: /app/data
+      - ./data:/data
+    working_dir: /data
     command: python gui.py
 
   tf:
