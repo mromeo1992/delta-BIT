@@ -238,6 +238,7 @@ with ui.column().classes('w-full p-4'):
 
     columns = [
         {'name': 'id', 'label': 'ID', 'field': 'id', 'align': 'left', 'sortable': True},
+        {'name': 'view', 'label': '', 'field': 'view', 'align': 'center'},
         {'name': 'expand', 'label': '', 'field': 'expand', 'align': 'center'},
     ]
 
@@ -251,47 +252,64 @@ with ui.column().classes('w-full p-4'):
 
     # EXPAND SLOT (Aggiornato con il checkbox funzionante)
     table.add_slot('body', r'''
-    <q-tr :props="props" class="cursor-pointer" @click="props.selected = !props.selected">
+        <q-tr :props="props" class="cursor-pointer">
 
-        <q-td auto-width>
-            <q-checkbox v-model="props.selected" />
-        </q-td>
+            <!-- SELECT -->
+            <q-td auto-width>
+                <q-checkbox v-model="props.selected" />
+            </q-td>
 
-        <q-td key="id" :props="props" class="text-left">
-            {{ props.row.id }}
-        </q-td>
+            <!-- ID -->
+            <q-td key="id" :props="props" class="text-left">
+                {{ props.row.id }}
+            </q-td>
 
-        <q-td key="expand" class="text-center" @click.stop>
-            <q-btn
-                size="sm"
-                color="primary"
-                round
-                dense
-                :icon="props.expand ? 'remove' : 'add'"
-                @click="props.expand = !props.expand"
-            />
-        </q-td>
+            <!-- VIEW BUTTON (NUOVO) -->
+            <q-td key="view" class="text-center" @click.stop>
+                <q-btn
+                    size="sm"
+                    color="secondary"
+                    icon="visibility"
+                    round
+                    dense
+                    @click="() => $parent.$emit('view_mri', props.row.id)"
+                />
+            </q-td>
 
-    </q-tr>
+            <!-- EXPAND -->
+            <q-td key="expand" class="text-center" @click.stop>
+                <q-btn
+                    size="sm"
+                    color="primary"
+                    round
+                    dense
+                    :icon="props.expand ? 'remove' : 'add'"
+                    @click="props.expand = !props.expand"
+                />
+            </q-td>
 
-    <q-tr v-show="props.expand" :props="props">
-        <q-td colspan="100%">
+        </q-tr>
 
-            <div class="text-subtitle2 q-mb-sm">Files</div>
+        <!-- EXPANDED ROW -->
+        <q-tr v-show="props.expand" :props="props">
+            <q-td colspan="100%">
 
-            <div
-                v-for="file in props.row.files"
-                :key="file.path"
-                class="row items-center q-gutter-sm q-mb-xs"
-            >
-                <q-badge color="primary">{{ file.type }}</q-badge>
-                <span class="text-body2">{{ file.path }}</span>
-            </div>
+                <div class="text-subtitle2 q-mb-sm">Files</div>
 
-        </q-td>
-    </q-tr>
-    ''')
-    
+                <div
+                    v-for="file in props.row.files"
+                    :key="file.path"
+                    class="row items-center q-gutter-sm q-mb-xs"
+                >
+                    <q-badge color="primary">{{ file.type }}</q-badge>
+                    <span class="text-body2">{{ file.path }}</span>
+                </div>
+
+            </q-td>
+        </q-tr>
+        ''')
+
+        
 
     # BUTTONS
     with ui.row().classes('gap-2 q-mt-md'):
@@ -310,7 +328,14 @@ with ui.column().classes('w-full p-4'):
 load_and_refresh()
 
 
+def handle_view_mri(msg):
+    row_id = msg.args
+    row = next(r for r in table.rows if r['id'] == row_id)
 
+    # esempio: apri primo file MRI
+    if row['files']:
+        utility.open_viewer("/data/NIFTI/T1_Screening/T1_mni.nii.gz")
+table.on('view_mri', handle_view_mri)        
 
 
 # -------------------------

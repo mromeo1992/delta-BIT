@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import json
 import os
+from script.GUI.viewer import get_middle_slice
 
 
 
@@ -14,26 +15,15 @@ def predict():
     from .predict_vim import predict_vim
     predict_vim(config_img_data)
 
-@app2.get('/viewer')
-def viewer(path: str):
-    import nibabel as nib
-    import matplotlib.pylab as plt
-    import io, base64
+@app2.post('/view')
+def view_image(data: dict):
 
-    if not os.path.exists(path):
-        return ui.label("File not found")
+    path = data["path"]
 
-    img = nib.load(path).get_fdata()
-    slice_img = img[:, :, img.shape[2] // 2]
+    print(path)
+    
+    img_b64 = get_middle_slice(path)
 
-    fig = plt.figure()
-    plt.imshow(slice_img.T, cmap='gray', origin='lower')
-    plt.axis('off')
-
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png', bbox_inches='tight')
-    buf.seek(0)
-
-    encoded = base64.b64encode(buf.read()).decode('utf-8')
-
-    return f'<img src="data:image/png;base64,{encoded}"/>'
+    return {
+        "image": img_b64
+    }
