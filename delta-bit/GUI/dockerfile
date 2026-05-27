@@ -1,5 +1,8 @@
 FROM python:3.11-slim
 
+WORKDIR /tmp
+RUN chmod 777 /tmp
+
 WORKDIR /data
 #COPY ./gui.py .
 

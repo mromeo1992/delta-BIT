@@ -122,7 +122,6 @@ def predict_vim(config_img):
         update_config(sub, "predictions", out_path_img)
         config_img= json.load(open(config_data))
         pt_metadata = config_img['subjects'][sub]   
-        print(pt_metadata)     
         create_job(sub, pt_metadata, command="revertMNI")
 
         #revert_transform
@@ -130,6 +129,12 @@ def predict_vim(config_img):
             response = requests.post("http://tools:8000/revert")
         except Exception as e:
             print(f"Request failed: {e}")
+
+        requests.post(
+            'http://gui:8080/notify',
+            json={'message': 'Subject {} completed'.format(sub)}
+        )
+        requests.post('http://gui:8080/refresh')
 
 
     return {"status": "done"}
