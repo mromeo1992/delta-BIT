@@ -328,13 +328,42 @@ with ui.column().classes('w-full p-4'):
 load_and_refresh()
 
 
-def handle_view_mri(msg):
+async def handle_view_mri(msg):
+    async def chose_mri(r):
+        options=[line["type"] for line in r["files"] if line["type"]=="Native Image" or line ["type"] == "MNI Registered" ]
+        with ui.dialog() as dialog, ui.card():
+            ui.label("Choose image space").classes("text-h6")
+
+            select = ui.select(
+                options=options,
+                value='Native Image'
+            ).classes('w-64')
+
+            def confirm():
+                global selected_value
+                selected_value = select.value
+                ui.notify(f'{selected_value} selected')
+                dialog.close()
+
+            with ui.row():
+                ui.button('Cancel', on_click=dialog.close)
+                ui.button('Confirm', on_click=confirm)
+
+        results = await dialog 
+
+
+        path=[p["path"] for p in r["files"] if p["type"]==selected_value]
+        #ui.notify(path[0])
+        return path[0]
+
     row_id = msg.args
     row = next(r for r in table.rows if r['id'] == row_id)
-
+    #ui.notify("print "+str(chose_mri(row)))
+    to_open= await chose_mri(row)
+    #ui.notify(to_open)
     # esempio: apri primo file MRI
     if row['files']:
-        utility.open_viewer("/data/NIFTI/T1_Screening/T1_mni.nii.gz")
+        utility.open_viewer(to_open)
 table.on('view_mri', handle_view_mri)        
 
 
@@ -422,10 +451,14 @@ async def handle_upload(e):
             data = await data
         staging_path.write_bytes(data)
 
+    sub_id= file.name.split('_')[0]
+    if file.name.split('_')[0]== file.name:
+        sub_id= file.name.split('.')[0]
+
     pending_files.append({
         "staging_path": staging_path,
         "original_name": file.name,
-        "id": file.name.split('.')[0]
+        "id": sub_id
     })
 
     ui.notify(f"Staged: {file.name}")

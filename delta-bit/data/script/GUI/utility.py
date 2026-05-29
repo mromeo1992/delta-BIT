@@ -24,16 +24,21 @@ async def notify(payload: dict):
 
 def open_viewer(path):
 
-    TF_URL = "http://tf:9000/view"
+    #default axis value
 
-    r = requests.post(TF_URL, json={'path': path})
-    img_b64 = r.json()['image']
+    axis= "axial"
+
+    TF_URL = "http://tf:9000/view"
+    TF_URL2 = "http://tf:9000//imsize"
+
+
+
 
     with ui.dialog().props('maximized') as dialog:
 
         with ui.element('div').style(
             '''
-            width: 80vw;
+            width: 70vw;
             height: 80vh;
             display: flex;
             flex-direction: column;
@@ -42,21 +47,74 @@ def open_viewer(path):
             justify-content: center;
             '''
         ):
+            
+            projection_select = ui.select(
+                options=['axial', 'sagittal', 'coronal'],
+                value='axial',
+                label='Projection'
+            ).classes('w-48')            
 
             ui.label('MRI Viewer').classes('text-h6')
 
-            ui.image(
-                'data:image;base64,' + img_b64
-            ).style(
-                '''
-                flex: 1;
-                width: 50%;
-                height: 60%;
+            slice_slider = ui.slider(
+                min=0,
+                max=100,
+                value=50
+            ).props('label').classes('w-96')
+
+            slice_label = ui.label('Slice: {}'.format(slice_slider.value))
+            
+            '''requests.post(
+                    TF_URL2,
+                    json={
+                        'path': path,
+                        'axis': projection_select.value
+                    }
+                ),'''            
+
+        # CREA UNA SOLA IMMAGINE
+            image = ui.image().style('''
+                width: 40%;
+                height: 90%;
                 object-fit: contain;
-                display: block;
-                margin: auto;
-                '''
+            ''')
+
+            def update_image():
+
+                r = requests.post(
+                    TF_URL,
+                    json={
+                        'path': path,
+                        'axis': projection_select.value,
+                        'slice' : int(slice_slider.value)
+
+                    }
+                )
+
+                if r.status_code != 200:
+                    ui.notify(r.text)
+                    return
+
+                img_b64 = r.json()['image']
+
+                # AGGIORNA L'IMMAGINE ESISTENTE
+                image.set_source(
+                    'data:image/png;base64,' + img_b64
+                )
+
+            projection_select.on_value_change(
+                lambda _: update_image()
             )
-            ui.button('Close', on_click=dialog.close)
+
+            slice_slider.on_value_change(
+                lambda _: update_image()
+            )
+
+            update_image()
+
+        ui.button('Close', on_click=dialog.close)
+
+
+
 
     dialog.open()
