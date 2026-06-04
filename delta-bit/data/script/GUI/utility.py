@@ -136,9 +136,11 @@ def open_viewer(path, mask_path=None):
     mask_volume = None
     if mask_path is not None:
         mask_volume = load_mask(mask_path)
-
-        xc, yc, zc = center_of_mass(mask_volume)
-        xc, yc, zc = int(xc), int(yc), int(zc)
+        try:
+            xc, yc, zc = center_of_mass(mask_volume)
+            xc, yc, zc = int(xc), int(yc), int(zc)
+        except:
+            xc, yc, zc = x // 2, y // 2, z // 2
     else:
         xc, yc, zc = x // 2, y // 2, z // 2
 

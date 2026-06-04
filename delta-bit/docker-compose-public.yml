@@ -1,0 +1,29 @@
+services:
+
+  gui:
+    build: ./GUI
+    user: "${HOST_UID}:${HOST_GID}"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/data
+    working_dir: /data
+    command: python gui.py
+
+  tf:
+    build: ./TF
+    user: "${HOST_UID}:${HOST_GID}"
+    expose:
+      - "9000"
+    volumes:
+      - ./data:/data
+    working_dir: /data
+
+  tools:
+    build: ./tools
+    user: "${HOST_UID}:${HOST_GID}"
+    expose:
+     - "8000"
+    volumes:
+      - ./data:/data
+    working_dir: /data
