@@ -8,6 +8,7 @@ from scipy.ndimage import center_of_mass
 from PIL import Image
 from io import BytesIO
 import base64
+import time
 
 # -------------------------
 # CACHE
@@ -127,24 +128,33 @@ def get_slice(volume, axis, sl):
 def open_viewer(path, mask_path=None):
 
     volume = load_volume(path)
-
-    mask_volume = None
-
-    if mask_path is not None:
-        mask_volume = load_mask(mask_path)
-        xc , yc, zc = center_of_mass(mask_volume)
-        xc, yc, zc = int(xc), int(yc), int(zc)
-    else:
-        xc , yc , zc = volume.shape[0]//2, volume.shape[1]//2, volume.shape[2]//2
-
     x, y, z = volume.shape
 
+    # -------------------------
+    # MASK (optional)
+    # -------------------------
+    mask_volume = None
+    if mask_path is not None:
+        mask_volume = load_mask(mask_path)
 
+        xc, yc, zc = center_of_mass(mask_volume)
+        xc, yc, zc = int(xc), int(yc), int(zc)
+    else:
+        xc, yc, zc = x // 2, y // 2, z // 2
+
+    # -------------------------
+    # STATE
+    # -------------------------
     current_axis = "axial"
-
-    import time
-
     last_render = 0
+    last_wheel_time = 0
+
+    zoom = 1.0
+    pan_x = 0
+    pan_y = 0
+
+    is_dragging = False
+    last_mouse = {"x": 0, "y": 0}
 
     # -------------------------
     # SLICE ENGINE
@@ -153,15 +163,13 @@ def open_viewer(path, mask_path=None):
 
         if axis == 'axial':
             img = volume[:, :, sl]
-
         elif axis == 'coronal':
             img = volume[:, sl, :]
-
         else:
             img = volume[sl, :, :]
 
         return np.rot90(img)
-    
+
     def get_mask_slice(axis, sl):
 
         if mask_volume is None:
@@ -174,38 +182,40 @@ def open_viewer(path, mask_path=None):
         else:
             m = mask_volume[sl, :, :]
 
-        return np.rot90(m)    
+        return np.rot90(m)
 
     # -------------------------
-    # FAST CACHE (optional but crucial for smooth scroll)
+    # BLEND MASK
     # -------------------------
-    slice_cache = {}
+    #from PIL import Image
 
-    def get_cached_slice(axis, sl):
+    def blend_image(img, mask):
 
-        key = (axis, sl)
+        base = Image.fromarray(img).convert("L").convert("RGBA")
 
-        if key in slice_cache:
-            return slice_cache[key]
+        m = np.array(mask).astype(np.uint8)
+        m = (m > 0).astype(np.uint8) * 120  # opacity controllata
 
-        img = get_slice(axis, sl)
-        slice_cache[key] = img
-        return img
-    
+        alpha = Image.fromarray(m).convert("L")
 
+        overlay = Image.new("RGBA", base.size, (255, 0, 0, 0))
+        overlay.putalpha(alpha)
+
+        return Image.alpha_composite(base, overlay)
 
     # -------------------------
     # UI
     # -------------------------
-    with ui.dialog().props('maximized') as dialog:#.props('maximized') as dialog:
+    with ui.dialog().props('maximized') as dialog:
+        ui.run_javascript("""
+        document.addEventListener('wheel', function(e) {
+            if (e.ctrlKey) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }, { passive: false });
+        """)        
 
-        """with ui.column().style('''
-            width: 100%;
-            height: 100%;
-            background: white;
-            align-items: center;
-            justify-content: center;
-        '''):"""
         with ui.element('div').style('''
             width: 80vw;
             height: 90vh;
@@ -213,8 +223,7 @@ def open_viewer(path, mask_path=None):
             background: white;
             flex-direction: column;
             align-items: center;
-            justify-content: center;                                     
-            
+            justify-content: center;
         '''):
 
             projection_select = ui.select(
@@ -234,35 +243,27 @@ def open_viewer(path, mask_path=None):
             slice_label = ui.label()
 
             # -------------------------
-            # IMAGE (no base64 bottleneck logic)
+            # IMAGE
             # -------------------------
-            image = ui.image().props('fit=contain').classes('w-full grow min-h-0').style('''
-                will-change: transform;
-            ''')
+            image = ui.image().props('fit=contain').classes('w-full grow min-h-0')
 
             # -------------------------
-            # SMOOTH RENDER ENGINE
+            # RENDER ENGINE
             # -------------------------
             def update_image():
 
                 nonlocal last_render
 
                 now = time.time()
-
-                # soft throttle (30–40 FPS cap)
                 if now - last_render < 0.025:
                     return
-
                 last_render = now
 
-                img = get_cached_slice(
+                img = get_slice(
                     projection_select.value,
                     int(slice_slider.value)
                 )
 
-                # -------------------------
-                # MASK (if available)
-                # -------------------------
                 if mask_volume is not None:
                     mask = get_mask_slice(
                         projection_select.value,
@@ -272,14 +273,38 @@ def open_viewer(path, mask_path=None):
                 else:
                     final = Image.fromarray(img).convert("RGBA")
 
+                # -------------------------
+                # ZOOM
+                # -------------------------
+                if zoom != 1.0:
+                    w, h = final.size
+                    final = final.resize(
+                        (int(w * zoom), int(h * zoom)),
+                        resample=Image.Resampling.BILINEAR
+                    )
 
-                #pil = Image.fromarray(img)
+                # -------------------------
+                # PAN
+                # -------------------------
+                if zoom > 1.0:
+                    w, h = final.size
+                    crop_w = int(w / zoom)
+                    crop_h = int(h / zoom)
 
-                # small performance boost (avoid recompute)
+                    left = int((w - crop_w) / 2 + pan_x)
+                    top = int((h - crop_h) / 2 + pan_y)
+
+                    final = final.crop((
+                        left,
+                        top,
+                        left + crop_w,
+                        top + crop_h
+                    ))
+
                 image.set_source(final)
 
                 slice_label.set_text(
-                    f'Slice: {int(slice_slider.value)}'
+                    f"Slice: {int(slice_slider.value)}"
                 )
 
             # -------------------------
@@ -301,8 +326,6 @@ def open_viewer(path, mask_path=None):
                     slice_slider.max = x - 1
                     slice_slider.value = xc
 
-                #slice_slider.value = slice_slider.max // 2
-
                 update_image()
 
             projection_select.on_value_change(
@@ -314,53 +337,100 @@ def open_viewer(path, mask_path=None):
             )
 
             # -------------------------
-            # ULTRA SMOOTH WHEEL (NO JITTER, NO INERTIA)
+            # WHEEL (slice + zoom)
             # -------------------------
-            last_wheel_time = 0
-
             def on_wheel(e):
 
-                nonlocal last_wheel_time
+                nonlocal last_wheel_time, zoom
 
                 now = time.time()
 
-                # anti jitter trackpad
+                delta = e.args.get("deltaY", 0)
+                ctrl = e.args.get("ctrlKey", False)
+
+                # ZOOM MODE
+                if ctrl:
+
+                    if delta > 0:
+                        zoom = max(1.0, zoom - 0.1)
+                    else:
+                        zoom = min(5.0, zoom + 0.1)
+
+                    update_image()
+                    return
+
+                # SLICE MODE
                 if now - last_wheel_time < 0.01:
                     return
 
                 last_wheel_time = now
 
-                delta = e.args.get("deltaY", 0)
-
-                # adaptive sensitivity (IMPORTANT)
                 step = 1 if delta > 0 else -1
 
                 new_value = int(slice_slider.value) + step
 
-                # clamp
                 if projection_select.value == 'axial':
                     max_v = z - 1
-                    #new_value = zc
                 elif projection_select.value == 'coronal':
                     max_v = y - 1
-                    #new_value = yc
                 else:
                     max_v = x - 1
-                    #new_value = xc
 
-                new_value = max(0, min(max_v, new_value))
+                slice_slider.value = max(0, min(max_v, new_value))
+                update_image()
 
-                slice_slider.value = new_value
+            # -------------------------
+            # PAN EVENTS (FIX ORDER OK)
+            # -------------------------
+            def on_mouse_down(e):
+                nonlocal is_dragging
+                is_dragging = True
+                last_mouse["x"] = e.args.get("clientX", 0)
+                last_mouse["y"] = e.args.get("clientY", 0)
+
+            def on_mouse_up(e):
+                nonlocal is_dragging
+                is_dragging = False
+
+            def on_mouse_move(e):
+                nonlocal pan_x, pan_y
+
+                if not is_dragging or zoom == 1.0:
+                    return
+
+                x = e.args.get("clientX", 0)
+                y = e.args.get("clientY", 0)
+
+                dx = x - last_mouse["x"]
+                dy = y - last_mouse["y"]
+
+                pan_x += dx
+                pan_y += dy
+
+                last_mouse["x"] = x
+                last_mouse["y"] = y
 
                 update_image()
 
+            # -------------------------
+            # BIND EVENTS
+            # -------------------------
             image.on("wheel", on_wheel)
+            image.on("mousedown", on_mouse_down)
+            image.on("mouseup", on_mouse_up)
+            image.on("mousemove", on_mouse_move)
 
             # -------------------------
-            # INITIAL
+            # INIT
             # -------------------------
             update_image()
 
+          
+
         ui.button('Close', on_click=dialog.close)
+        
 
     dialog.open()
+
+
+

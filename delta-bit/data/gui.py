@@ -1,4 +1,6 @@
-from nicegui import ui, run, app
+import zipfile
+
+from nicegui import ui, run, app, background_tasks
 from pathlib import Path
 import json
 import shutil
@@ -27,7 +29,7 @@ btn = None
 def reset_state():
     global saved_patients, selected_ids , selected_files
 
-    output_container.set_text('Selected: none')
+    #output_container.set_text('Selected: none')
 
     saved_patients = []
     selected_ids.clear()
@@ -54,6 +56,70 @@ def remove_selection():
                 ui.button('Confirm', on_click=lambda: [delete_action(),reset_state(), load_and_refresh(), dialog.close()])
 
         dialog.open()
+
+async def delete_later(path, delay=3600):
+
+    print(f'Scheduled deletion: {path}')
+    #ui.notify(f'Scheduled deletion of {os.path.basename(path)} in {delay} seconds', type='info')
+
+    await asyncio.sleep(delay)
+
+    try:
+        os.remove(path)
+        print(f'Deleted: {path}')
+    except Exception as e:
+        print(f'Error deleting {path}: {e}')      
+
+def export_selection():
+
+
+    async def export_action(sel):
+        import tempfile
+        tmp = tempfile.NamedTemporaryFile(
+            suffix='.zip',
+            delete=False
+        )
+
+        zip_path =tmp.name
+        tmp.close()
+
+        with zipfile.ZipFile(zip_path, "w") as zipf:
+            for sub in sel:
+                sub_dir = nifti_folder / sub["id"]
+
+                for file in sub_dir.glob("*"):
+                    zipf.write(
+                        file,
+                        arcname=f"{sub['id']}/{file.name}"
+                    )
+
+        ui.download.file(
+            zip_path,
+            filename='exported_subjects.zip'
+        )
+
+        ui.notify(
+            f"Exporting subjects: {', '.join(r['id'] for r in sel)}",
+            type='positive'
+        )
+        background_tasks.create(delete_later(zip_path))
+
+    async def confirm_export():
+        dialog.close()
+        await export_action(sel)        
+
+    sel = table.selected
+    if len(sel)>0:
+        with ui.dialog() as dialog, ui.card():
+            ui.label('Exporting subjects:\n'+'\n'.join(r['id'] for r in sel)).style('white-space: pre-line')
+            ui.label('This will export the selected subjects to a specified location. Are you sure?').style('white-space: pre-line')
+
+            with ui.row():
+                ui.button('Cancel', on_click=dialog.close)
+                #ui.button('Confirm', on_click=lambda: [export_action(sel), dialog.close()])
+                ui.button('Confirm', on_click=lambda: confirm_export())
+        dialog.open()
+
         
         #output_container = ui.label('Selected: none')
 
@@ -114,7 +180,7 @@ saved_patients = []
 selected_ids = set()
 
 # Definiamo un container per l'output in modo da poterlo aggiornare facilmente
-output_container = ui.label('Selected: none')
+#output_container = ui.label('Selected: none')
 
 
 # =====================================================
@@ -216,7 +282,7 @@ def load_and_refresh():
 # SHOW SELECTED
 # =====================================================
 
-def show_selected():
+"""def show_selected():
     sel = table.selected  # <-- NATIVE NICEGUI
 
     if not sel:
@@ -225,7 +291,7 @@ def show_selected():
 
     output_container.set_text(
         'Selected: ' + ', '.join(r['id'] for r in sel)
-    )
+    )"""
 
 
 # =====================================================
@@ -314,12 +380,13 @@ with ui.column().classes('w-full p-4'):
     # BUTTONS
     with ui.row().classes('gap-2 q-mt-md'):
         ui.button("Refresh DB", on_click=load_and_refresh)
-        ui.button("Show selected", on_click=show_selected)
+        #ui.button("Show selected", on_click=show_selected)
         btn = ui.button("Run VIM", on_click=run_vim)
+        ui.button("Export selection", on_click=export_selection)
         ui.button("Remove selection", on_click=remove_selection)
 
     # Nota: serve richiamare l'oggetto nel contesto per renderizzarlo a schermo
-    output_container
+    #output_container
 
 # =====================================================
 # INIT
@@ -362,7 +429,7 @@ async def handle_view_mri(msg):
             if len(mask_path)==0:
                 mask_path=[None] # placeholder per non mandare lista vuota
         
-        ui.notify([path[0], mask_path[0]])
+        #ui.notify([path[0], mask_path[0]])
         return path[0], mask_path[0]
 
     row_id = msg.args
