@@ -353,8 +353,17 @@ async def handle_view_mri(msg):
 
 
         path=[p["path"] for p in r["files"] if p["type"]==selected_value]
-        #ui.notify(path[0])
-        return path[0]
+        if selected_value=="Native Image":
+            mask_path=[p["path"] for p in r["files"] if p["type"]=="Native Prediction"] 
+            if len(mask_path)==0:
+                mask_path=[None] # placeholder per non mandare lista vuota
+        else:
+            mask_path=[p["path"] for p in r["files"] if p["type"]=="VIM Prediction"] 
+            if len(mask_path)==0:
+                mask_path=[None] # placeholder per non mandare lista vuota
+        
+        ui.notify([path[0], mask_path[0]])
+        return path[0], mask_path[0]
 
     row_id = msg.args
     row = next(r for r in table.rows if r['id'] == row_id)
@@ -363,7 +372,7 @@ async def handle_view_mri(msg):
     #ui.notify(to_open)
     # esempio: apri primo file MRI
     if row['files']:
-        utility.open_viewer(to_open)
+        utility.open_viewer(to_open[0], mask_path=to_open[1])
 table.on('view_mri', handle_view_mri)        
 
 

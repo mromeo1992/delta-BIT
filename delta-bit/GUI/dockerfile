@@ -6,6 +6,6 @@ RUN chmod 777 /tmp
 WORKDIR /data
 #COPY ./gui.py .
 
-RUN pip install nicegui requests pillow nibabel numpy
+RUN pip install nicegui requests pillow nibabel numpy scipy
 
 EXPOSE 8080
