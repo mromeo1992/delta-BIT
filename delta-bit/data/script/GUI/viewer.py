@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
-import requests
 
 def return_image_size(path: str, axis : str):
     volume = nib.load(path).get_fdata()
