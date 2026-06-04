@@ -4,7 +4,7 @@ services:
     build: ./GUI
     user: "${HOST_UID}:${HOST_GID}"
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     volumes:
       - ./data:/data
     working_dir: /data
@@ -13,8 +13,8 @@ services:
   tf:
     build: ./TF
     user: "${HOST_UID}:${HOST_GID}"
-    ports:
-      - "9000:9000"
+    expose:
+      - "9000"
     volumes:
       - ./data:/data
     working_dir: /data
@@ -22,8 +22,8 @@ services:
   tools:
     build: ./tools
     user: "${HOST_UID}:${HOST_GID}"
-    ports:
-     - "8000:8000"
+    expose:
+     - "8000"
     volumes:
       - ./data:/data
     working_dir: /data
