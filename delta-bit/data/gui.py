@@ -1,5 +1,6 @@
 import zipfile
-
+import requests
+import httpx
 from nicegui import ui, run, app, background_tasks
 from pathlib import Path
 import json
@@ -10,7 +11,7 @@ import uuid
 
 UPLOAD_DIR = Path("/tmp/uploads")
 CONFIG_DIR = Path("/data/config")
-STAGING_DIR = Path('/tmp/staging')
+STAGING_DIR = Path('/data/staging')
 STAGING_DIR.mkdir(parents=True, exist_ok=True)
 initialize_config = os.path.join(CONFIG_DIR, "saved_config.json")
 
@@ -640,13 +641,52 @@ def process_upload():
 # =====================================================
 # UI
 # =====================================================
-ui.label("MRI Upload Manager").classes("text-h5")
+async def handle_dicom_upload(e):
+    file = e.file
 
-ui.upload(
-    on_upload=handle_upload,
-    multiple=True,
-    auto_upload=False,
-).props('accept=.nii,.nii.gz')
+    unique_name = f"{uuid.uuid4()}_{file.name}"
+    staging_path = STAGING_DIR / unique_name
+
+    temp_path = getattr(file, "_path", None)
+
+    if temp_path and Path(temp_path).exists():
+        shutil.copy(temp_path, staging_path)
+    else:
+        data = await file.read()
+        staging_path.write_bytes(data)
+
+    async with httpx.AsyncClient() as client:
+        await client.post(
+            'http://tools:8000/upload_dcm',
+            params={'zip_path': str(staging_path)}
+        )
+
+    
+
+    
+            
+
+
+
+
+with ui.row().classes('q-mt-md gap-4').style('width: 100%; flex-wrap: nowrap;'):
+
+    with ui.column().classes('col'):
+        ui.label("MRI Upload Manager").classes("text-h5")
+        ui.upload(
+            on_upload=handle_upload,
+            multiple=True,
+            auto_upload=False,
+        ).props('accept=.nii,.nii.gz')
+
+    with ui.column().classes('col'):
+        ui.label("MRI DICOM Upload Manager").classes("text-h5")
+        ui.upload(
+            on_upload=handle_dicom_upload,
+            multiple=False,
+            auto_upload=False,
+        ).props('accept=.zip')
+
 
 #ui.button("Configure IDs & Upload", on_click=open_confirm_dialog)
 

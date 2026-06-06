@@ -2,12 +2,22 @@ from fastapi import FastAPI
 import json
 import os
 import shutil
+import zipfile
+import pydicom
+import pathlib
+import requests
+import subprocess
+
+
 #config = json.load(open("/data/config/config.json"))
 config_file = "/data/config/config.json"
 job_file = "/data/config/job.json"
-output_dir = "/data/NIFTI"
+output_dir = pathlib.Path("/data/NIFTI")
 UPLOAD_DIR = "/data/uploads"
+DICOM_FOLDER = pathlib.Path('DICOM')
+STAGING_DIR = pathlib.Path('/data/staging')
 os.makedirs(output_dir, exist_ok=True)
+os.makedirs(DICOM_FOLDER, exist_ok=True)
 
 def update_config(sub , key, path_pred):
     config= json.load(open(config_file))
@@ -69,4 +79,85 @@ def revert_registration():
 
         update_config(sub,"native_predictions", output_vim)
 
+    return {"status": "done"}
+
+def convert_dicom_to_nifti():
+    for f in os.listdir(DICOM_FOLDER):
+        dicom_path = DICOM_FOLDER / f
+
+        if not dicom_path.is_dir():
+            continue
+
+        dcm_files = [x for x in os.listdir(dicom_path) if x.endswith(".dcm")]
+        if not dcm_files:
+            continue
+
+        dicom_file = dicom_path / dcm_files[0]
+        meta = pydicom.dcmread(dicom_file)
+
+        patient_id = meta.PatientID
+        i = 0
+        existing = set(os.listdir(output_dir))
+
+        while patient_id in existing:
+            i += 1
+            patient_id = f"{meta.PatientID}_{i}"
+
+        patient_folder = output_dir / patient_id
+        patient_folder.mkdir(exist_ok=True)
+
+        cmd = [
+            "dcm2niix", "-v", "y", "-z", "y",
+            "-f", "nativeT1",
+            "-o", str(patient_folder),
+            str(dicom_path)
+        ]
+
+        subprocess.run(cmd, check=True)
+
+        shutil.move(dicom_path, patient_folder / "dicom")
+            #requests.post(
+            #    'http://gui:8080/notify',
+            #    json={'message': 'Subject {} created'.format(patient_id)}
+            #)
+            #requests.post('http://gui:8080/refresh')
+    #shutil.rmtree(DICOM_FOLDER)
+    #DICOM_FOLDER.mkdir(exist_ok=True)        
+
+    return {"status": "done"}
+
+
+@app.post("/upload_dcm")
+def extract_zip(zip_path : str):
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(DICOM_FOLDER)
+    convert_dicom_to_nifti()
+    requests.post(
+                'http://gui:8080/notify',
+                json={'message': 'All subjects created'}
+            )
+    requests.post('http://gui:8080/refresh')
+    shutil.rmtree(STAGING_DIR)
+    STAGING_DIR.mkdir(parents=True, exist_ok=True)
+    return {"status": "done"}
+
+@app.post("/convert_nifti_to_dicom")
+def convert_nifti_to_dicom(sub_id):
+    dicom_folder = output_dir / sub_id / 'dicom'
+    nifti_file = output_dir / sub_id / 'vim_prediction_native.nii.gz'
+    patient_folder = output_dir / sub_id / 'vim_seg.dcm'
+    metadata_json = "/data/script/utils/metadata.json"
+    
+
+    cmd = "itkimage2segimage --verbose --inputImageList {} --inputDICOMDirectory {} --outputDICOM {} --inputMetadata {}".format(
+        nifti_file,
+        dicom_folder,
+        patient_folder,
+        metadata_json
+    )
+    os.system(cmd)
+    requests.post(
+                'http://gui:8080/notify',
+                json={'message': 'Subject {} DICOM created'.format(sub_id)}
+            )
     return {"status": "done"}

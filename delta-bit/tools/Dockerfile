@@ -16,7 +16,7 @@ RUN python3 -m venv /python_env/venv
 
 # Update pip inside venv and install libraries
 RUN /python_env/venv/bin/pip install --upgrade pip && \
-    /python_env/venv/bin/pip install --no-cache-dir fastapi uvicorn
+    /python_env/venv/bin/pip install --no-cache-dir fastapi uvicorn pydicom nibabel dcmqi requests
 
 # Set venv as default for the container
 ENV PATH="/python_env/venv/bin:$PATH"

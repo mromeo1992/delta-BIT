@@ -123,12 +123,18 @@ def predict_vim(config_img):
         config_img= json.load(open(config_data))
         pt_metadata = config_img['subjects'][sub]   
         create_job(sub, pt_metadata, command="revertMNI")
-
         #revert_transform
         try:
             response = requests.post("http://tools:8000/revert")
         except Exception as e:
             print(f"Request failed: {e}")
+
+
+        if "dicom" in os.listdir(patient_dir):
+                requests.post(
+                    'http://tools:8000/convert_nifti_to_dicom', 
+                    params={'sub_id': sub}
+                )            
 
         requests.post(
             'http://gui:8080/notify',
