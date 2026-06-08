@@ -50,7 +50,7 @@ def load_mask(path):
 
     return np.rot90(m)"""
 
-
+"""
 def blend_image(img, mask):
 
     base = Image.fromarray(img).convert("L").convert("RGBA")
@@ -68,7 +68,7 @@ def blend_image(img, mask):
     overlay.putalpha(alpha)
 
     # merge
-    return Image.alpha_composite(base, overlay)
+    return Image.alpha_composite(base, overlay)"""
 
 
 def load_volume(path):
@@ -91,7 +91,7 @@ def load_volume(path):
     return VOLUME_CACHE[path]
 
 
-def render_slice(slice_img):
+"""def render_slice(slice_img):
 
     img = Image.fromarray(slice_img)
 
@@ -102,18 +102,18 @@ def render_slice(slice_img):
     return (
         'data:image/png;base64,' +
         base64.b64encode(buffer.getvalue()).decode()
-    )
+    )"""
 
 
-
+"""
 def normalize_volume(vol):
     vol = vol.astype(np.float32)
     vol -= vol.min()
     if vol.max() > 0:
         vol /= vol.max()
-    return (vol * 255).astype(np.uint8)
+    return (vol * 255).astype(np.uint8)"""
 
-
+"""
 def get_slice(volume, axis, sl):
     if axis == 'axial':
         img = volume[:, :, sl]
@@ -121,7 +121,10 @@ def get_slice(volume, axis, sl):
         img = volume[:, sl, :]
     else:
         img = volume[sl, :, :]
-    return np.rot90(img)
+
+    if native:
+        img=img[:,::-1]
+    return np.rot90(img)"""
 
 
 
@@ -130,12 +133,18 @@ def open_viewer(path, mask_path=None):
     volume = load_volume(path)
     x, y, z = volume.shape
 
+    if "native" in path:
+        volume = volume[::-1,:,:]
+
     # -------------------------
     # MASK (optional)
     # -------------------------
     mask_volume = None
     if mask_path is not None:
         mask_volume = load_mask(mask_path)
+        if "native" in path:
+            mask_volume = mask_volume[::-1,:,:]
+
         try:
             xc, yc, zc = center_of_mass(mask_volume)
             xc, yc, zc = int(xc), int(yc), int(zc)
@@ -169,7 +178,7 @@ def open_viewer(path, mask_path=None):
             img = volume[:, sl, :]
         else:
             img = volume[sl, :, :]
-
+        
         return np.rot90(img)
 
     def get_mask_slice(axis, sl):
