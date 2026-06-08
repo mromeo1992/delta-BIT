@@ -35,7 +35,9 @@ async def notify(payload: dict):
 
 def load_mask(path):
     if path not in MASK_CACHE:
-        m = nib.load(path).get_fdata().astype(np.uint8)
+        m = nib.load(path)
+        m = nib.as_closest_canonical(m)
+        m = m.get_fdata().astype(np.uint8)
         MASK_CACHE[path] = m
     return MASK_CACHE[path]
 
@@ -75,7 +77,9 @@ def load_volume(path):
 
     if path not in VOLUME_CACHE:
 
-        volume = nib.load(path).get_fdata()
+        volume = nib.load(path)
+        volume = nib.as_closest_canonical(volume)
+        volume = volume.get_fdata()
 
         volume = volume.astype(np.float32)
 
@@ -133,7 +137,7 @@ def open_viewer(path, mask_path=None):
     volume = load_volume(path)
     x, y, z = volume.shape
 
-    if "native" in path:
+    if "mni" in path:
         volume = volume[::-1,:,:]
 
     # -------------------------
@@ -142,7 +146,7 @@ def open_viewer(path, mask_path=None):
     mask_volume = None
     if mask_path is not None:
         mask_volume = load_mask(mask_path)
-        if "native" in path:
+        if "mni" in path:
             mask_volume = mask_volume[::-1,:,:]
 
         try:
@@ -174,12 +178,15 @@ def open_viewer(path, mask_path=None):
 
         if axis == 'axial':
             img = volume[:, :, sl]
+            img = np.fliplr(np.rot90(img[:,:]))
         elif axis == 'coronal':
             img = volume[:, sl, :]
+            img = np.fliplr(np.rot90(img[:,:]))
         else:
             img = volume[sl, :, :]
+            img = np.rot90(img[:,:])
         
-        return np.rot90(img)
+        return img
 
     def get_mask_slice(axis, sl):
 
@@ -188,12 +195,15 @@ def open_viewer(path, mask_path=None):
 
         if axis == 'axial':
             m = mask_volume[:, :, sl]
+            m = np.fliplr(np.rot90(m[:,:]))
         elif axis == 'coronal':
             m = mask_volume[:, sl, :]
+            m = np.fliplr(np.rot90(m[:,:]))
         else:
             m = mask_volume[sl, :, :]
+            m = np.rot90(m[:,:])
 
-        return np.rot90(m)
+        return m
 
     # -------------------------
     # BLEND MASK
