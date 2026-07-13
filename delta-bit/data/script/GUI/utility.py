@@ -137,18 +137,12 @@ def open_viewer(path, mask_path=None):
     volume = load_volume(path)
     x, y, z = volume.shape
 
-    if "mni" in path:
-        volume = volume[::-1,:,:]
-
     # -------------------------
     # MASK (optional)
     # -------------------------
     mask_volume = None
     if mask_path is not None:
         mask_volume = load_mask(mask_path)
-        if "mni" in path:
-            mask_volume = mask_volume[::-1,:,:]
-
         try:
             xc, yc, zc = center_of_mass(mask_volume)
             xc, yc, zc = int(xc), int(yc), int(zc)

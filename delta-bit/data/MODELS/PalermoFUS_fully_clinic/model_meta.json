@@ -6,7 +6,6 @@
             48
         ],
         "num_input": 1,
-        "n_can_in": 32,
-        "path_model": "/data/MODELS/PalermoFUS/model.h5"
+        "n_can_in": 32
     }
 }

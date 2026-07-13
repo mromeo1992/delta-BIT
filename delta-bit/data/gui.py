@@ -14,6 +14,9 @@ CONFIG_DIR = Path("/data/config")
 STAGING_DIR = Path('/data/staging')
 STAGING_DIR.mkdir(parents=True, exist_ok=True)
 initialize_config = os.path.join(CONFIG_DIR, "saved_config.json")
+MODELS_DIR = Path("/data/MODELS")
+
+model_data_config_file='/data/script/utils/config_file.json'
 
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 CONFIG_DIR.mkdir(parents=True, exist_ok=True)
@@ -124,13 +127,13 @@ def export_selection():
         
         #output_container = ui.label('Selected: none')
 
-def create_config():
+def create_config(side):
     sel = table.selected
     if len(sel)>0:
         subjects=[sub['id'] for sub in sel]        
         meta = [f for f in saved_patients if f["id"] in subjects ]
 
-        config= { "subjects": {f['id'] : {"images" : f["images"], "registered":f["registered"], "predictions":f["predictions"], "native_predictions":f["native_predictions"] } for f in meta}}
+        config= { "subjects": {f['id'] : {"images" : f["images"], "registered":f["registered"], "predictions":f["predictions"], "native_predictions":f["native_predictions"], "hemisphere_side": [side] } for f in meta}}
         
         out_path = CONFIG_DIR / "config.json"
         out_path.write_text(json.dumps(config, indent=4))
@@ -138,41 +141,224 @@ def create_config():
 
 
 async def run_vim():
-    global job_running
+
+    global job_running, btn
 
     if job_running:
-        ui.notify("A job is running")
+        ui.notify(
+            "A job is already running",
+            type="warning"
+        )
         return
 
+
+    # =============================
+    # MODEL LIST
+    # =============================
+
+    models_list = sorted([
+        f for f in os.listdir(MODELS_DIR)
+        if os.path.isdir(os.path.join(MODELS_DIR, f))
+    ])
+
+
+    # =============================
+    # DIALOG
+    # =============================
+
+    with ui.dialog() as dialog, ui.card():
+
+        ui.label(
+            'Select model and hemisphere side before running VIM.'
+        ).classes('text-h6')
+
+
+        with ui.row():
+            ui.label('Select model:')
+
+            select_model = ui.select(
+                options=models_list,
+                value=models_list[0] if models_list else None
+            ).classes('w-64')
+
+
+        with ui.row():
+            ui.label('Select hemisphere side:')
+
+            side_select = ui.select(
+                options=[
+                    'left',
+                    'right',
+                    'both'
+                ],
+                value='left'
+            ).classes('w-64')
+
+
+
+        async def confirm():
+
+            if select_model.value is None:
+
+                ui.notify(
+                    "Please select a model",
+                    type="warning"
+                )
+                return
+
+
+            model = select_model.value
+            side = side_select.value
+
+
+            dialog.close()
+
+
+            await execute_vim(
+                model,
+                side
+            )
+
+
+
+        with ui.row():
+
+            ui.button(
+                'Cancel',
+                on_click=dialog.close
+            )
+
+            ui.button(
+                'Confirm',
+                on_click=confirm
+            )
+
+
+    dialog.open()
+
+
+
+async def execute_vim(model, side):
+
+    global job_running, btn
+
+
+    if job_running:
+        ui.notify(
+            "A job is already running",
+            type="warning"
+        )
+        return
+
+
     job_running = True
-    btn.disable()
 
-    print("Running VIM prediction...")
-    create_config()
+    if btn is not None:
+        btn.disable()
 
-    import requests
+
+
+    def write_model_to_config(model):
+
+        model_meta = os.path.join(
+            MODELS_DIR,
+            model,
+            'model_meta.json'
+        )
+
+
+        with open(model_meta) as f:
+            model_meta_data = json.load(f)
+
+
+        model_meta_data['model']['path_model'] = os.path.join(
+            MODELS_DIR,
+            model,
+            'model.h5'
+        )
+
+
+        with open(model_data_config_file, "w") as f:
+            json.dump(
+                model_meta_data,
+                f,
+                indent=4
+            )
+
+
 
     try:
+
+        # -------------------------
+        # Update model configuration
+        # -------------------------
+
+        write_model_to_config(model)
+
+
+        # -------------------------
+        # Create prediction config
+        # -------------------------
+
+        create_config(side)
+
+
+
+        ui.notify(
+            f"Running VIM prediction\n"
+            f"Model: {model}\n"
+            f"Hemisphere: {side}"
+        )
+
+
+        # -------------------------
+        # Call TensorFlow container
+        # -------------------------
+
         response = await run.io_bound(
             requests.post,
             "http://tf:9000/predict"
         )
 
+
+
         if response.status_code == 200:
-            ui.notify("VIM prediction for all subjects completed successfully!", type="positive")
-        else:
+
             ui.notify(
-                f"Error: {response.status_code} - {response.text}"
+                "VIM prediction completed successfully!",
+                type="positive"
             )
 
+
+        else:
+
+            ui.notify(
+                f"Prediction error: "
+                f"{response.status_code}\n{response.text}",
+                type="negative"
+            )
+
+
+
     except Exception as e:
-        ui.notify(f"Request failed: {e}")
+
+        ui.notify(
+            f"VIM execution failed:\n{e}",
+            type="negative"
+        )
+
+
 
     finally:
-        job_running = False
-        btn.enable()
-        load_and_refresh()
 
+        job_running = False
+
+
+        if btn is not None:
+            btn.enable()
+
+
+        load_and_refresh()
 
 # =====================================================
 # GLOBAL STATE
