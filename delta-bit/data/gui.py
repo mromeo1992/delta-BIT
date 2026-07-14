@@ -401,10 +401,10 @@ def list_uploaded_files():
             if 'output0GenericAffine.mat' in files and 'outputInverseWarped.nii.gz' in files:
                 entry["registered"].append(os.path.join(folder, 'T1_mni.nii.gz'))
         for f in files:
-            if f.startswith('vim_prediction') and not f.endswith('native.nii.gz'):
+            if f.startswith('vim_prediction') and not f.startswith('vim_prediction_native'):
                 entry["predictions"].append(os.path.join(folder, f))
-        if 'vim_prediction_native.nii.gz' in files:
-            entry["native_predictions"].append(os.path.join(folder, 'vim_prediction_native.nii.gz'))
+            if f.startswith('vim_prediction_native') and f.endswith('.nii.gz'):
+                entry["native_predictions"].append(os.path.join(folder, f))
 
         conf.append(entry)
     
@@ -618,7 +618,8 @@ async def handle_view_mri(msg):
                 mask_path=[None] # placeholder per non mandare lista vuota
         
         #ui.notify([path[0], mask_path[0]])
-        return path[0], mask_path[0]
+        #return path[0], mask_path[0]
+        return path[0], mask_path
 
     row_id = msg.args
     row = next(r for r in table.rows if r['id'] == row_id)

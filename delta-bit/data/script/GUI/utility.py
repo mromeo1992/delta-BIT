@@ -33,11 +33,16 @@ async def notify(payload: dict):
 
     return {'ok': True}
 
-def load_mask(path):
+def load_mask(path, mask_path):
     if path not in MASK_CACHE:
-        m = nib.load(path)
+        m = nib.load(mask_path[0])
         m = nib.as_closest_canonical(m)
         m = m.get_fdata().astype(np.uint8)
+        if len(mask_path) > 1:
+            m2 = nib.load(mask_path[1])
+            m2 = nib.as_closest_canonical(m2)
+            m2 = m2.get_fdata().astype(np.uint8)
+            m = m + m2
         MASK_CACHE[path] = m
     return MASK_CACHE[path]
 
@@ -132,7 +137,7 @@ def get_slice(volume, axis, sl):
 
 
 
-def open_viewer(path, mask_path=None):
+def open_viewer(path, mask_path: list = None):
 
     volume = load_volume(path)
     x, y, z = volume.shape
@@ -142,7 +147,7 @@ def open_viewer(path, mask_path=None):
     # -------------------------
     mask_volume = None
     if mask_path is not None:
-        mask_volume = load_mask(mask_path)
+        mask_volume = load_mask(path,mask_path)
         try:
             xc, yc, zc = center_of_mass(mask_volume)
             xc, yc, zc = int(xc), int(yc), int(zc)
@@ -222,6 +227,7 @@ def open_viewer(path, mask_path=None):
     # UI
     # -------------------------
     with ui.dialog().props('maximized') as dialog:
+
         ui.run_javascript("""
         document.addEventListener('wheel', function(e) {
             if (e.ctrlKey) {
@@ -229,39 +235,73 @@ def open_viewer(path, mask_path=None):
                 e.stopPropagation();
             }
         }, { passive: false });
-        """)        
+        """)
 
-        with ui.element('div').style('''
-            width: 80vw;
-            height: 90vh;
-            display: flex;
-            background: white;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        with ui.row().style('''
+            width:100vw;
+            height:100vh;
+            margin:0;
+            padding:0;
+            flex-direction:column;
+            flex-wrap:nowrap;
+            gap:0;
         '''):
 
-            projection_select = ui.select(
-                options=['axial', 'sagittal', 'coronal'],
-                value='axial',
-                label='Projection'
-            ).classes('w-48')
+            # ==================================================
+            # TOOLBAR
+            # ==================================================
+            with ui.row().style('''
+                width:100%;
+                background:white;
+                padding:10px;
+                justify-content:center;
+                align-items:center;
+                gap:20px;
+                flex:0 0 auto;
+            '''):
 
-            ui.label('MRI Viewer').classes('text-h6')
+                projection_select = ui.select(
+                    options=['axial', 'sagittal', 'coronal'],
+                    value='axial',
+                    label='Projection'
+                ).classes('w-48')
 
-            slice_slider = ui.slider(
-                min=0,
-                max=z - 1,
-                value=zc
-            ).props('label').classes('w-96')
+                ui.label('MRI Viewer').classes('text-h6')
 
-            slice_label = ui.label()
+                slice_slider = ui.slider(
+                    min=0,
+                    max=z - 1,
+                    value=zc
+                ).props('label').classes('w-96')
 
-            # -------------------------
-            # IMAGE
-            # -------------------------
-            image = ui.image().props('fit=contain').classes('w-full grow min-h-0')
+                slice_label = ui.label()
 
+                ui.button(
+                    'Close',
+                    on_click=dialog.close
+                )
+
+            # ==================================================
+            # VIEWER
+            # ==================================================
+            with ui.row().style('''
+                width:100%;
+                flex:1;
+                background:black;
+                justify-content:center;
+                align-items:center;
+                overflow:hidden;
+            '''):
+
+                # -------------------------
+                # IMAGE
+                # -------------------------
+                image = (
+                    ui.image()
+                    .props('fit=contain')
+                    .classes('w-full h-full')
+                    .style('background:black;')
+                )
             # -------------------------
             # RENDER ENGINE
             # -------------------------
