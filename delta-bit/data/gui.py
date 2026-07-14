@@ -400,8 +400,9 @@ def list_uploaded_files():
         if 'T1_mni.nii.gz' in files:
             if 'output0GenericAffine.mat' in files and 'outputInverseWarped.nii.gz' in files:
                 entry["registered"].append(os.path.join(folder, 'T1_mni.nii.gz'))
-        if 'vim_prediction.nii.gz' in files:
-            entry["predictions"].append(os.path.join(folder, 'vim_prediction.nii.gz'))
+        for f in files:
+            if f.startswith('vim_prediction') and not f.endswith('native.nii.gz'):
+                entry["predictions"].append(os.path.join(folder, f))
         if 'vim_prediction_native.nii.gz' in files:
             entry["native_predictions"].append(os.path.join(folder, 'vim_prediction_native.nii.gz'))
 

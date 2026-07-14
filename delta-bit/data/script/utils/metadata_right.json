@@ -1,0 +1,33 @@
+{
+  "ContentCreatorName": "Mattia Romeo",
+  "SeriesDescription": "VIM Segmentation",
+  "SeriesNumber": "300",
+  "InstanceNumber": "1",
+  "BodyPartExamined": "BRAIN",
+
+  "segmentAttributes": [
+    [
+      {
+        "labelID": 1,
+        "SegmentDescription": "Ventral Intermediate Nucleus right",
+        "SegmentLabel": "VIM_right",
+        "SegmentAlgorithmType": "AUTOMATIC",
+        "SegmentAlgorithmName": "Custom DL Model",
+
+        "SegmentedPropertyCategoryCodeSequence": {
+          "CodeValue": "T-D0050",
+          "CodingSchemeDesignator": "SCT",
+          "CodeMeaning": "Tissue"
+        },
+
+        "SegmentedPropertyTypeCodeSequence": {
+          "CodeValue": "T-A0100",
+          "CodingSchemeDesignator": "SCT",
+          "CodeMeaning": "Brain"
+        },
+
+        "recommendedDisplayRGBValue": [255, 0, 0]
+      }
+    ]
+  ]
+}

@@ -69,7 +69,7 @@ def revert_registration():
     sub = list(config["subjects"].keys())[0]
     for im in config["subjects"][sub]["predictions"]:
         print(im)
-        output_vim=os.path.join(os.path.dirname(im), "vim_prediction_native.nii.gz")
+        output_vim=im.replace("vim_prediction", "vim_prediction_native")#os.path.join(os.path.dirname(im), "vim_prediction_native.nii.gz")
         ref= config["subjects"][sub]["images"][0]
         #output_vim = os.path.join(output_dir, "vim_prediction_native.nii.gz")
         matrix=os.path.join(os.path.dirname(im), "output0GenericAffine.mat")
@@ -144,20 +144,29 @@ def extract_zip(zip_path : str):
 @app.post("/convert_nifti_to_dicom")
 def convert_nifti_to_dicom(sub_id):
     dicom_folder = output_dir / sub_id / 'dicom'
-    nifti_file = output_dir / sub_id / 'vim_prediction_native.nii.gz'
-    patient_folder = output_dir / sub_id / 'vim_seg.dcm'
-    metadata_json = "/data/script/utils/metadata.json"
+    nifti_file = [output_dir/sub_id / f for f in os.listdir(output_dir / sub_id) if f.startswith('vim_prediction_native') and f.endswith('.nii.gz')]
     
+    for f in nifti_file:
+        if "left" in f.name:
+            side = "left"
+            patient_folder = output_dir / sub_id / 'vim_seg_left.dcm'
+        
+        elif "right" in f.name:
+            side = "right"
+            patient_folder = output_dir / sub_id / 'vim_seg_right.dcm'
+        metadata_json = "/data/script/utils/metadata_" + side + ".json"            
 
-    cmd = "itkimage2segimage --verbose --inputImageList {} --inputDICOMDirectory {} --outputDICOM {} --inputMetadata {}".format(
-        nifti_file,
-        dicom_folder,
-        patient_folder,
-        metadata_json
-    )
-    os.system(cmd)
-    requests.post(
-                'http://gui:8080/notify',
-                json={'message': 'Subject {} DICOM created'.format(sub_id)}
-            )
+        
+
+        cmd = "itkimage2segimage --verbose --inputImageList {} --inputDICOMDirectory {} --outputDICOM {} --inputMetadata {}".format(
+            f,
+            dicom_folder,
+            patient_folder,
+            metadata_json
+        )
+        os.system(cmd)
+        requests.post(
+                    'http://gui:8080/notify',
+                    json={'message': 'Subject {} DICOM created'.format(sub_id)}
+                )
     return {"status": "done"}

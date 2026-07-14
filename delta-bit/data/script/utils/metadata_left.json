@@ -9,8 +9,8 @@
     [
       {
         "labelID": 1,
-        "SegmentDescription": "Ventral Intermediate Nucleus",
-        "SegmentLabel": "VIM",
+        "SegmentDescription": "Ventral Intermediate Nucleus left",
+        "SegmentLabel": "VIM_left",
         "SegmentAlgorithmType": "AUTOMATIC",
         "SegmentAlgorithmName": "Custom DL Model",
 
