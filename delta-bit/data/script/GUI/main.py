@@ -1,7 +1,7 @@
 from nicegui import ui
 
 
-from script.GUI.pages import home, gui
+from script.GUI.pages import home, gui, ftune
 
 
 @ui.page('/')
@@ -17,6 +17,7 @@ def query():
 @ui.page('/finetune')
 def finetune():
     ui.notify("Ti piacissi! 800A")
+    ftune.finetune()
 
 
 ui.run(

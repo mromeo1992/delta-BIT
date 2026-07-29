@@ -880,5 +880,3 @@ def query():
             "Add to the database",
             on_click=add_to_database
         ).disable()
-
-    
