@@ -3,6 +3,7 @@ import uuid
 import shutil
 import asyncio
 from pathlib import Path
+from nicegui import ui
 
 DATASETS_DIR = Path("/data/datasets")
 DATASETS_DIR.mkdir(parents=True, exist_ok=True)
@@ -11,9 +12,9 @@ STAGING_DIR.mkdir(parents=True, exist_ok=True)
 
 TOOLS_SERVER = "http://tools:8000"
 
-async def handle_dataset_upload(e):
+async def handle_dataset_upload(e,dataset_name):
     file = e.file
-
+    
     unique_name = f"{uuid.uuid4()}_{file.name}"
     staging_path = STAGING_DIR / unique_name
 
@@ -25,10 +26,11 @@ async def handle_dataset_upload(e):
         data = await file.read()
         staging_path.write_bytes(data)
 
+    ui.notify(str(staging_path))
     async with httpx.AsyncClient() as client:
         await client.post(
             f'{TOOLS_SERVER}/upload_dataset',
-            params={'zip_path': str(staging_path)}
+            params={'zip_path': str(staging_path), 'ds_name' : dataset_name}
         )
 
 def list_datasets():

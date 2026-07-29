@@ -16,7 +16,6 @@ def query():
 
 @ui.page('/finetune')
 def finetune():
-    ui.notify("Ti piacissi! 800A")
     ftune.finetune()
 
 

@@ -8,6 +8,8 @@ import pathlib
 import requests
 import subprocess
 
+from script.ft_tools import extract_dataset
+
 
 #config = json.load(open("/data/config/config.json"))
 config_file = "/data/config/config.json"
@@ -169,4 +171,16 @@ def convert_nifti_to_dicom(sub_id):
                     'http://gui:8080/notify',
                     json={'message': 'Subject {} DICOM created'.format(sub_id)}
                 )
+    return {"status": "done"}
+
+
+
+#Parte fine tuning
+@app.post("/upload_dataset")
+def upload_dataset(zip_path : str, ds_name : str):
+    requests.post(
+                    'http://gui:8080/notify',
+                    json={'message': 'Sono qui!'}
+                )    
+    extract_dataset(zip_path, ds_name)
     return {"status": "done"}

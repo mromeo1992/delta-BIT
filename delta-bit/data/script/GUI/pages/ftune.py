@@ -1,6 +1,7 @@
 from nicegui import ui
 from script.GUI.services.datasets import list_datasets, handle_dataset_upload
 from script.GUI.services.models import list_models
+import asyncio
 
 
 def finetune():
@@ -173,7 +174,79 @@ def refresh_drawer(drawer_content, current_tab):
 
     drawer_content.clear()
 
+
+
+
     with drawer_content:
+        selected_dataset = {'name': None}
+
+        async def upload_finished(e):
+            await handle_dataset_upload(
+                    e,
+                    selected_dataset['name']
+                )
+
+                # qui aggiorni la GUI
+            refresh_drawer(drawer_content, current_tab)
+
+
+        upload = ui.upload(
+            on_upload=upload_finished,
+            multiple=False,
+            auto_upload=True,
+        ).props('accept=".zip"').classes('hidden')
+
+
+        def dataset_name():
+
+            with ui.dialog() as dialog, ui.card():
+
+                ui.label(
+                    'Insert Dataset name'
+                ).classes('text-h6')
+
+                d_name = ui.input(
+                    value='ciao',
+                    placeholder='Dataset ID'
+                ).classes('w-60')
+
+
+                async def confirm_dataset_name():
+
+                    if d_name.value in list_datasets():
+                        ui.notify(
+                            'Dataset ID already exists',
+                            type='negative'
+                        )
+                        return
+
+
+                    selected_dataset['name'] = d_name.value
+
+                    dialog.close()
+
+                    await asyncio.sleep(0.1)
+
+                    await upload.run_method('pickFiles')
+
+
+                with ui.row():
+
+                    ui.button(
+                        'Confirm',
+                        on_click=confirm_dataset_name
+                    )
+
+                    ui.button(
+                        'Cancel',
+                        on_click=dialog.close
+                    )
+
+            dialog.open()
+
+
+
+
 
         if current_tab == 'Datasets':
 
@@ -183,18 +256,13 @@ def refresh_drawer(drawer_content, current_tab):
 
             ui.separator()
 
-            upload = ui.upload(
-                on_upload=handle_dataset_upload,
-                multiple=False,
-                auto_upload=True,                
-            ).props('accept=.zip').classes('hidden')
-
             ui.button(
                 '+ Import Dataset',
                 icon='upload_file',
-                on_click=lambda: upload.run_method('pickFiles')
+                on_click=dataset_name
             ).classes('w-full justify-start')
 
+            
 
             for ds in list_datasets():
                 ui.button(
