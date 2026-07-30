@@ -1,10 +1,25 @@
 from nicegui import ui
-from script.GUI.services.datasets import list_datasets, handle_dataset_upload
+from script.GUI.services.datasets import list_datasets, handle_dataset_upload, get_dataset_images, build_rows
 from script.GUI.services.models import list_models
 import asyncio
 
 
 def finetune():
+
+    train_table = None
+    test_table = None
+
+    def load_dataset(dataset_name):
+        train, test = get_dataset_images(dataset_name)
+
+        ui.notify(f"{dataset_name}")
+        ui.notify(f"{len(train)}, {len(test)}")
+
+        train_table.rows = build_rows(train)
+        train_table.update()
+
+        test_table.rows = build_rows(test)
+        test_table.update()
 
     # ---------- HEADER -------------------------------------------------------
 
@@ -37,13 +52,13 @@ def finetune():
 
         drawer_content = ui.column().classes('w-full')
 
-        refresh_drawer(drawer_content, 'Datasets')
+        refresh_drawer(drawer_content, 'Datasets', load_dataset)
 
 
     # ---------- TABS ---------------------------------------------------------
 
     with ui.tabs(
-        on_change=lambda e: refresh_drawer(drawer_content, e.value)
+        on_change=lambda e: refresh_drawer(drawer_content, e.value, load_dataset)
         ) as tabs:
         ui.tab('Datasets', icon='dataset')
         ui.tab('Models', icon='memory')
@@ -61,7 +76,7 @@ def finetune():
                 'text-xl font-bold'
             )
 
-            ui.table(
+            train_table = ui.table(
                 columns=[
                     {'name': 'name', 'label': 'Image', 'field': 'name'},
                     {'name': 'label', 'label': 'Label', 'field': 'label'},
@@ -77,9 +92,10 @@ def finetune():
                 'text-xl font-bold'
             )
 
-            ui.table(
+            test_table = ui.table(
                 columns=[
                     {'name': 'name', 'label': 'Image', 'field': 'name'},
+                    {'name': 'label', 'label': 'Label', 'field': 'label'},
                     {'name': 'size', 'label': 'Size', 'field': 'size'},
                 ],
                 rows=[],
@@ -170,12 +186,9 @@ def finetune():
                     color='green',
                 )
 
-def refresh_drawer(drawer_content, current_tab):
+def refresh_drawer(drawer_content, current_tab, load_dataset):
 
     drawer_content.clear()
-
-
-
 
     with drawer_content:
         selected_dataset = {'name': None}
@@ -186,9 +199,8 @@ def refresh_drawer(drawer_content, current_tab):
                     selected_dataset['name']
                 )
 
-                # qui aggiorni la GUI
-            refresh_drawer(drawer_content, current_tab)
-
+            refresh_drawer(drawer_content, current_tab, load_dataset)
+            load_dataset(selected_dataset['name'])
 
         upload = ui.upload(
             on_upload=upload_finished,
@@ -244,10 +256,6 @@ def refresh_drawer(drawer_content, current_tab):
 
             dialog.open()
 
-
-
-
-
         if current_tab == 'Datasets':
 
             ui.label('Datasets').classes(
@@ -262,12 +270,11 @@ def refresh_drawer(drawer_content, current_tab):
                 on_click=dataset_name
             ).classes('w-full justify-start')
 
-            
-
             for ds in list_datasets():
                 ui.button(
                     ds,
                     icon='folder',
+                    on_click=lambda d=ds: load_dataset(d)
                 ).props('flat align=left').classes(
                         'w-full justify-start text-left')
 
