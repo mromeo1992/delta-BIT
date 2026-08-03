@@ -27,11 +27,24 @@ async def handle_dataset_upload(e,dataset_name):
         staging_path.write_bytes(data)
 
     ui.notify(str(staging_path))
-    async with httpx.AsyncClient() as client:
-        await client.post(
-            f'{TOOLS_SERVER}/upload_dataset',
-            params={'zip_path': str(staging_path), 'ds_name' : dataset_name}
-        )
+    try:
+        async with httpx.AsyncClient(timeout=300) as client:
+            response = await client.post(
+                f"{TOOLS_SERVER}/upload_dataset",
+                params={
+                    "zip_path": str(staging_path),
+                    "ds_name": dataset_name,
+                },
+            )
+            response.raise_for_status()
+
+        ui.notify("Dataset uploaded")
+
+    except httpx.ReadTimeout:
+        ui.notify("Upload timed out", color="negative")
+
+    except httpx.HTTPError as e:
+        ui.notify(f"HTTP error: {e}", color="negative")
 
 def list_datasets():
 
@@ -48,6 +61,34 @@ def list_datasets():
         datasets.append(folder.name)
 
     return datasets
+
+def get_dataset_images(dataset_name: str):
+    dataset = DATASETS_DIR / dataset_name
+
+    train = []
+    test = []
+
+    train_dir = dataset / "imagesTr"
+    if train_dir.exists():
+        train = sorted(train_dir.glob("*.nii*"))
+
+    test_dir = dataset / "imagesTs"
+    if test_dir.exists():
+        test = sorted(test_dir.glob("*.nii*"))
+
+    return train, test
+
+def build_rows(files):
+    rows = []
+
+    for f in files:
+        rows.append({
+            "name": f.name,
+            "label": f.stem,
+            "size": f"{f.stat().st_size / 1024**2:.2f} MB",
+        })
+
+    return rows
 
 def remove_dataset():
     pass
