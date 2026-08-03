@@ -2,6 +2,7 @@ import httpx
 import uuid
 import shutil
 import asyncio
+import requests
 from pathlib import Path
 from nicegui import ui
 
@@ -85,10 +86,12 @@ def build_rows(files):
         rows.append({
             "name": f.name,
             "label": f.stem,
-            "size": f"{f.stat().st_size / 1024**2:.2f} MB",
+            "size": f"{f.stat().st_size / 1024**2:.2f} MB"
         })
 
     return rows
 
-def remove_dataset():
-    pass
+async def handle_view_mri(e):
+    row_name = e.args
+
+    ui.notify(row_name)

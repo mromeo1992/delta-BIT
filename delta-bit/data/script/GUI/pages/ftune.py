@@ -1,15 +1,25 @@
 from nicegui import ui
-from script.GUI.services.datasets import list_datasets, handle_dataset_upload, get_dataset_images, build_rows
-from script.GUI.services.models import list_models
 import asyncio
 
+from script.GUI.services.datasets import list_datasets
+from script.GUI.services.datasets import handle_dataset_upload
+from script.GUI.services.datasets import get_dataset_images
+from script.GUI.services.datasets import build_rows
+#from script.GUI.services.datasets import handle_view_mri
+
+from script.GUI.services.models import list_models
+from script.GUI import utility
 
 def finetune():
 
     train_table = None
     test_table = None
 
+    current_dataset = {'name': None}
+
     def load_dataset(dataset_name):
+        current_dataset['name'] = dataset_name
+
         train, test = get_dataset_images(dataset_name)
 
         ui.notify(f"{dataset_name}")
@@ -20,6 +30,26 @@ def finetune():
 
         test_table.rows = build_rows(test)
         test_table.update()
+
+    async def handle_view_mri(e):
+        dataset_name = current_dataset['name']
+
+        tab = e.args['table']
+        row_name = e.args['file']
+        async def get_paths():
+            if tab == 'train':
+                img_path = f"/data/datasets/{dataset_name}/imagesTr/{row_name}"
+                msk_path = f"/data/datasets/{dataset_name}/labelsTr/{row_name}"
+            else:
+                img_path = f"/data/datasets/{dataset_name}/imagesTs/{row_name}"
+                msk_path = f"/data/datasets/{dataset_name}/labelsTs/{row_name}"
+            return img_path, msk_path
+        
+        img_path, msk_path = await get_paths()
+        ui.notify(
+            f"paths: {img_path}, {msk_path}"
+        )
+        utility.open_viewer(img_path, [msk_path])
 
     # ---------- HEADER -------------------------------------------------------
 
@@ -78,13 +108,57 @@ def finetune():
 
             train_table = ui.table(
                 columns=[
-                    {'name': 'name', 'label': 'Image', 'field': 'name'},
-                    {'name': 'label', 'label': 'Label', 'field': 'label'},
-                    {'name': 'size', 'label': 'Size', 'field': 'size'},
+                    {'name': 'name', 'label': 'Image', 'field': 'name', 'align': 'left'},
+                    {'name': 'label', 'label': 'Label', 'field': 'label', 'align': 'left'},
+                    {'name': 'size', 'label': 'Size', 'field': 'size', 'align': 'left'},
+                    {'name': 'view', 'label': 'View', 'field': 'view', 'align': 'left'}
                 ],
                 rows=[],
-                pagination=10,
-            ).classes('w-full')
+                row_key='name',
+                pagination={'rowsPerPage': 0}, 
+            ).classes('max-h-[600px] w-full')
+
+            # scrolling parameters
+            train_table.props('virtual-scroll style="max-height: 600px; width: w-full; margin-right: auto;"')
+
+
+            train_table.add_slot('body', r'''
+                <q-tr :props="props" class="cursor-pointer">
+
+                    <q-td key="name" :props="props" class="text-left">
+                        {{ props.row.name }}
+                    </q-td>
+
+                    <q-td key="label" :props="props" class="text-left">
+                        {{ props.row.label }}
+                    </q-td>
+
+                    <q-td key="size" :props="props" class="text-left">
+                        {{ props.row.size }}
+                    </q-td>
+
+                    <q-td key="view" class="text-left" @click.stop>
+                        <q-btn
+                            size="sm"
+                            color="secondary"
+                            icon="visibility"
+                            round
+                            dense
+                            @click="() => $parent.$parent.$emit('view_mri', 
+                                {
+                                'table': 'train',
+                                'file' : props.row.name
+                                }
+                                )"
+                        />
+                    </q-td>
+
+                </q-tr>
+            ''')
+
+
+
+            train_table.on('view_mri', handle_view_mri)
 
             ui.separator()
 
@@ -94,14 +168,55 @@ def finetune():
 
             test_table = ui.table(
                 columns=[
-                    {'name': 'name', 'label': 'Image', 'field': 'name'},
-                    {'name': 'label', 'label': 'Label', 'field': 'label'},
-                    {'name': 'size', 'label': 'Size', 'field': 'size'},
+                    {'name': 'name', 'label': 'Image', 'field': 'name', 'align': 'left'},
+                    {'name': 'label', 'label': 'Label', 'field': 'label', 'align': 'left'},
+                    {'name': 'size', 'label': 'Size', 'field': 'size', 'align': 'left'},
+                    {'name': 'view', 'label': 'View', 'field': 'view', 'align': 'left'}
                 ],
                 rows=[],
-                pagination=10,
-            ).classes('w-full')
+                row_key='name',
+                pagination={'rowsPerPage': 0}, 
+            ).classes('max-h-[600px] w-full')
 
+            # scrolling parameters
+            test_table.props('virtual-scroll style="max-height: 600px; width: w-full; margin-right: auto;"')
+
+            test_table.add_slot('body', r'''
+                <q-tr :props="props" class="cursor-pointer">
+
+                    <q-td key="name" :props="props" class="text-left">
+                        {{ props.row.name }}
+                    </q-td>
+
+                    <q-td key="label" :props="props" class="text-left">
+                        {{ props.row.label }}
+                    </q-td>
+
+                    <q-td key="size" :props="props" class="text-left">
+                        {{ props.row.size }}
+                    </q-td>
+
+                    <q-td key="view" class="text-left" @click.stop>
+                        <q-btn
+                            size="sm"
+                            color="secondary"
+                            icon="visibility"
+                            round
+                            dense
+                            @click="() => $parent.$parent.$emit('view_mri', 
+                                {
+                                'table': 'test',
+                                'file' : props.row.name
+                                }
+                                )"
+                        />
+                    </q-td>
+
+                </q-tr>
+            ''')
+
+        
+        test_table.on('view_mri', handle_view_mri)         
         # =====================================================================
         # MODELS
         # =====================================================================
