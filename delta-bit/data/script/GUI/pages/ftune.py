@@ -15,10 +15,18 @@ from script.GUI.services.finetuning import validate_model_name
 
 from script.GUI import utility
 
+from script.GUI.services.tensorboard import start_tensorboard
+from script.GUI.services.tensorboard import stop_tensorboard
+
 FT_FOLDER = Path("/data/fine_tuning")
 FT_FOLDER.mkdir(parents=True, exist_ok=True)
 
 job_running = False
+
+def go_home():
+    stop_tensorboard()
+
+    ui.navigate.to('/')
 
 async def finetune_model(config):
     global job_running
@@ -48,6 +56,8 @@ async def finetune_model(config):
 def finetune():
 
     # ---------- INITIALIZE OBJECTS -------------------------------------------
+
+    start_tensorboard()
 
     train_table = None
     test_table = None
@@ -131,7 +141,7 @@ def finetune():
         with ui.row().classes('items-center'):
             ui.button(
                 icon='home',
-                on_click=lambda: ui.navigate.to('/')
+                on_click=go_home
             ).props('flat color=white')
             
             ui.button(
@@ -389,65 +399,82 @@ def finetune():
                 #ui.notify(config)
                 await finetune_model(config)
 
-            with ui.card().classes('w-full max-w-xl'):
+            with ui.row().classes('q-mt-md gap-4').style('width: 100%; flex-wrap: nowrap;'):
+                with ui.card().classes('w-full max-w-xl'):
 
-                ui.label('Training Parameters').classes(
-                    'text-xl font-bold'
-                )
-                
-                model_name = ui.input(
-                        label='Model Name',
-                        placeholder='Enter a name for the fine-tuned model',
-                        validation=validate_model_name
+                    ui.label('Training Parameters').classes(
+                        'text-xl font-bold'
+                    )
+                    
+                    model_name = ui.input(
+                            label='Model Name',
+                            placeholder='Enter a name for the fine-tuned model',
+                            validation=validate_model_name
+                        ).classes('w-full')
+
+                    dataset_select = ui.select(
+                        options=list_datasets(),
+                        label='Dataset',
+                        value=current_dataset['name'],
+                        on_change=lambda e: load_dataset(e.value)
                     ).classes('w-full')
 
-                dataset_select = ui.select(
-                    options=list_datasets(),
-                    label='Dataset',
-                    value=current_dataset['name'],
-                    on_change=lambda e: load_dataset(e.value)
-                ).classes('w-full')
+                    model_select = ui.select(
+                        options=[m['name'] for m in list_models()],
+                        label='Model',
+                        value=current_model['value']['name'] if current_model['value'] else None,
+                        on_change=lambda e: load_Dbit_model(e.value)
+                    ).classes('w-full')
 
-                model_select = ui.select(
-                    options=[m['name'] for m in list_models()],
-                    label='Model',
-                    value=current_model['value']['name'] if current_model['value'] else None,
-                    on_change=lambda e: load_Dbit_model(e.value)
-                ).classes('w-full')
+                    ui.separator()
 
-                ui.separator()
+                    epochs = ui.number(
+                        'Epochs',
+                        value=50,
+                    )
 
-                epochs = ui.number(
-                    'Epochs',
-                    value=50,
-                )
+                    batch_size = ui.number(
+                        'Batch Size',
+                        value=2,
+                    )
 
-                batch_size = ui.number(
-                    'Batch Size',
-                    value=2,
-                )
+                    lr = ui.number(
+                        'Learning Rate',
+                        value=0.0001,
+                        format='%.5f',
+                    )
 
-                lr = ui.number(
-                    'Learning Rate',
-                    value=0.0001,
-                    format='%.5f',
-                )
+                    optimizer = ui.select(
+                        ['Adam', 'AdamW', 'SGD'],
+                        label='Optimizer',
+                        value='Adam',
+                    )
 
-                optimizer = ui.select(
-                    ['Adam', 'AdamW', 'SGD'],
-                    label='Optimizer',
-                    value='Adam',
-                )
+                    Augmentation = ui.checkbox('Use data augmentation')
 
-                Augmentation = ui.checkbox('Use data augmentation')
+                    ui.button(
+                        'Start Fine-tuning',
+                        icon='play_arrow',
+                        color='green',
+                        on_click=start_finetuning
+                    )
 
-                ui.button(
-                    'Start Fine-tuning',
-                    icon='play_arrow',
-                    color='green',
-                    on_click=start_finetuning
-                )
+                with ui.card().classes("w-full"):
 
+
+                    ui.html(
+                        """
+                        <iframe
+                            src="/tensorboard/"
+                            style="
+                                width:100%;
+                                height:calc(100vh - 150px);
+                                border:none;">
+                        </iframe>
+                        """,
+                        sanitize=False
+                    ).classes("w-full")
+                
     if current_dataset['name']:
         load_dataset(current_dataset['name'])
 

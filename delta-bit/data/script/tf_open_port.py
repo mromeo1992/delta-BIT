@@ -4,8 +4,11 @@ import os
 from script.GUI.viewer import get_image, return_image_size
 from pathlib import Path
 from script.ft_tools import setup_ftmodel
+from script.utils.tensorboard_manager import TensorBoardManager
 
 FT_FOLDER = Path("/data/fine_tuning")
+
+tb_manager = TensorBoardManager()
 
 app2 = FastAPI()
 
@@ -49,4 +52,36 @@ def fine_tuning(data: dict):
     model_folder= FT_FOLDER / name
     setup_ftmodel(data)
 
-    return str(model_folder)    
+    return str(model_folder)
+
+
+@app2.post("/tensorboard/start")
+def start_tensorboard():
+
+    started = tb_manager.start(
+        FT_FOLDER
+    )
+
+    return {
+        "running": True,
+        "started": started
+    }
+
+
+@app2.post("/tensorboard/stop")
+def stop_tensorboard():
+
+    stopped = tb_manager.stop()
+
+    return {
+        "running": False,
+        "stopped": stopped
+    }
+
+
+@app2.get("/tensorboard/status")
+def tensorboard_status():
+
+    return {
+        "running": tb_manager.is_running()
+    }
