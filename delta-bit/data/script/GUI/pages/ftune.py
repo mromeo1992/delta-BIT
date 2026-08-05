@@ -8,6 +8,9 @@ from script.GUI.services.datasets import handle_dataset_upload
 from script.GUI.services.datasets import get_dataset_images
 from script.GUI.services.datasets import build_rows
 #from script.GUI.services.datasets import handle_view_mri
+from script.GUI.services.datasets import TRAIN_TABLE_SLOT
+from script.GUI.services.datasets import TEST_TABLE_SLOT
+from script.GUI.services.datasets import DATASET_REQUIREMENTS
 
 from script.GUI.services.models import list_models
 
@@ -19,6 +22,7 @@ from script.GUI.services.tensorboard import start_tensorboard
 from script.GUI.services.tensorboard import stop_tensorboard
 
 FT_FOLDER = Path("/data/fine_tuning")
+MODEL_FOLDER = Path("/data/MODELS")
 FT_FOLDER.mkdir(parents=True, exist_ok=True)
 
 job_running = False
@@ -45,7 +49,7 @@ async def finetune_model(config):
             "http://tf:9000/fine_tuning",
             json= config
         )
-        ui.notify(f'Fine-tuning job response: {notif.text}', type='positive')
+        ui.notify(f'Fine-tuning job response: {notif}', type='positive')
         ui.notify('Fine-tuning job started', type='positive')
     except Exception as e:
         ui.notify(f'Error starting fine-tuning job: {e}', type='negative')
@@ -81,6 +85,9 @@ def finetune():
 
     def load_dataset(dataset_name):
 
+        if dataset_name is None:
+            return
+
         current_dataset['name'] = dataset_name
         if dataset_select.value != dataset_name:
             dataset_select.value = dataset_name
@@ -88,10 +95,10 @@ def finetune():
 
         train, test = get_dataset_images(dataset_name)
 
-        train_table.rows = build_rows(train)
+        train_table.rows = build_rows(train, dataset_name)
         train_table.update()
 
-        test_table.rows = build_rows(test)
+        test_table.rows = build_rows(test, dataset_name)
         test_table.update()
 
     def load_Dbit_model(model_name):
@@ -109,13 +116,20 @@ def finetune():
 
         show_model.refresh()
 
+    def refresh_dataset_select():
+        if dataset_select is None:
+            return
+
+        dataset_select.options = list_datasets()
+        dataset_select.update()
+
 
     # ---------- VIEWER -------------------------------------------------------
 
     async def handle_view_mri(e):
 
-        dataset_name = current_dataset['name']
-
+        #dataset_name = current_dataset['name']
+        dataset_name = e.args['dataset']
         tab = e.args['table']
         row_name = e.args['file']
         async def get_paths():
@@ -169,14 +183,21 @@ def finetune():
             drawer_content,
             'Datasets',
             load_dataset,
-            load_Dbit_model
+            load_Dbit_model,
+            refresh_dataset_select
             )
 
 
     # ---------- TABS ---------------------------------------------------------
 
     with ui.tabs(
-        on_change=lambda e: refresh_drawer(drawer_content, e.value, load_dataset, load_Dbit_model)
+        on_change=lambda e: refresh_drawer(
+            drawer_content,
+            e.value,
+            load_dataset,
+            load_Dbit_model,
+            refresh_dataset_select
+            )
         ) as tabs:
         ui.tab('Datasets', icon='dataset')
         ui.tab('Models', icon='memory')
@@ -209,39 +230,7 @@ def finetune():
             # scrolling parameters
             train_table.props('virtual-scroll style="max-height: 600px; width: w-full; margin-right: auto;"')
 
-            train_table.add_slot('body', r'''
-                <q-tr :props="props" class="cursor-pointer">
-
-                    <q-td key="name" :props="props" class="text-left">
-                        {{ props.row.name }}
-                    </q-td>
-
-                    <q-td key="label" :props="props" class="text-left">
-                        {{ props.row.label }}
-                    </q-td>
-
-                    <q-td key="size" :props="props" class="text-left">
-                        {{ props.row.size }}
-                    </q-td>
-
-                    <q-td key="view" class="text-left" @click.stop>
-                        <q-btn
-                            size="sm"
-                            color="secondary"
-                            icon="visibility"
-                            round
-                            dense
-                            @click="() => $parent.$parent.$emit('view_mri', 
-                                {
-                                'table': 'train',
-                                'file' : props.row.name
-                                }
-                                )"
-                        />
-                    </q-td>
-
-                </q-tr>
-            ''')
+            train_table.add_slot('body', TRAIN_TABLE_SLOT)
 
             ui.separator()
 
@@ -264,67 +253,9 @@ def finetune():
             # scrolling parameters
             test_table.props('virtual-scroll style="max-height: 600px; width: w-full; margin-right: auto;"')
 
-            test_table.add_slot('body', r'''
-                <q-tr :props="props" class="cursor-pointer">
+            test_table.add_slot('body', TEST_TABLE_SLOT)
 
-                    <q-td key="name" :props="props" class="text-left">
-                        {{ props.row.name }}
-                    </q-td>
-
-                    <q-td key="label" :props="props" class="text-left">
-                        {{ props.row.label }}
-                    </q-td>
-
-                    <q-td key="size" :props="props" class="text-left">
-                        {{ props.row.size }}
-                    </q-td>
-
-                    <q-td key="view" class="text-left" @click.stop>
-                        <q-btn
-                            size="sm"
-                            color="secondary"
-                            icon="visibility"
-                            round
-                            dense
-                            @click="() => $parent.$parent.$emit('view_mri', 
-                                {
-                                'table': 'test',
-                                'file' : props.row.name
-                                }
-                                )"
-                        />
-                    </q-td>
-
-                </q-tr>
-            ''')
-
-            ui.markdown(r"""
-                **Dataset requirements**
-
-                - Scans and labels must be in **NIfTI** format (`.nii` or `.nii.gz`).
-                - All images must be registered to the **MNI 1 mm standard space**.
-                - The dataset must have the following structure:
-
-                ```
-                dataset_name/
-                ├── imagesTr/
-                │   ├── image1.nii.gz
-                │   ├── image2.nii.gz
-                │   └── ...
-                ├── labelsTr/
-                │   ├── label1.nii.gz
-                │   ├── label2.nii.gz
-                │   └── ...
-                ├── imagesTs/
-                │   ├── image1.nii.gz
-                │   ├── image2.nii.gz
-                │   └── ...
-                └── labelsTs/
-                    ├── label1.nii.gz
-                    ├── label2.nii.gz
-                    └── ...
-                ```
-            """).classes('text-black-7')
+            ui.markdown(DATASET_REQUIREMENTS).classes('text-black-7')
 
         train_table.on('view_mri', handle_view_mri)
         test_table.on('view_mri', handle_view_mri)
@@ -481,7 +412,13 @@ def finetune():
     if current_model['value']:
         load_Dbit_model(current_model['value']['name'])
 
-def refresh_drawer(drawer_content, current_tab, load_dataset, load_Dbit_model):
+def refresh_drawer(
+        drawer_content,
+        current_tab,
+        load_dataset,
+        load_Dbit_model,
+        refresh_dataset_select
+    ):
 
     drawer_content.clear()
 
@@ -491,13 +428,29 @@ def refresh_drawer(drawer_content, current_tab, load_dataset, load_Dbit_model):
         selected_model = {'name': None}
 
         async def upload_finished(e):
-            await handle_dataset_upload(
+            status = await handle_dataset_upload(
                     e,
                     selected_dataset['name']
                 )
+            if status['status'] == 'failed':
+                ui.notify(
+                    'Dataset upload failed. Please check the dataset structure and try again.',
+                    type='negative'
+                )
+                return
+            
+            refresh_dataset_select()
+            refresh_drawer(
+                drawer_content,
+                current_tab,
+                load_dataset,
+                load_Dbit_model,
+                refresh_dataset_select
+            )
 
-            refresh_drawer(drawer_content, current_tab, load_dataset, load_Dbit_model)
             load_dataset(selected_dataset['name'])
+            #refresh_dataset_select()
+            
             #load_Dbit_models(selected_model['name'])
 
         upload = ui.upload(

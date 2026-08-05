@@ -21,13 +21,14 @@ MASK_CACHE = {}
 async def notify(payload: dict):
 
     msg = payload.get('message', '')
+    tpe = payload.get('type', 'info')
 
     for client in Client.instances.values():
 
         await client.run_javascript(f'''
             Quasar.Notify.create({{
                 message: "{msg}",
-                color: "positive"
+                color: "{tpe}"
             }})
         ''')
 

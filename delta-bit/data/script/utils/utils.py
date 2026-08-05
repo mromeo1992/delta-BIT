@@ -1,9 +1,10 @@
 import numpy as np
 
-cropping_border='/data/script/utils/cropping_border_default.npz'
+
 
 
 def get_cropping_border():
+    cropping_border='/data/script/utils/cropping_border_default.npz'
     data = np.load(cropping_border)
     return data
 

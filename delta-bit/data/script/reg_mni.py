@@ -18,8 +18,9 @@ output_dir = pathlib.Path("/data/NIFTI")
 UPLOAD_DIR = "/data/uploads"
 DICOM_FOLDER = pathlib.Path('DICOM')
 STAGING_DIR = pathlib.Path('/data/staging')
-os.makedirs(output_dir, exist_ok=True)
-os.makedirs(DICOM_FOLDER, exist_ok=True)
+output_dir.mkdir(parents=True, exist_ok=True)
+DICOM_FOLDER.mkdir(parents=True, exist_ok=True)
+
 
 def update_config(sub , key, path_pred):
     config= json.load(open(config_file))
@@ -178,9 +179,13 @@ def convert_nifti_to_dicom(sub_id):
 #Parte fine tuning
 @app.post("/upload_dataset")
 def upload_dataset(zip_path : str, ds_name : str):
-    requests.post(
-                    'http://gui:8080/notify',
-                    json={'message': 'Sono qui!'}
-                )    
-    extract_dataset(zip_path, ds_name)
-    return {"status": "done"}
+    
+    status = extract_dataset(zip_path, ds_name)
+
+    if status['status'] == 'failed':
+        requests.post(
+            'http://gui:8080/notify',
+            json={'message': f'Failed to extract dataset {ds_name}', 'type': 'negative'}
+        )
+      
+    return status

@@ -3,7 +3,7 @@ import json
 import os
 from script.GUI.viewer import get_image, return_image_size
 from pathlib import Path
-from script.ft_tools import setup_ftmodel
+from script.training.fine_tuning import finetuning
 from script.utils.tensorboard_manager import TensorBoardManager
 
 FT_FOLDER = Path("/data/fine_tuning")
@@ -47,12 +47,10 @@ def view_image(data: dict):
 
 @app2.post('/fine_tuning')
 def fine_tuning(data: dict):
-    name = data["name"]
     print("Fine-tuning request received with data:", data)
-    model_folder= FT_FOLDER / name
-    setup_ftmodel(data)
+    status = finetuning(data)
 
-    return str(model_folder)
+    return status
 
 
 @app2.post("/tensorboard/start")
