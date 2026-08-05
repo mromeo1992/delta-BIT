@@ -1,4 +1,6 @@
-from nicegui import ui
+from nicegui import ui, run, app, background_tasks
+from pathlib import Path
+import requests
 import asyncio
 
 from script.GUI.services.datasets import list_datasets
@@ -8,22 +10,74 @@ from script.GUI.services.datasets import build_rows
 #from script.GUI.services.datasets import handle_view_mri
 
 from script.GUI.services.models import list_models
+
+from script.GUI.services.finetuning import validate_model_name
+from script.GUI.services.finetuning import setup_ftmodel
+
 from script.GUI import utility
 
+FT_FOLDER = Path("/data/fine_tuning")
+FT_FOLDER.mkdir(parents=True, exist_ok=True)
+
+job_running = False
+
+async def finetune_model(config):
+    global job_running
+    if job_running:
+        ui.notify('A fine-tuning job is already running', type='warning')
+        return
+
+    job_running = True
+
+    try:
+        #model_folder = setup_ftmodel(config)
+        #ui.notify(f'Fine-tuning model folder created at: {model_folder}', type='positive')
+        
+        notif = await run.io_bound(
+            requests.post,
+            "http://tf:9000/fine_tuning",
+            json= config
+        )
+        ui.notify(f'Fine-tuning job response: {notif.text}', type='positive')
+        ui.notify('Fine-tuning job started', type='positive')
+    except Exception as e:
+        ui.notify(f'Error starting fine-tuning job: {e}', type='negative')
+    finally:
+        job_running = False
+
+
 def finetune():
+
+    # ---------- INITIALIZE OBJECTS -------------------------------------------
 
     train_table = None
     test_table = None
 
-    current_dataset = {'name': None}
+    datasets = list_datasets()
+    models = list_models()
+
+    current_dataset = {
+        'name': datasets[0] if datasets else None
+    }
+
+    current_model = {
+        'value': models[0] if models else None
+    }
+
+    dataset_select = None
+    model_select = None
+
+
+    # ---------- LOADERS -----------------------------------------------------
 
     def load_dataset(dataset_name):
+
         current_dataset['name'] = dataset_name
+        if dataset_select.value != dataset_name:
+            dataset_select.value = dataset_name
+            dataset_select.update()
 
         train, test = get_dataset_images(dataset_name)
-
-        ui.notify(f"{dataset_name}")
-        ui.notify(f"{len(train)}, {len(test)}")
 
         train_table.rows = build_rows(train)
         train_table.update()
@@ -31,7 +85,26 @@ def finetune():
         test_table.rows = build_rows(test)
         test_table.update()
 
+    def load_Dbit_model(model_name):
+
+        model = next(
+            m for m in list_models()
+            if m['name'] == model_name
+        )
+
+        current_model['value'] = model
+
+        if model_select.value != model_name:
+            model_select.value = model_name
+            model_select.update()
+
+        show_model.refresh()
+
+
+    # ---------- VIEWER -------------------------------------------------------
+
     async def handle_view_mri(e):
+
         dataset_name = current_dataset['name']
 
         tab = e.args['table']
@@ -50,6 +123,7 @@ def finetune():
             f"paths: {img_path}, {msk_path}"
         )
         utility.open_viewer(img_path, [msk_path])
+
 
     # ---------- HEADER -------------------------------------------------------
 
@@ -82,13 +156,18 @@ def finetune():
 
         drawer_content = ui.column().classes('w-full')
 
-        refresh_drawer(drawer_content, 'Datasets', load_dataset)
+        refresh_drawer(
+            drawer_content,
+            'Datasets',
+            load_dataset,
+            load_Dbit_model
+            )
 
 
     # ---------- TABS ---------------------------------------------------------
 
     with ui.tabs(
-        on_change=lambda e: refresh_drawer(drawer_content, e.value, load_dataset)
+        on_change=lambda e: refresh_drawer(drawer_content, e.value, load_dataset, load_Dbit_model)
         ) as tabs:
         ui.tab('Datasets', icon='dataset')
         ui.tab('Models', icon='memory')
@@ -120,7 +199,6 @@ def finetune():
 
             # scrolling parameters
             train_table.props('virtual-scroll style="max-height: 600px; width: w-full; margin-right: auto;"')
-
 
             train_table.add_slot('body', r'''
                 <q-tr :props="props" class="cursor-pointer">
@@ -155,10 +233,6 @@ def finetune():
 
                 </q-tr>
             ''')
-
-
-
-            train_table.on('view_mri', handle_view_mri)
 
             ui.separator()
 
@@ -215,48 +289,71 @@ def finetune():
                 </q-tr>
             ''')
 
-        
-        test_table.on('view_mri', handle_view_mri)         
+            ui.markdown(r"""
+                **Dataset requirements**
+
+                - Scans and labels must be in **NIfTI** format (`.nii` or `.nii.gz`).
+                - All images must be registered to the **MNI 1 mm standard space**.
+                - The dataset must have the following structure:
+
+                ```
+                dataset_name/
+                ├── imagesTr/
+                │   ├── image1.nii.gz
+                │   ├── image2.nii.gz
+                │   └── ...
+                ├── labelsTr/
+                │   ├── label1.nii.gz
+                │   ├── label2.nii.gz
+                │   └── ...
+                ├── imagesTs/
+                │   ├── image1.nii.gz
+                │   ├── image2.nii.gz
+                │   └── ...
+                └── labelsTs/
+                    ├── label1.nii.gz
+                    ├── label2.nii.gz
+                    └── ...
+                ```
+            """).classes('text-black-7')
+
+        train_table.on('view_mri', handle_view_mri)
+        test_table.on('view_mri', handle_view_mri)
+                    
+      
         # =====================================================================
         # MODELS
         # =====================================================================
 
         with ui.tab_panel('Models'):
 
-            with ui.row().classes(
-                'w-full gap-4 items-start wrap'
-            ):
+            model_container = ui.column().classes('w-full')
 
-                for model in list_models():
+            @ui.refreshable
+            def show_model():
 
+                model_container.clear()
+
+                with model_container:
+                    if current_model['value'] is None:
+                        ui.label('Select a model from the drawer')
+                        return
+
+                    model = current_model['value']
                     meta = model['meta']['model']
 
                     with ui.card().classes('w-80'):
-
-                        ui.label(model['name']).classes(
-                            'text-xl font-bold'
-                        )
+                        ui.label(model['name']).classes('text-xl font-bold')
 
                         ui.separator()
 
-                        ui.label(
-                            f'Input size: {" × ".join(map(str, meta["img_size"]))}'
-                        )
+                        ui.label(f'Input size: {" × ".join(map(str, meta["img_size"]))}')
+                        ui.label(f'Input channels: {meta["num_input"]}')
+                        ui.label(f'Base filters: {meta["n_can_in"]}')
 
-                        ui.label(
-                            f'Input channels: {meta["num_input"]}'
-                        )
+                        ui.button('Load', icon='play_arrow')
 
-                        ui.label(
-                            f'Base filters: {meta["n_can_in"]}'
-                        )
-
-                        with ui.row():
-
-                            ui.button(
-                                'Load',
-                                icon='play_arrow',
-                            )
+            show_model()
 
 
         # =====================================================================
@@ -265,11 +362,61 @@ def finetune():
 
         with ui.tab_panel('Fine-tuning'):
 
+            async def start_finetuning():
+
+                if current_dataset['name'] is None:
+                    ui.notify('Please select a dataset', type='warning')
+                    return
+
+                if current_model['value'] is None:
+                    ui.notify('Please select a model', type='warning')
+                    return
+                
+                if validate_model_name(model_name.value):
+                    ui.notify(validate_model_name(model_name.value), type='warning')
+                    return
+
+                config = {
+                    'name': model_name.value,
+                    'dataset': current_dataset['name'],
+                    'model': current_model['value'],
+                    'epochs': epochs.value,
+                    'batch_size': batch_size.value,
+                    'learning_rate': lr.value,
+                    'optimizer': optimizer.value,
+                    'augmentation': Augmentation.value,
+                }
+
+                #ui.notify(config)
+                await finetune_model(config)
+
             with ui.card().classes('w-full max-w-xl'):
 
                 ui.label('Training Parameters').classes(
                     'text-xl font-bold'
                 )
+                
+                model_name = ui.input(
+                        label='Model Name',
+                        placeholder='Enter a name for the fine-tuned model',
+                        validation=validate_model_name
+                    ).classes('w-full')
+
+                dataset_select = ui.select(
+                    options=list_datasets(),
+                    label='Dataset',
+                    value=current_dataset['name'],
+                    on_change=lambda e: load_dataset(e.value)
+                ).classes('w-full')
+
+                model_select = ui.select(
+                    options=[m['name'] for m in list_models()],
+                    label='Model',
+                    value=current_model['value']['name'] if current_model['value'] else None,
+                    on_change=lambda e: load_Dbit_model(e.value)
+                ).classes('w-full')
+
+                ui.separator()
 
                 epochs = ui.number(
                     'Epochs',
@@ -299,14 +446,23 @@ def finetune():
                     'Start Fine-tuning',
                     icon='play_arrow',
                     color='green',
+                    on_click=start_finetuning
                 )
 
-def refresh_drawer(drawer_content, current_tab, load_dataset):
+    if current_dataset['name']:
+        load_dataset(current_dataset['name'])
+
+    if current_model['value']:
+        load_Dbit_model(current_model['value']['name'])
+
+def refresh_drawer(drawer_content, current_tab, load_dataset, load_Dbit_model):
 
     drawer_content.clear()
 
     with drawer_content:
+
         selected_dataset = {'name': None}
+        selected_model = {'name': None}
 
         async def upload_finished(e):
             await handle_dataset_upload(
@@ -314,8 +470,9 @@ def refresh_drawer(drawer_content, current_tab, load_dataset):
                     selected_dataset['name']
                 )
 
-            refresh_drawer(drawer_content, current_tab, load_dataset)
+            refresh_drawer(drawer_content, current_tab, load_dataset, load_Dbit_model)
             load_dataset(selected_dataset['name'])
+            #load_Dbit_models(selected_model['name'])
 
         upload = ui.upload(
             on_upload=upload_finished,
@@ -337,7 +494,6 @@ def refresh_drawer(drawer_content, current_tab, load_dataset):
                     placeholder='Dataset ID'
                 ).classes('w-60')
 
-
                 async def confirm_dataset_name():
 
                     if d_name.value in list_datasets():
@@ -347,7 +503,6 @@ def refresh_drawer(drawer_content, current_tab, load_dataset):
                         )
                         return
 
-
                     selected_dataset['name'] = d_name.value
 
                     dialog.close()
@@ -355,7 +510,6 @@ def refresh_drawer(drawer_content, current_tab, load_dataset):
                     await asyncio.sleep(0.1)
 
                     await upload.run_method('pickFiles')
-
 
                 with ui.row():
 
@@ -371,6 +525,9 @@ def refresh_drawer(drawer_content, current_tab, load_dataset):
 
             dialog.open()
 
+        # =============================
+        # DATASETS
+        # =============================
         if current_tab == 'Datasets':
 
             ui.label('Datasets').classes(
@@ -393,6 +550,9 @@ def refresh_drawer(drawer_content, current_tab, load_dataset):
                 ).props('flat align=left').classes(
                         'w-full justify-start text-left')
 
+        # =============================
+        # MODELS
+        # =============================
         elif current_tab == 'Models':
 
             ui.label('Models').classes(
@@ -405,9 +565,13 @@ def refresh_drawer(drawer_content, current_tab, load_dataset):
                 ui.button(
                     model['name'],
                     icon='memory',
+                    on_click=lambda m=model: load_Dbit_model(m['name'])
                 ).props('flat align=left').classes(
                         'w-full justify-start text-left')
 
+        # =============================
+        # FINE-TUNING
+        # =============================
         else:
 
             ui.label('Fine-tuning').classes(
@@ -415,5 +579,3 @@ def refresh_drawer(drawer_content, current_tab, load_dataset):
             )
 
             ui.separator()
-
-            ui.label('No options yet')

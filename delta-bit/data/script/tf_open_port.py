@@ -2,8 +2,10 @@ from fastapi import FastAPI
 import json
 import os
 from script.GUI.viewer import get_image, return_image_size
+from pathlib import Path
+from script.ft_tools import setup_ftmodel
 
-
+FT_FOLDER = Path("/data/fine_tuning")
 
 app2 = FastAPI()
 
@@ -39,3 +41,12 @@ def view_image(data: dict):
     return {
         "image": img_b64
     }
+
+@app2.post('/fine_tuning')
+def fine_tuning(data: dict):
+    name = data["name"]
+    print("Fine-tuning request received with data:", data)
+    model_folder= FT_FOLDER / name
+    setup_ftmodel(data)
+
+    return str(model_folder)    

@@ -15,6 +15,7 @@ services:
     user: "${HOST_UID}:${HOST_GID}"
     expose:
       - "9000"
+      - "6006"
     volumes:
       - ./data:/data
     working_dir: /data

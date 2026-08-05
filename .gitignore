@@ -11,3 +11,4 @@ delta-bit/data/uploads/*
 delta-bit/data/projects/*
 delta-bit/data/config/*
 delta-bit/data/staging/*
+delta-bit/data/fine_tuning/*

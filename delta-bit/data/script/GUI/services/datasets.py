@@ -1,8 +1,6 @@
 import httpx
 import uuid
 import shutil
-import asyncio
-import requests
 from pathlib import Path
 from nicegui import ui
 
@@ -90,8 +88,3 @@ def build_rows(files):
         })
 
     return rows
-
-async def handle_view_mri(e):
-    row_name = e.args
-
-    ui.notify(row_name)
