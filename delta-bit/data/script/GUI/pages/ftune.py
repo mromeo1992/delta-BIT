@@ -12,7 +12,6 @@ from script.GUI.services.datasets import build_rows
 from script.GUI.services.models import list_models
 
 from script.GUI.services.finetuning import validate_model_name
-from script.GUI.services.finetuning import setup_ftmodel
 
 from script.GUI import utility
 
