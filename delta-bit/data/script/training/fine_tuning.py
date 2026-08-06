@@ -1,5 +1,4 @@
-from tensorflow import keras
-import keras.backend as K
+
 
 import json
 import nibabel as nib
@@ -20,7 +19,7 @@ def setup_ftmodel(config):
     '''requests.post(
         "http://gui:8080/notify",
         json={"message": f"Fine-tuning request received with model name: {model_name}"},
-    ) '''   
+    )'''   
 
     model_folder = FT_FOLDER / model_name
     model_folder.mkdir(parents=True, exist_ok=True)
@@ -35,6 +34,8 @@ def setup_ftmodel(config):
 
 
 def finetuning(config):
+    from tensorflow import keras
+    import keras.backend as K
 
     '''requests.post(
         "http://gui:8080/notify",

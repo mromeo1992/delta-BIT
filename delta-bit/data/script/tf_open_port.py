@@ -5,6 +5,9 @@ from script.GUI.viewer import get_image, return_image_size
 from pathlib import Path
 from script.training.fine_tuning import finetuning
 from script.utils.tensorboard_manager import TensorBoardManager
+from script.utils.training_manager import TrainingManager
+
+training_manager = TrainingManager()
 
 FT_FOLDER = Path("/data/fine_tuning")
 
@@ -47,10 +50,28 @@ def view_image(data: dict):
 
 @app2.post('/fine_tuning')
 def fine_tuning(data: dict):
-    print("Fine-tuning request received with data:", data)
-    status = finetuning(data)
 
-    return status
+    started = training_manager.start(
+        finetuning,
+        data
+    )
+
+    if started:
+
+        return {
+            "status": "started"
+        }
+
+    else:
+
+        return {
+            "status": "already running"
+        }
+    
+@app2.get("/fine_tuning/status")
+def fine_tuning_status():
+
+    return training_manager.status()    
 
 
 @app2.post("/tensorboard/start")

@@ -15,6 +15,7 @@ from script.GUI.services.datasets import DATASET_REQUIREMENTS
 from script.GUI.services.models import list_models
 
 from script.GUI.services.finetuning import validate_model_name
+from script.GUI.services.finetuning import get_finetuning_status
 
 from script.GUI import utility
 
@@ -33,28 +34,38 @@ def go_home():
     ui.navigate.to('/')
 
 async def finetune_model(config):
-    global job_running
-    if job_running:
-        ui.notify('A fine-tuning job is already running', type='warning')
-        return
-
-    job_running = True
 
     try:
-        #model_folder = setup_ftmodel(config)
-        #ui.notify(f'Fine-tuning model folder created at: {model_folder}', type='positive')
-        
-        notif = await run.io_bound(
+
+        response = await run.io_bound(
             requests.post,
             "http://tf:9000/fine_tuning",
-            json= config
+            json=config,
+            timeout=10
         )
-        ui.notify(f'Fine-tuning job response: {notif}', type='positive')
-        ui.notify('Fine-tuning job started', type='positive')
+
+        status = response.json()
+
+        if status["status"] == "started":
+            ui.notify(
+                "Fine-tuning started",
+                type="positive"
+            )
+
+        else:
+            ui.notify(
+                "A fine-tuning job is already running",
+                type="warning"
+            )
+
     except Exception as e:
-        ui.notify(f'Error starting fine-tuning job: {e}', type='negative')
-    finally:
-        job_running = False
+
+        ui.notify(
+            f"Error starting fine-tuning: {e}",
+            type="negative"
+        )
+    
+
 
 
 def finetune():
@@ -146,6 +157,29 @@ def finetune():
             f"paths: {img_path}, {msk_path}"
         )
         utility.open_viewer(img_path, [msk_path])
+
+
+    # ---------- TRAINING STATUS -------------------------------------------------
+
+    async def update_training_status():
+
+        global job_running
+
+        try:
+
+            status = await get_finetuning_status()
+
+            job_running = status["running"]
+
+        except Exception:
+
+            pass
+
+
+    ui.timer(
+        2.0,
+        update_training_status
+    ) 
 
 
     # ---------- HEADER -------------------------------------------------------
@@ -327,6 +361,15 @@ def finetune():
                     'augmentation': Augmentation.value,
                 }
 
+                status = await get_finetuning_status()
+
+                if status["running"]:
+                    ui.notify(
+                        "Training already running",
+                        type="warning"
+                    )
+                    return
+
                 #ui.notify(config)
                 await finetune_model(config)
 
@@ -392,6 +435,9 @@ def finetune():
 
                 with ui.card().classes("w-full"):
 
+                    status_label = ui.label(
+                        "⚪ Training idle"
+                    ).classes("text-lg")
 
                     ui.html(
                         """
