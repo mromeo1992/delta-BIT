@@ -21,6 +21,8 @@ from script.GUI import utility
 
 from script.GUI.services.tensorboard import start_tensorboard
 from script.GUI.services.tensorboard import stop_tensorboard
+from script.training.losses_list import LOSSES
+from script.training.optimizer_list import  OPTIMIZERS
 
 FT_FOLDER = Path("/data/fine_tuning")
 MODEL_FOLDER = Path("/data/MODELS")
@@ -354,8 +356,9 @@ def finetune():
                     'name': model_name.value,
                     'dataset': current_dataset['name'],
                     'model': current_model['value'],
-                    'epochs': epochs.value,
-                    'batch_size': batch_size.value,
+                    'loss':loss.value,
+                    'epochs': int(epochs.value),
+                    'batch_size': int(batch_size.value),
                     'learning_rate': lr.value,
                     'optimizer': optimizer.value,
                     'augmentation': Augmentation.value,
@@ -418,8 +421,14 @@ def finetune():
                         format='%.5f',
                     )
 
+                    loss = ui.select(
+                        LOSSES,
+                        label='Loss Function',
+                        value='DiceBCELoss',
+                    )
+
                     optimizer = ui.select(
-                        ['Adam', 'AdamW', 'SGD'],
+                        OPTIMIZERS,
                         label='Optimizer',
                         value='Adam',
                     )

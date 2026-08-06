@@ -205,8 +205,8 @@ def random_data_augmentation(img, label,img_size, num_input):
 
 def read_nifti_file(file_path):
     """Read and load volume"""
-    x_min, x_max, y_min, y_max, z_min, z_max = cropping_border['x_min'], cropping_border['x_max'], cropping_border['y_min'], cropping_border['y_max'], cropping_border['z_min'], cropping_border['z_max']
-    return nib.load(file_path).get_fdata()[x_min:x_max, y_min:y_max, z_min:z_max]
+    #x_min, x_max, y_min, y_max, z_min, z_max = cropping_border['x_min'], cropping_border['x_max'], cropping_border['y_min'], cropping_border['y_max'], cropping_border['z_min'], cropping_border['z_max']
+    return nib.load(file_path).get_fdata()#[x_min:x_max, y_min:y_max, z_min:z_max]
 
 def process_scann(path):#, size_x, size_y, size_z):
     """Read an resize volume"""
@@ -263,36 +263,21 @@ class Talamo_train(keras.utils.Sequence):
         return x, y
 
     
-def data_generator(input_train_dir,target_train_dir,img_size,batch_size, num_input, val_size):
-    input_img_pahts=sorted(
-        [
-            os.path.join(input_train_dir, fname)
-            for fname in os.listdir(input_train_dir)
-            if fname.endswith('.nii.gz')
-        ]
-    )
+def data_generator(dataset_config,img_size,batch_size, num_input, augmentation):
 
-    target_img_pahts=sorted(
-        [
-            os.path.join(target_train_dir, fname)
-            for fname in os.listdir(target_train_dir)
-            if fname.endswith('.nii.gz')
-        ]
-    )
+    train_input_img_paths = np.array(dataset_config["train_image_files"])
+    train_target_img_paths = np.array(dataset_config["train_label_files"])
 
-    print('Number of samples:', len(target_img_pahts))
+    val_input_img_paths = np.array(dataset_config["val_image_files"])
+    val_target_img_paths = np.array(dataset_config["val_label_files"])
 
-    val_samples=val_size
-    val_index=np.arange(len(target_img_pahts))
-    val_index=np.random.choice(val_index,val_samples,False)
-    val_index=np.sort(val_index)
-    val_input_img_paths=np.array(input_img_pahts)[val_index]
-    val_target_img_paths=np.array(target_img_pahts)[val_index]
-    train_input_img_paths=np.setdiff1d(input_img_pahts,val_input_img_paths)
-    train_target_img_paths=np.setdiff1d(target_img_pahts,val_target_img_paths)
+    print('Number of training samples:', len(train_target_img_paths))
+    print('Number of validation samples:', len(val_target_img_paths))
 
-    train_gen=Talamo_train(batch_size,img_size,train_input_img_paths, train_target_img_paths,num_input)
+    train_gen=Talamo_train(batch_size,img_size,train_input_img_paths, train_target_img_paths,num_input,data_aug=augmentation)
+    #print("sono io il problema 2")
     val_gen=Talamo_train(1,img_size,val_input_img_paths,val_target_img_paths,num_input,shuffle=False,data_aug=False)
+    #print("sono io il problema 2")
     return train_gen, val_gen
 
 

@@ -1,5 +1,45 @@
+#This script contains the loss functions used for training the model. It includes DiceBCELoss, DiceBFocalLoss, DiceBFocalTverskyLoss, OversizeLoss, and CombinedLoss.
+# It can be customized to include other loss functions as well. The loss functions are implemented as classes that inherit from keras.losses.Loss. 
+# To make DeLTA-BIT capable of using other loss functions, you can add them to the LOSSES list in the losses_list.py file and implement them as classes that inherit from keras.losses.Loss in this file.
+
+
 import tensorflow as tf
 from tensorflow import keras
+
+class Dice(keras.losses.Loss):
+
+    def __init__(
+        self,
+        smooth=1e-6,
+        from_logits=False,
+        name="dice"
+    ):
+        super().__init__(name=name)
+
+        self.smooth = smooth
+        self.from_logits = from_logits
+
+    def call(self, y_true, y_pred):
+
+        # Dice should use probabilities
+        if self.from_logits:
+            y_pred_prob = tf.nn.sigmoid(y_pred)
+        else:
+            y_pred_prob = y_pred
+
+        # Flatten per sample
+        y_true_f = tf.reshape(y_true, [tf.shape(y_true)[0], -1])
+        y_pred_f = tf.reshape(y_pred_prob, [tf.shape(y_pred_prob)[0], -1])
+
+        intersection = tf.reduce_sum(y_true_f * y_pred_f, axis=1)
+
+        union = tf.reduce_sum(y_true_f + y_pred_f, axis=1)
+
+        dice = (2.0 * intersection + self.smooth) / (union + self.smooth)
+
+        return dice
+
+
 
 class OversizeLoss(keras.losses.Loss):
 
