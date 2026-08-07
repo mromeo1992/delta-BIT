@@ -164,9 +164,7 @@ def finetuning(config):
     ###############
 
     lossF = getattr(lF, config["loss"])()   
-    print("sono qui")
     monitoring_metric = getattr(lF, 'Dice')()
-    print("vado avanti")
 
     
     ################
@@ -190,7 +188,7 @@ def finetuning(config):
 
     model = freeze_layers(model, FIRST_UNFROZEN_LAYER)
 
-    print("inizio fine tuning")
+    print("Starting fine tuning first step...")
     hs, model2 = fit_model(model, step=1)
 
     hist_df = pd.DataFrame(hs.history)
@@ -200,6 +198,8 @@ def finetuning(config):
         hist_df.to_json(f)
 
     model2 = freeze_layers(model2, SECOND_UNFROZEN_LAYER)
+    
+    print("Starting fine tuning second step...")
     hs2, model3 = fit_model(model2, step=2)
 
     hist_df = pd.DataFrame(hs2.history)
