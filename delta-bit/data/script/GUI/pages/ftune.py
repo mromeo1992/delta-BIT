@@ -28,7 +28,6 @@ FT_FOLDER = Path("/data/fine_tuning")
 MODEL_FOLDER = Path("/data/MODELS")
 FT_FOLDER.mkdir(parents=True, exist_ok=True)
 
-job_running = False
 
 def go_home():
     stop_tensorboard()
@@ -163,7 +162,7 @@ def finetune():
 
     # ---------- TRAINING STATUS -------------------------------------------------
 
-    async def update_training_status():
+    '''async def update_training_status():
 
         global job_running
 
@@ -175,13 +174,24 @@ def finetune():
 
         except Exception:
 
-            pass
+            pass'''
+
+    async def update_training_status():
+
+        try:
+            status = await get_finetuning_status()
+
+            if status["running"]:
+                status_label.set_text("🟢 Training running")
+            else:
+                status_label.set_text("⚪ Training idle")
+
+        except Exception as e:
+            status_label.set_text("🔴 Training status unavailable")
 
 
-    ui.timer(
-        2.0,
-        update_training_status
-    ) 
+
+
 
 
     # ---------- HEADER -------------------------------------------------------
@@ -447,6 +457,12 @@ def finetune():
                     status_label = ui.label(
                         "⚪ Training idle"
                     ).classes("text-lg")
+
+
+                    ui.timer(
+                        2.0,
+                        update_training_status
+                    ) 
 
                     ui.html(
                         """

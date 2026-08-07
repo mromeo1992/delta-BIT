@@ -1,9 +1,7 @@
-
-
-from gc import callbacks
 import json
 import nibabel as nib
 import numpy as np
+import pandas as pd
 import requests
 from pathlib import Path
 
@@ -39,10 +37,38 @@ def setup_ftmodel(config):
 
 
 
+
+
+
 def finetuning(config):
     import tensorflow as tf
     from tensorflow import keras
     import keras.backend as K
+
+    FIRST_UNFROZEN_LAYER = "conv3d_transpose"
+    SECOND_UNFROZEN_LAYER = "conv3d_6"
+
+    def freeze_layers(model, first_layer_to_unfreeze):
+        
+        found = False
+
+        for layer in model.layers:
+
+            if layer.name == first_layer_to_unfreeze:
+                found = True
+
+            layer.trainable = found
+
+            if isinstance(layer, keras.layers.BatchNormalization):
+                layer.trainable = False
+
+        if not found:
+            raise ValueError(
+                f"Layer '{first_layer_to_unfreeze}' not found."
+            )
+        
+        return model
+
 
 
     def fit_model(model, step):
@@ -158,9 +184,29 @@ def finetuning(config):
 
     train_gen, val_gen = data_generator(dataset_config,img_size,batch_size, num_input, augmentation)
 
+    ###################
+    # FREEZE LAYERS #
+    ###################
+
+    model = freeze_layers(model, FIRST_UNFROZEN_LAYER)
+
     print("inizio fine tuning")
     hs, model2 = fit_model(model, step=1)
-    hs2, model3 = fit_model(model, step=2)
+
+    hist_df = pd.DataFrame(hs.history)
+    # save to json:  
+    hist_json_file = FT_FOLDER / config["name"] / "history_1step.json"
+    with open(hist_json_file, mode='w') as f:
+        hist_df.to_json(f)
+
+    model2 = freeze_layers(model2, SECOND_UNFROZEN_LAYER)
+    hs2, model3 = fit_model(model2, step=2)
+
+    hist_df = pd.DataFrame(hs2.history)
+    # save to json:  
+    hist_json_file = FT_FOLDER / config["name"] / "history_2step.json"
+    with open(hist_json_file, mode='w') as f:
+        hist_df.to_json(f)
 
 
     return {"status": "model loaded"}
