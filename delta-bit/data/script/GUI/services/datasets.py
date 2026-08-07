@@ -169,6 +169,7 @@ DATASET_REQUIREMENTS =r"""
     - All images must be registered to the **MNI 1 mm standard space**.
     - The dataset must contain **at least 10 samples** in the training (one sample only for 10% validation split).<br>
             *Suggested minimum: 50 samples for training.*
+    - Dataset must be loaded in zip format (`.zip`).
     - The dataset must have the following structure:
 
     ```

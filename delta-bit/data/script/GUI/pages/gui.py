@@ -844,7 +844,7 @@ def query():
     with ui.row().classes('q-mt-md gap-4').style('width: 100%; flex-wrap: nowrap;'):
 
         with ui.column().classes('col'):
-            ui.label("MRI Upload Manager").classes("text-h5")
+            ui.label("MRI NIFTI Upload Manager").classes("text-h5")
             ui.upload(
                 on_upload=handle_upload,
                 multiple=True,
